@@ -1,0 +1,453 @@
+.fade-in-out {
+    animation: fadeInOut 1s ease-in-out infinite alternate;
+  }
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+
+  .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed{
+    color: #327113 !important;
+  }
+  .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-active{
+    color: #327113 !important;
+  }
+  .css-8t49rw-MuiStepConnector-line {
+    display: block;
+    border-color: #bdbdbd;
+    border-left-style: solid;
+    border-left-width: 1px;
+    min-height: 24px;
+    margin-left: -3px;
+}
+
+.choice-main{
+    position: relative;
+    top: -50px;
+    width: 100%;
+    padding: 10vw 5vw 0vw 5vw;
+}
+
+.choice-main h1{
+    font-size: 30px;
+}
+
+.choice{
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items:start;
+}
+
+.choice .ticket-container{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+}
+
+.choice .ticket{
+    height: 10vw;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s ease, border 0.3s ease, color 0.3s ease;
+}
+
+
+.choice .days{
+    width: 25%;
+    border-radius: 20px;
+    height: 100%;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-right: none;
+}
+
+.choice .days-size{
+    font-size: 4vw;
+    letter-spacing: 1px;
+}
+
+.choice .days span{
+    font-size: 2vw;
+    position: relative;
+    top: -10px;
+}
+
+.choice .svg-area{
+  width: 20vw;
+  display: flex;
+  position: relative;
+}
+
+
+.choice .ticket-area{
+    width: 75%;
+    height: 100%;
+    display: flex;
+}
+
+.choice .visa-des{
+    position: relative;
+    width: 90%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 1px solid black;
+    border-radius: 0px 20px 20px 0px;
+}
+
+.ticket.selected .days{
+    background-color: #327113;
+    color: #fff;
+  }
+
+  .ticket.selected .days h1{
+    color: #fff;
+  }
+  
+  .ticket.selected .visa-des {
+    border: 3px solid #327113;
+  }
+
+.choice .upper{
+    width: 100%;
+    height: 50%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 30px;
+}
+
+.choice .lower {
+    width: 90%;
+    height: 50%;
+    display: flex;
+    justify-content: space-around;
+    padding: 0px 25px 0px 0px;
+}
+
+.choice .travel-from{
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    text-align: flex-start;
+}
+
+.choice .ticket-input {
+  display: none;
+}
+
+
+.choice .travel-to{
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: 8px;
+}
+
+.choice .details{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+}
+
+.choice .details1{
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.choice .details p{
+    font-size: 0.9vw;
+    font-weight: 100;
+    letter-spacing: 0.2;
+}
+
+.choice .details, .details1 h2{
+    font-size: 1vw;
+    font-weight: 600;
+}
+
+.choice .from{
+    font-size: 0.7vw;
+}
+
+.choice .country{
+    font-size: 1.2vw;
+    font-weight: 600;
+}
+
+.choice .visa-type{
+    position: relative;
+    width: 10%;
+    height: 100%;
+    border: 1px solid black;
+    border-right: 2px dashed #fff;
+    border-left: 1px solid rgba(50, 113, 19, 1);
+    background: rgba(50, 113, 19, 1);
+    border-radius: 0px 20px 20px 0px;
+    writing-mode: vertical-lr;
+    text-orientation: mixed;
+    rotate: 180deg;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1vw;
+    font-weight: 600;
+    color: #fff;
+}
+
+
+.choice .apply-card{
+    width: 400px;
+    border-radius: 15px;
+    background: #F0F0F0;
+    padding: 10px 30px;
+    border: 1px solid black;
+    transition: 0.4s all;
+    position: sticky;
+    top: 90px;
+}
+
+.choice .apply-card:hover{
+    box-shadow: 0 8px 17px rgba(0, 0, 0, 0.363);
+    transition: 0.4s all;
+    scale: 1.01;
+}
+
+.choice .text-cont{
+    border-bottom: 1px solid #a3a3a3;
+    border-width: thin;
+    padding: 20px 0px 10px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.choice .num-block {
+    padding: 0px 0px;
+}
+
+.choice .skin-2 .num-in {   
+	width: 110px;
+}
+
+.choice .skin-2 .num-in	span {
+  width: 40%;
+  display: block;
+  height: 35px;
+  float: left;
+  position: relative;
+}
+
+.choice .skin-2 .num-in span:before, .skin-2 .num-in span:after {
+  content: '';
+  position: absolute;
+  background-color: #667780;
+  height: 2px;
+  width: 10px;
+  top: 50%;
+  left: 50%;
+}
+
+.choice .skin-2 .num-in span.plus:after {
+  transform: rotate(90deg);
+}
+
+.choice .skin-2 .num-in input {
+    float: left;
+    width: 20px;
+    height: 40px;
+    border: none;
+    text-align: center;
+    position: relative;
+    left: 5px;
+    background: transparent;
+}
+
+
+
+.choice h2{
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.choice .apply-card p{
+    font-size: 15px;
+    font-weight: 550;
+    position: relative;
+    right: 10px;
+}
+
+.choice .text-cont1{
+    border-width: thin;
+    padding: 10px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 40px;
+    margin-top: 10px;
+}
+
+
+.choice .pb{
+    width: 70%;
+    display: flex;
+    justify-content: end;
+    float: right;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.choice .amount{
+    font-size: 15px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.choice .tax-des{
+    font-size: 10px;
+    margin-left: 28px;
+}
+
+.choice .icons{
+    width: 22px;
+}
+
+.choice .tb{
+    font-weight: 550;
+    font-size: 15px;
+    width: 30%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.choice button{
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #fff;
+    background-color: #000;
+    width: 90%;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    
+
+    .choice {
+      padding: 0px;
+    }
+
+    .choice-main {
+      padding: 150px 10px 0px 10px;
+    }
+
+    .choice .days {
+      width: 22%;
+    }
+
+    .choice .ticket-area {
+      width: 78%;
+    }
+
+    .choice .ticket-container{
+      width: 100%;
+    }
+
+
+    .choice .ticket {
+      height: 100px;
+    }
+
+    .choice .days-size {
+      font-size: 35px;
+
+    }
+
+    .choice .days span {
+      font-size: 15px;
+      position: relative;
+      top: 0px;
+    }
+
+    .choice .visa-type {
+      font-size: 7px;
+      font-weight: 500;
+    }
+
+    .choice .travel-from {
+      margin-top: -9px;
+    }
+
+    .choice .from {
+      font-size: 9px;
+    }
+
+    .choice .country {
+      font-size: 11px;
+    }
+
+    .choice .svg-area {
+      width: 150px;
+      margin-top: -10px;
+      margin-left: -7px;
+    }
+
+    .choice .details{
+      gap: 3px;
+    }
+
+    .choice .upper {
+      padding: 18px 11px;
+    }
+
+    .choice .details p {
+      font-size: 8px;
+    }
+
+    .choice .details h2 {
+      font-size: 10px;
+      font-weight: 600;
+    }
+  
+    
+    .choice .tax-des {
+      font-size: 9px;
+    }
+  
+  }

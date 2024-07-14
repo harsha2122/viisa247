@@ -1,0 +1,13 @@
+@import 'node_modules/bootstrap/scss/bootstrap';
+
+// Import variables
+@import '_variables';
+
+// Override Bootstrap primary button color
+.btn-success {
+  background-color: $primary-color;
+}
+
+.btn-success:hover {
+  color: $primary-color;  // Change text color on hover
+}
