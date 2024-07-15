@@ -225,22 +225,32 @@ export function Registration() {
       </div>
       {/* end::Form group */}
       <div className='fv-row mb-5'>
-        <label className='form-label fw-bolder text-dark fs-6 required'>Contact Number</label>
-        <div className="input-group">
-          <span style={{lineHeight:"0"}} className="input-group-text">+91</span>
-          <input
-            placeholder='Contact Number'
-            type='text'
-            required
-            autoComplete='off'
-            value={formData.merchant_phone_number}
-            onChange={(e) => handleFieldChange('merchant_phone_number', e.target.value)}
-            className={clsx(
-              'form-control bg-transparent',
-            )}
-          />
+          <label className='form-label fw-bolder text-dark fs-6 required'>Contact Number</label>
+          <div className='input-group'>
+            <span style={{lineHeight: '0'}} className='input-group-text'>
+              +91
+            </span>
+            <input
+              placeholder='Contact Number'
+              type='text'
+              required
+              autoComplete='off'
+              value={formData.merchant_phone_number}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                if (/^\d{0,10}$/.test(e.target.value)) {
+                  handleFieldChange('merchant_phone_number', e.target.value)
+                }
+              }}
+              onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (!/[0-9]/.test(e.key)) {
+                  e.preventDefault()
+                }
+              }}
+              maxLength={10}
+              className={clsx('form-control bg-transparent')}
+            />
+          </div>
         </div>
-      </div>
 
 
       <div className='fv-row mb-5'>

@@ -114,9 +114,15 @@ const Vertical5: React.FC<VerticalProps> = ({
       passportNumber: form.passportNumber,
       passportIssueDate: form.passportIssueDate,
       passPortExpiryDate: form.passPortExpiryDate,
+      fatherName: form.fatherName,
+      motherName: form.motherName,
       gender: form.gender,
       maritalStatus: form.maritalStatus,
       passportFront: form.passport_front,
+      panCard: form.pan_card,
+      passBackPhoto: form.passport_back,
+      photo: form.photo,
+      panNo: form.panNo
     }));
     setInsuranceFormData(formData);
     handleShowReviewModal();
@@ -265,6 +271,7 @@ const Vertical5: React.FC<VerticalProps> = ({
           application_departure_date: formatDateWithTimezoneToYMD(selectedEntry?.application_departure_date ?? ''),
           application_destination: selectedEntry?.country_code ?? '',
           fathers_name: travelerForm.fatherName,
+          mothers_name: travelerForm.motherName,
           passport_front: travelerForm.passFrontPhoto,
           passport_back: travelerForm.passBackPhoto,
           pan_card: travelerForm.panPhoto,
@@ -450,7 +457,7 @@ const Vertical5: React.FC<VerticalProps> = ({
                 <div className='d-flex w-100'>
                 <div className='fv-row mb-5 w-50'>
                     <label className='form-label required'>Phone</label>
-                    <Field onChange={(e) => handleFieldChange('phone', e.target.value)} name='phone' style={inputStyle} className='form-control form-control-lg form-control-solid' />
+                    <Field onChange={(e) => handleFieldChange('phone', e.target.value)} type="number" maxLength={10} name='phone' style={inputStyle} className='form-control form-control-lg form-control-solid' />
                     <div className='text-danger mt-2'>
                     <ErrorMessage name='phone' />
                     </div>
@@ -744,7 +751,7 @@ const Vertical5: React.FC<VerticalProps> = ({
                   width: 190,
                   marginBottom: 20,
                   border: '1px solid',
-                  marginLeft: 20,
+                  margin: '0 auto',
                   borderColor: '#696969',
                   borderRadius: 10,
                   alignItems: 'center',
@@ -769,17 +776,20 @@ const Vertical5: React.FC<VerticalProps> = ({
       )}
       <Modal show={isReviewModal} onHide={() => setIsReviewModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Review Insurance Details</Modal.Title>
+          <Modal.Title>Review Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {insuranceFormData && insuranceFormData.map((data, index) => (
             <div key={index}>
+              <hr className='ahr'/>
               <p><strong>First Name:</strong> {data.firstName}</p>
               <p><strong>Last Name:</strong> {data.lastName}</p>
               <p><strong>Birth Place:</strong> {data.birthPlace}</p>
               <p><strong>Birth Detail:</strong> {data.birthDetail}</p>
               <p><strong>Passport Number:</strong> {data.passportNumber}</p>
               <p><strong>Passport Issue Date:</strong> {data.passportIssueDate}</p>
+              <p><strong>Father's Name:</strong> {data.fatherName}</p>
+              <p><strong>Mother's Name:</strong> {data.motherName}</p>
               <p><strong>Passport Expiry Date:</strong> {data.passPortExpiryDate}</p>
               <p><strong>Gender:</strong> {data.gender}</p>
               <p><strong>Marital Status:</strong> {data.maritalStatus}</p>

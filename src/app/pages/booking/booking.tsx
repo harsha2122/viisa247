@@ -193,7 +193,7 @@ const Booking = ({ }: Props) => {
                       <img width="200px" src={qr} alt="qr-code" />
                     </div>
                     <div style={{ width: '60%', marginLeft:"25px", marginTop:"30px"}}>
-                      <h6>Reciept</h6>
+                      <h6 className='required'>Reciept</h6>
                       {loading ? (
                         <div style={{color:"#000"}}>Loading...</div>
                       ) : (reciept ? (
@@ -309,24 +309,13 @@ const Booking = ({ }: Props) => {
                       <h3>Company</h3>
                       </div>                   
                       <div className="link-des">
-                      <a href="#" className="footer-links">About</a>
-                      <a href="#" className="footer-links">Career</a>
-                      <a href="#" className="footer-links">Blog</a>
+                      <a href="/privacy-policy" className="footer-links">Privacy Policy</a>
                       <a href='/terms-and-conditions' className="footer-links">Terms & Conditions</a>
                   </div>
               </div>
             
             
               <div className="link rowse">
-                  <div className="footer-header">
-                    <h3>Destinations</h3>
-                  </div> 
-                  <div className="link-des">
-                    <a href="#" className="footer-links">Maldives</a>
-                    <a href="#" className="footer-links">Los Angeles</a>
-                    <a href="#" className="footer-links">Las Vegas</a>
-                    <a href="#" className="footer-links">Torronto</a>
-                  </div>
               </div>
             
             

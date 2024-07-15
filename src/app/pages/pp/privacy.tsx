@@ -232,70 +232,58 @@ const Privacy: React.FC = () => {
             <p style={{display:"flex", width:"55%", justifyContent:"center", alignItems:"center", margin:"0 auto"}}>By using Visa 247's services, you agree to comply with these terms and conditions. If you have any questions or concerns, please contact our customer support team for assistance. Thank you for choosing Visa 247 for your visa needs.</p>
         </div>
 
-        <footer className="footer-sech">
+        <footer className="footer-seci">
             <img className="footer-bg" src="./media/assets/footer.png" alt=""/>
             <div className="mains">
-            <div className="logo rowsa">
-                <div className="footer-header">
-                <img src="./media/logos/logo.png" className="manikk" alt=""/>
-                </div>
-                <div className="logo-des">
-                <p style={{color:"rgba(50, 113, 19, 1)"}}>Visa247 facilitates seamless<br/> Visa online instantly..</p>
-                <div className="icons">
-                    <a href="#"><i className="social-icon ri-facebook-fill"></i></a>
-                    <a href="#"><i className="social-icon ri-instagram-line"></i></a>
-                    <a href="#"><i className="social-icon ri-linkedin-fill"></i></a>
-                    <a href="#"><i className="social-icon ri-infinity-fill"></i></a>
-                </div>
-                </div>
-            </div>
+              <div className="logo rowse">
+                  <div className="footer-header">
+                    <img src="./media/assets/logo3.png" className="manik" alt=""/>
+                  </div>
+                  <div className="logo-des">
+                    <p>Visa247 facilitates seamless<br/> Visa online instantly..</p>
+                    <div className="icons">
+                        <a href="#"><i className="social-icon ri-facebook-fill"></i></a>
+                        <a href="#"><i className="social-icon ri-instagram-line"></i></a>
+                        <a href="#"><i className="social-icon ri-linkedin-fill"></i></a>
+                        <a href="#"><i className="social-icon ri-infinity-fill"></i></a>
+                    </div>
+                  </div>
+              </div>
             
-            <div className="office rowsa">
-                <div className="footer-header">
-                    <h3>Company</h3>
-                    </div>                   
-                    <div className="link-des">
-                    <a href="#" className="footer-links">About</a>
-                    <a href="#" className="footer-links">Career</a>
-                    <a href="#" className="footer-links">Blog</a>
-                    <a href='/terms-and-conditions' className="footer-links">Terms & Conditions</a>
-                </div>
-            </div>
+              <div className="office rowse">
+                  <div className="footer-header">
+                      <h3>Company</h3>
+                      </div>                   
+                      <div className="link-des">
+                      <a href="/privacy-policy" className="footer-links">Privacy Policy</a>
+                      <a href='/terms-and-conditions' className="footer-links">Terms & Conditions</a>
+                  </div>
+              </div>
             
             
-            <div className="link rowsa">
-                <div className="footer-header">
-                <h3>Destinations</h3>
-                </div> 
-                <div className="link-des">
-                <a href="#" className="footer-links">Maldives</a>
-                <a href="#" className="footer-links">Los Angeles</a>
-                <a href="#" className="footer-links">Las Vegas</a>
-                <a href="#" className="footer-links">Torronto</a>
-                </div>
-            </div>
+              <div className="link rowse">
+              </div>
             
             
-            <div className="newsletter rowsa">
-                <div className="footer-header">
-                <h3>Join Our Newsletter</h3>
-                </div>
-                <div className="newsletter-des">
-                <div className="subcribe">
-                    <input type="mail" placeholder = "Your email address" required/>
-                    <button className="butt">Subscribe</button>
-                </div>
-                <div className="icons">
-                    <p style={{fontSize: '15px'}}>Will send you weekly updates for your better tour packages</p>
-                </div>
-                </div>
-            </div>
-            
+              <div className="newsletter rowse">
+                  <div className="footer-header">
+                    <h3 >Join Our Newsletter</h3>
+                  </div>
+                  <div className="newsletter-des">
+                    <div className="subcribe">
+                        <input type="mail" placeholder = "Your email address" required/>
+                        <button className="butt">Subscribe</button>
+                    </div>
+                    <div className="icons">
+                        <p>Will send you weekly updates for your better tour packages</p>
+                    </div>
+                  </div>
+              </div>
             
             </div>
             <div className="copyright">
-            <hr className='divider'/>
-                <p>Copyright @ Visa247 2023. All Rights Reserved.</p>
+              <hr/>
+              <p>Copyright @ Visa247 2023. All Rights Reserved.</p>
             </div>
         </footer>
     </>

@@ -312,7 +312,6 @@ const Packages = ({ packageItem }: Props) => {
                         <p className='pp'>Departure City :</p>
                         <h4 className='datas'>{packageData.departure_location}</h4>
                       </div>
-                      <button className='bugss'>Request a Callback <BsArrowUpRight style={{marginLeft:"5px", fontWeight:"bold"}} /></button>
                     </div>
                     <div className="share">
                       {packageData.share_break_down.map((item, index) => (
@@ -374,24 +373,13 @@ const Packages = ({ packageItem }: Props) => {
                       <h3>Company</h3>
                       </div>                   
                       <div className="link-des">
-                      <a href="#" className="footer-links">About</a>
-                      <a href="#" className="footer-links">Career</a>
-                      <a href="#" className="footer-links">Blog</a>
+                      <a href="/privacy-policy" className="footer-links">Privacy Policy</a>
                       <a href='/terms-and-conditions' className="footer-links">Terms & Conditions</a>
                   </div>
               </div>
             
             
               <div className="link rowse">
-                  <div className="footer-header">
-                    <h3>Destinations</h3>
-                  </div> 
-                  <div className="link-des">
-                    <a href="#" className="footer-links">Maldives</a>
-                    <a href="#" className="footer-links">Los Angeles</a>
-                    <a href="#" className="footer-links">Las Vegas</a>
-                    <a href="#" className="footer-links">Torronto</a>
-                  </div>
               </div>
             
             

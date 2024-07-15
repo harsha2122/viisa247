@@ -176,18 +176,18 @@ const Vertical1 = ({ visaListLoader, show, visaList, selectedEntry, showfinalSub
                   .post('/backend/merchant/apply_manual_visa', data)
                   .then((response) => {
                     if (response.status == 200) {
-                      setConfetti(true);
-                        setTimeout(() => {
-                            setConfetti(false);
-                            window.location.reload();
-                        }, 2500);
+                      // setConfetti(true);
+                      //   setTimeout(() => {
+                      //       setConfetti(false);
+                      //       window.location.reload();
+                      //   }, 2500);
                     } else {
                       toast.error(response.data.msg, {
                         position: 'top-center',
                       });
                     }
                     setLoading(false);
-                    setTimeout(() => window.location.reload(), 2500);
+                    // setTimeout(() => window.location.reload(), 2500);
                   })
                   .catch((error) => {
                     console.error('Error fetching Atlys data:', error)
