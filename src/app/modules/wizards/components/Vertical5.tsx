@@ -181,9 +181,9 @@ const Vertical5: React.FC<VerticalProps> = ({
   const markup_percentage = localStorage.getItem('markup_percentage') ?? '1'
 
   const additionalFees =
-  (selectedEntry?.receipt['Visa Fees'] ?? 0) *
-  (parseFloat(markup_percentage) ? 1 + parseFloat(markup_percentage) / 100 : 1) +
-  (selectedEntry?.receipt['Service Fees'] ?? 0);
+  Number(selectedEntry?.receipt['Visa Fees'] ?? 0) +
+  Number(selectedEntry?.receipt['Service Fees'] ?? 0);
+
 
   const totalAmount = travelerForms.length * additionalFees
 
@@ -701,16 +701,16 @@ const Vertical5: React.FC<VerticalProps> = ({
                     key={index}
                     className='d-flex'
                     style={{justifyContent: 'space-between', width: '100%'}}
-                  >
-                    <h5>Traveler {index + 1}:</h5>
-                    <h5>
+                    >
+                      <h5>Traveler {index + 1}:</h5>
+                      <h5>
                         {(
-                            (selectedEntry?.receipt?.['Visa Fees'] ?? 0) *
-                            (parseFloat(markup_percentage) ? 1 + parseFloat(markup_percentage) / 100 : 1) +
-                            (selectedEntry?.receipt?.['Service Fees'] ?? 0)
+                          Number(selectedEntry?.receipt?.['Visa Fees'] ?? 0) +
+                          Number(selectedEntry?.receipt?.['Service Fees'] ?? 0)
                         ).toFixed(0)}
                         /-
-                    </h5>
+                      </h5>
+
 
                   </div>
                 ))}
@@ -737,7 +737,7 @@ const Vertical5: React.FC<VerticalProps> = ({
                 </div>
               </div>
               <div
-                onClick={handleReviewAndSave}
+                onClick={handleReviewModal}
                 className='mt-10'
                 style={{
                   height: 40,
@@ -783,6 +783,7 @@ const Vertical5: React.FC<VerticalProps> = ({
               <p><strong>Passport Expiry Date:</strong> {data.passPortExpiryDate}</p>
               <p><strong>Gender:</strong> {data.gender}</p>
               <p><strong>Marital Status:</strong> {data.maritalStatus}</p>
+              <p><strong>Pan Number:</strong> {data.panNo}</p>
             </div>
           ))}
         </Modal.Body>

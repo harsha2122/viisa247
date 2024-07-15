@@ -23,7 +23,7 @@ type Props = {
   }) => void;
 }
 
-const HotelTable: React.FC<Props> = ({ className, title, apiData = {}, onSelectClick }) => {
+const HotelTable1: React.FC<Props> = ({ className, title, apiData = {}, onSelectClick }) => {
   const [selectedHotel, setSelectedHotel] = useState<any | null>(null);
 
   const backgroundImages = [
@@ -36,12 +36,6 @@ const HotelTable: React.FC<Props> = ({ className, title, apiData = {}, onSelectC
   const getRandomBackgroundImage = () => {
     const randomIndex = Math.floor(Math.random() * backgroundImages.length);
     return backgroundImages[randomIndex];
-  };
-
-  const calculateRetailerPrice = (price: number) => {
-    const markupPercentageString = localStorage.getItem('markup_percentage') ?? '1';
-    const markupPercentage = parseFloat(markupPercentageString);
-    return Math.round(price * (1 + markupPercentage / 100));
   };
 
   const calculateNumberOfDays = (issueDate: string, expiryDate: string) => {
@@ -66,12 +60,12 @@ const HotelTable: React.FC<Props> = ({ className, title, apiData = {}, onSelectC
     if (selectedHotel && onSelectClick) {
       onSelectClick({
         id: selectedHotel._id,
-        totalAmount: parseFloat(selectedHotel.hotel_price_retailer),
+        totalAmount: parseFloat(selectedHotel.hotel_price_b2c),
         country_code: apiData.selectedFromCountry,
         nationality_code: apiData.selectedToCountry,
         hotel_original_amount: parseFloat(selectedHotel.hotel_actual_price),
         description: selectedHotel.description,
-        merchant_hotel_amount: calculateRetailerPrice(parseFloat(selectedHotel.hotel_price_retailer)),
+        merchant_hotel_amount: parseFloat(selectedHotel.hotel_price_b2c),
       });
     }
   };
@@ -102,13 +96,13 @@ const HotelTable: React.FC<Props> = ({ className, title, apiData = {}, onSelectC
                 <div className="pricing-details">
                   <h6 style={{ fontWeight: "500", fontSize: "16px" }}>{hotel.description}</h6>
                   <div className="pricing-features">
-                    <div className="feature">Retailer Price: <span>₹{calculateRetailerPrice(parseFloat(hotel.hotel_price_retailer))}</span></div>
+                    <div className="feature">Retailer Price: <span>₹{parseFloat(hotel.hotel_price_b2c)}</span></div>
                     <div className="feature">No of Days: <span>{numberOfDays}</span></div>
                   </div>
                   <hr className='aahr' />
                   <div className="price-tag">
                     <span className="symbol">₹</span>
-                    <span className="amount">{calculateRetailerPrice(parseFloat(hotel.hotel_price_retailer))}</span>
+                    <span className="amount">{parseFloat(hotel.hotel_price_b2c)}</span>
                     <span className="after">&nbsp;&nbsp;&nbsp;for {numberOfDays} Days</span>
                   </div>
                 </div>
@@ -126,4 +120,4 @@ const HotelTable: React.FC<Props> = ({ className, title, apiData = {}, onSelectC
   )
 }
 
-export { HotelTable }
+export { HotelTable1 }

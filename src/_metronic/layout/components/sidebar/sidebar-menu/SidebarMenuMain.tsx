@@ -242,6 +242,58 @@ const SidebarMenuMain = () => {
       />
       </SidebarMenuItemWithSub>
 
+      <SidebarMenuItemWithSub 
+        to="/your-path"
+        title="Hotel"
+        icon={<svg width="23" height="23" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" className="iconify iconify--emojione-monotone" preserveAspectRatio="xMidYMid meet"><path d="M32 2C15.432 2 2 15.432 2 32s13.432 30 30 30s30-13.432 30-30S48.568 2 32 2zm11.664 44.508h-6.023V33.555h-11.28v12.953h-6.025V17.492h6.025v11.063H37.64V17.492h6.023v29.016z" fill="rgb(119, 186, 123)"></path></svg>}
+        hasBullet={false}
+      >
+      <SidebarMenuItem
+        to='superadmin/hotel/processed'
+        title={'Issued'}
+        fontIcon='bi-app-indicator'
+        hasBullet={true}
+      />
+      <SidebarMenuItem
+        to='superadmin/hotel/waiting'
+        title={'In Process'}
+        fontIcon='bi-app-indicator'
+        hasBullet={true}
+      />
+      <SidebarMenuItem
+        to='superadmin/hotel/rejected'
+        title={'Rejected'}
+        fontIcon='bi-app-indicator'
+        hasBullet={true}
+      />
+      </SidebarMenuItemWithSub>
+
+      <SidebarMenuItemWithSub 
+        to="/your-path"
+        title="Flight"
+        icon={<svg width="23" height="23" fill="rgb(119, 186, 123)" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" className="iconify iconify--emojione-monotone" preserveAspectRatio="xMidYMid meet"><path d="M32 2C15.432 2 2 15.432 2 32s13.432 30 30 30s30-13.432 30-30S48.568 2 32 2zm10.345 20.61H27.68v6.673h12.854v5.039H27.68v12.166h-6.024V17.512h20.689v5.098z"></path></svg>}
+        hasBullet={false}
+      >
+      <SidebarMenuItem
+        to='superadmin/flight/processed'
+        title={'Issued'}
+        fontIcon='bi-app-indicator'
+        hasBullet={true}
+      />
+      <SidebarMenuItem
+        to='superadmin/flight/waiting'
+        title={'In Process'}
+        fontIcon='bi-app-indicator'
+        hasBullet={true}
+      />
+      <SidebarMenuItem
+        to='superadmin/flight/rejected'
+        title={'Rejected'}
+        fontIcon='bi-app-indicator'
+        hasBullet={true}
+      />
+      </SidebarMenuItemWithSub>
+
 
       <SidebarMenuItem
         to='/superadmin/package-application'

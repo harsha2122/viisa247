@@ -13,6 +13,7 @@ import OrderSuccess from '../../../components/OrderSuccess'
 import ClearIcon from '@mui/icons-material/Delete';
 import qr from '../../../../_metronic/assets/card/qr.png' 
 import HotelForm1 from './HotelForm1'
+import FlightForm1 from './FlightForm1'
 
 interface VerticalProps {
   selectedEntry: any
@@ -22,7 +23,7 @@ interface VerticalProps {
   showfinalSubmitLoader: (value: boolean) => void
 }
 
-const FormHotel1: React.FC<VerticalProps> = ({
+const FormFlight2: React.FC<VerticalProps> = ({
   selectedEntry,
   showfinalSubmitLoader,
   visaList,
@@ -139,6 +140,7 @@ const FormHotel1: React.FC<VerticalProps> = ({
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll)
+    fetchwallet();
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
@@ -183,9 +185,25 @@ const FormHotel1: React.FC<VerticalProps> = ({
     const year = date.getFullYear()
     return `${month} ${day}, ${year}`
   }
-
-  const handleReviewAndSave = async () => {
+  const fetchwallet = async () => {
     try {
+      const user_id = Cookies.get('user_id');
+      const postData = {
+        id: user_id
+      }
+      const response = await axiosInstance.post("/backend/fetch_single_merchant_user", postData);
+      if (response.status == 203) {
+        toast.error("Please Logout And Login Again", {
+          position: 'top-center'
+        });
+      }
+      setCurrentWallet(response.data.data.wallet_balance);
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+    }
+  };
+  const handleReviewAndSave = async () => {
+    try {  
       const totalPrice = parseFloat(totalAmount.toFixed(0));
       const walletBalance = parseFloat(currentWallet);
   
@@ -204,24 +222,23 @@ const FormHotel1: React.FC<VerticalProps> = ({
           nationality_code: selectedEntry.nationality_code,
           first_name: travelerForm.firstName,
           traveller: travelerForms.length,
-          hotel_id: selectedEntry.id,
-          hotel_amount: selectedEntry.totalAmount,
-          hotel_original_amount: selectedEntry.hotel_original_amount,
-          receipt_url: reciept,
-          merchant_hotel_amount: selectedEntry.merchant_hotel_amount,
+          flight_id: selectedEntry.id,
+          flight_amount: selectedEntry.totalAmount,
+          flight_original_amount: selectedEntry.flight_original_amount,
+          merchant_flight_amount: selectedEntry.merchant_flight_amount,
         };
   
         try {
-          const response = await axiosInstance.post('/backend/create_hotel_application', postData);
+          const response = await axiosInstance.post('/backend/create_flight_application', postData);
           setInsuranceResponse(response.data.data);
   
           const user_id = Cookies.get('user_id');
           const data = {
-           user_id: user_id,
-            hotel_application_id: response.data.data._id,
+            merchant_id: user_id,
+            flight_application_id: response.data.data._id,
           };
   
-          const applicantResponse = await axiosInstance.post('/backend/add_user_hotel_applicant', data);
+          const applicantResponse = await axiosInstance.post('/backend/add_flight_applicant', data);
   
           if (applicantResponse.status === 200) {
             toast.success('Applied successfully!');
@@ -233,8 +250,8 @@ const FormHotel1: React.FC<VerticalProps> = ({
             });
           }
         } catch (error) {
-          console.error('Error creating or applying for hotel application:', error);
-          toast.error('Error creating or applying for hotel application', {
+          console.error('Error creating or applying for flight application:', error);
+          toast.error('Error creating or applying for flight application', {
             position: 'top-center',
           });
         }
@@ -308,7 +325,7 @@ const FormHotel1: React.FC<VerticalProps> = ({
         orderTime={insuranceResponse ? formatDate(insuranceResponse.created_at) : ''} 
         account={insuranceResponse ? insuranceResponse.insurance_id : ''} 
         name={`${insuranceResponse ? insuranceResponse.first_name : ''} ${insuranceResponse ? insuranceResponse.last_name : ''}`} 
-        amount={insuranceResponse ? Number(insuranceResponse.merchant_hotel_amount) * travelerForms.length : 0} 
+        amount={insuranceResponse ? Number(insuranceResponse.merchant_flight_amount) * travelerForms.length : 0} 
       />
 
       <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
@@ -358,7 +375,7 @@ const FormHotel1: React.FC<VerticalProps> = ({
         <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
           {travelerForms.map((_, index) => (
             <div key={index}>
-              <HotelForm1
+              <FlightForm1
                 ind={index}
                 onDataChange={(newData) => handleTravelerDataChange(newData, index)}
               />
@@ -382,81 +399,6 @@ const FormHotel1: React.FC<VerticalProps> = ({
               )}
             </div>
           ))}
-          <div style={{alignItems:"center"}} className='d-flex flex-column w-50 my-8 justify-content-start'>
-              <h1>Upload Reciept</h1>
-              <div className='d-flex flex-column align-items-center gap-4 w-100 '>
-                  <img width="200px" src={qr} alt="qr-code" />
-              </div>
-              <div style={{ width: '60%', marginLeft:"25px", marginTop:"30px"}}>
-                  <h6>Reciept</h6>
-                  {loading ? (
-                  <div style={{color:"#000"}}>Loading...</div>
-                  ) : (reciept ? (
-                  <div
-                      style={{
-                      border: '4px dotted gray',
-                      width:"100%",
-                      height: 200,
-                      borderRadius: '10px',
-                      justifyContent: 'center',
-                      textAlign: 'center',
-                      marginTop: 20,
-                      }}
-                  >
-                      <div
-                      onClick={() => setReciept('')}
-                      style={{
-                          justifyContent: 'flex-end',
-                          position: 'relative',
-                          backgroundColor: 'white',
-                          padding: 7,
-                          borderRadius: 50,
-                          left: "10px",
-                          width:"35px",
-                          zIndex:"1",
-                          cursor: 'pointer',
-                      }}
-                      >
-                      <ClearIcon style={{ color: 'red' }} />
-                      </div>
-                      <img src={reciept} alt='Uploaded Image' style={{ maxWidth: '100%', maxHeight: '100%', position:"relative", marginTop:"-35px" }} />
-                  </div>
-                  ) : (
-                  <div
-                      style={{
-                      border: '4px dotted gray',
-                      width:"100%",
-                      height: 200,
-                      borderRadius: '10px',
-                      justifyContent: 'center',
-                      textAlign: 'center',
-                      marginTop: 20,
-                      }}
-                  >
-                      <h4 className='mx-10 mt-10'>Reciept Photo</h4>
-                      <button
-                      type='button'
-                      onClick={handleRecieptUpload}
-                      className='btn btn-lg btn-success me-3 mt-7'
-                      style={{ justifyContent: 'flex-end', backgroundColor: '#327113' }}
-                      >
-                      <span className='indicator-label'>Select Files</span>
-                      </button>
-                      <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
-                      Supports Image only.
-                      </p>
-                      <input
-                      type='file'
-                      ref={recieptFileInputRef}
-                      style={{ display: 'none' }}
-                      accept="image/*"
-                      onChange={handleRecieptSelect}
-                      />
-                  </div>
-                  )
-                  )}
-            </div>
-          </div>
           <div className='d-flex my-10' style={{justifyContent: 'flex-end', display: 'flex'}}>
             <div
               onClick={addTravelerForm}
@@ -571,7 +513,8 @@ const FormHotel1: React.FC<VerticalProps> = ({
                   }}
                 />
                 <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
-                  <p>Pay Amount via QR then on verification your application will be processed further</p>
+                  <p>Wallet</p>
+                  <p>{currentWallet}/-</p>
                 </div>
               </div>
               <div
@@ -609,4 +552,4 @@ const FormHotel1: React.FC<VerticalProps> = ({
   )
 }
 
-export {FormHotel1}
+export {FormFlight2}

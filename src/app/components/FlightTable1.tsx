@@ -17,14 +17,14 @@ type Props = {
     totalAmount: number;
     country_code: string;
     nationality_code: string;
-    hotel_original_amount: number;
+    flight_original_amount: number;
     description: string;
-    merchant_hotel_amount: number;
+    merchant_flight_amount: number;
   }) => void;
 }
 
-const HotelTable: React.FC<Props> = ({ className, title, apiData = {}, onSelectClick }) => {
-  const [selectedHotel, setSelectedHotel] = useState<any | null>(null);
+const FlightTable1: React.FC<Props> = ({ className, title, apiData = {}, onSelectClick }) => {
+  const [selectedflight, setSelectedflight] = useState<any | null>(null);
 
   const backgroundImages = [
     '/media/svg/shapes/abstract-1.svg',
@@ -52,63 +52,64 @@ const HotelTable: React.FC<Props> = ({ className, title, apiData = {}, onSelectC
     return daysDifference;
   };
 
-  if (!apiData.hotelData || !Array.isArray(apiData.hotelData)) {
+  if (!apiData.flightData || !Array.isArray(apiData.flightData)) {
     return <p>Invalid data format</p>;
   }
 
   const numberOfDays = calculateNumberOfDays(apiData.issue_date, apiData.expiry_date);
 
-  const handleHotelSelect = (hotel: any) => {
-    setSelectedHotel(hotel);
+  const handleflightSelect = (flight: any) => {
+    setSelectedflight(flight);
   };
 
   const handleProceed = () => {
-    if (selectedHotel && onSelectClick) {
+    if (selectedflight && onSelectClick) {
       onSelectClick({
-        id: selectedHotel._id,
-        totalAmount: parseFloat(selectedHotel.hotel_price_retailer),
+        id: selectedflight._id,
+        totalAmount: parseFloat(selectedflight.flight_price_b2c),
         country_code: apiData.selectedFromCountry,
         nationality_code: apiData.selectedToCountry,
-        hotel_original_amount: parseFloat(selectedHotel.hotel_actual_price),
-        description: selectedHotel.description,
-        merchant_hotel_amount: calculateRetailerPrice(parseFloat(selectedHotel.hotel_price_retailer)),
+        flight_original_amount: parseFloat(selectedflight.flight_actual_price),
+        description: selectedflight.description,
+        merchant_flight_amount: parseFloat(selectedflight.flight_price_b2c),
       });
     }
   };
+  console.log("adsf", apiData)
   return (
     <div style={{ boxShadow: "none" }} className={`card ${className}`}>
       <Toaster />
       <div className="card-body">
         <div className="age-group-tabs">
-          <h1>Hotel</h1>
+          <h1>Flight</h1>
         </div>
         <hr className='aahr' />
         <div className="row justify-content-center mt-12">
-          {apiData.hotelData.map((hotel, index) => (
+          {apiData.flightData.map((flight, index) => (
             <div key={index} className="col-md-4">
               <div
-                onClick={() => handleHotelSelect(hotel)}
+                onClick={() => handleflightSelect(flight)}
                 style={{
                   backgroundPosition: 'right top',
                   backgroundSize: '30% auto',
                   backgroundRepeat: 'no-repeat',
                   backgroundImage: `url(${toAbsoluteUrl(getRandomBackgroundImage())})`,
-                  border: selectedHotel && selectedHotel._id === hotel._id ? '2px solid #327113' : '1px solid #dadada',
+                  border: selectedflight && selectedflight._id === flight._id ? '2px solid #327113' : '1px solid #dadada',
                   cursor: 'pointer',
                 }}
                 className="mb-xl-8 pricing-table purple"
               >
-                <div className="pricing-label fs-4">{hotel.name}</div>
+                <div className="pricing-label fs-4">{flight.name}</div>
                 <div className="pricing-details">
-                  <h6 style={{ fontWeight: "500", fontSize: "16px" }}>{hotel.description}</h6>
+                  <h6 style={{ fontWeight: "500", fontSize: "16px" }}>{flight.description}</h6>
                   <div className="pricing-features">
-                    <div className="feature">Retailer Price: <span>₹{calculateRetailerPrice(parseFloat(hotel.hotel_price_retailer))}</span></div>
+                    <div className="feature">Retailer Price: <span>₹{calculateRetailerPrice(parseFloat(flight.flight_price_b2c))}</span></div>
                     <div className="feature">No of Days: <span>{numberOfDays}</span></div>
                   </div>
                   <hr className='aahr' />
                   <div className="price-tag">
                     <span className="symbol">₹</span>
-                    <span className="amount">{calculateRetailerPrice(parseFloat(hotel.hotel_price_retailer))}</span>
+                    <span className="amount">{calculateRetailerPrice(parseFloat(flight.flight_price_b2c))}</span>
                     <span className="after">&nbsp;&nbsp;&nbsp;for {numberOfDays} Days</span>
                   </div>
                 </div>
@@ -116,7 +117,7 @@ const HotelTable: React.FC<Props> = ({ className, title, apiData = {}, onSelectC
             </div>
           ))}
         </div>
-        {selectedHotel && (
+        {selectedflight && (
           <div className="d-flex justify-content-center mt-4">
             <Button variant="primary" onClick={handleProceed}>Proceed</Button>
           </div>
@@ -126,4 +127,4 @@ const HotelTable: React.FC<Props> = ({ className, title, apiData = {}, onSelectC
   )
 }
 
-export { HotelTable }
+export { FlightTable1 }

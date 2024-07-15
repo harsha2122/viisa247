@@ -22,7 +22,7 @@ interface VerticalProps {
   showfinalSubmitLoader: (value: boolean) => void
 }
 
-const FormHotel1: React.FC<VerticalProps> = ({
+const FormHotel2: React.FC<VerticalProps> = ({
   selectedEntry,
   showfinalSubmitLoader,
   visaList,
@@ -51,7 +51,7 @@ const FormHotel1: React.FC<VerticalProps> = ({
   const handleShow = () => setModalShow(true);
   const handleClose = () => {
     setModalShow(false);
-    navigate('/customer/dashboard');
+    navigate('/merchant/dashboard');
   };
   const handleReviewModal = () => {
     const formData = travelerForms.map((form) => ({
@@ -139,13 +139,14 @@ const FormHotel1: React.FC<VerticalProps> = ({
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll)
+    fetchwallet();
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
   }, [])
 
-  const totalAmount = travelerForms.length * selectedEntry.totalAmount
-  const totalAmounta = selectedEntry.totalAmount
+  const totalAmount = travelerForms.length * selectedEntry.merchant_hotel_amount
+  const totalAmounta = selectedEntry.merchant_hotel_amount
 
   const addTravelerForm = () => {
     setTravelerForms((prevForms) => [...prevForms, {}])
@@ -184,6 +185,23 @@ const FormHotel1: React.FC<VerticalProps> = ({
     return `${month} ${day}, ${year}`
   }
 
+  const fetchwallet = async () => {
+    try {
+      const user_id = Cookies.get('user_id');
+      const postData = {
+        id: user_id
+      }
+      const response = await axiosInstance.post("/backend/fetch_single_merchant_user", postData);
+      if (response.status == 203) {
+        toast.error("Please Logout And Login Again", {
+          position: 'top-center'
+        });
+      }
+      setCurrentWallet(response.data.data.wallet_balance);
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+    }
+  };
   const handleReviewAndSave = async () => {
     try {
       const totalPrice = parseFloat(totalAmount.toFixed(0));
@@ -217,14 +235,14 @@ const FormHotel1: React.FC<VerticalProps> = ({
   
           const user_id = Cookies.get('user_id');
           const data = {
-           user_id: user_id,
+            merchant_id: user_id,
             hotel_application_id: response.data.data._id,
           };
   
-          const applicantResponse = await axiosInstance.post('/backend/add_user_hotel_applicant', data);
+          const applicantResponse = await axiosInstance.post('/backend/add_hotel_applicant', data);
   
           if (applicantResponse.status === 200) {
-            toast.success('Applied successfully!');
+            toast.success('Insurance Applied successfully!');
             setConfetti(true);
             setModalShow(true);
           } else {
@@ -382,81 +400,6 @@ const FormHotel1: React.FC<VerticalProps> = ({
               )}
             </div>
           ))}
-          <div style={{alignItems:"center"}} className='d-flex flex-column w-50 my-8 justify-content-start'>
-              <h1>Upload Reciept</h1>
-              <div className='d-flex flex-column align-items-center gap-4 w-100 '>
-                  <img width="200px" src={qr} alt="qr-code" />
-              </div>
-              <div style={{ width: '60%', marginLeft:"25px", marginTop:"30px"}}>
-                  <h6>Reciept</h6>
-                  {loading ? (
-                  <div style={{color:"#000"}}>Loading...</div>
-                  ) : (reciept ? (
-                  <div
-                      style={{
-                      border: '4px dotted gray',
-                      width:"100%",
-                      height: 200,
-                      borderRadius: '10px',
-                      justifyContent: 'center',
-                      textAlign: 'center',
-                      marginTop: 20,
-                      }}
-                  >
-                      <div
-                      onClick={() => setReciept('')}
-                      style={{
-                          justifyContent: 'flex-end',
-                          position: 'relative',
-                          backgroundColor: 'white',
-                          padding: 7,
-                          borderRadius: 50,
-                          left: "10px",
-                          width:"35px",
-                          zIndex:"1",
-                          cursor: 'pointer',
-                      }}
-                      >
-                      <ClearIcon style={{ color: 'red' }} />
-                      </div>
-                      <img src={reciept} alt='Uploaded Image' style={{ maxWidth: '100%', maxHeight: '100%', position:"relative", marginTop:"-35px" }} />
-                  </div>
-                  ) : (
-                  <div
-                      style={{
-                      border: '4px dotted gray',
-                      width:"100%",
-                      height: 200,
-                      borderRadius: '10px',
-                      justifyContent: 'center',
-                      textAlign: 'center',
-                      marginTop: 20,
-                      }}
-                  >
-                      <h4 className='mx-10 mt-10'>Reciept Photo</h4>
-                      <button
-                      type='button'
-                      onClick={handleRecieptUpload}
-                      className='btn btn-lg btn-success me-3 mt-7'
-                      style={{ justifyContent: 'flex-end', backgroundColor: '#327113' }}
-                      >
-                      <span className='indicator-label'>Select Files</span>
-                      </button>
-                      <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
-                      Supports Image only.
-                      </p>
-                      <input
-                      type='file'
-                      ref={recieptFileInputRef}
-                      style={{ display: 'none' }}
-                      accept="image/*"
-                      onChange={handleRecieptSelect}
-                      />
-                  </div>
-                  )
-                  )}
-            </div>
-          </div>
           <div className='d-flex my-10' style={{justifyContent: 'flex-end', display: 'flex'}}>
             <div
               onClick={addTravelerForm}
@@ -571,7 +514,8 @@ const FormHotel1: React.FC<VerticalProps> = ({
                   }}
                 />
                 <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
-                  <p>Pay Amount via QR then on verification your application will be processed further</p>
+                  <p>Wallet</p>
+                  <p>{currentWallet}/-</p>
                 </div>
               </div>
               <div
@@ -609,4 +553,4 @@ const FormHotel1: React.FC<VerticalProps> = ({
   )
 }
 
-export {FormHotel1}
+export {FormHotel2}

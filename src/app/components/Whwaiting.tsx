@@ -15,9 +15,9 @@ import InsuranceFormView from './InsuranceFormView'
 
 interface InsurancePayload {
   id: string;
-  insurance_status: string;
-  insurance_remark?: string;
-  insurance_pdf?: string;
+  hotel_status: string;
+  hotel_remark?: string;
+  hotel_pdf?: string;
 }
 
 type TableRow = InsurancePayload & {
@@ -25,7 +25,7 @@ type TableRow = InsurancePayload & {
   merchant_email_id: string;
   merchant_phone_number: string;
   nationality: string;
-  insurance_amount: string;
+  hotel_amount: string;
   _id: string;
 };
 
@@ -75,7 +75,7 @@ const inputStyle = {
 
 
 
-const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
+const Whwaiting: React.FC<Props> = ({ className, title, data}) => {
   const [visible, setVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [tableData, setTableData] = useState(data);
@@ -88,7 +88,7 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [rejectRemark, setRejectRemark] = useState('');
-  const insuranceFileInputRef = useRef<HTMLInputElement | null>(null);
+  const hotelFileInputRef = useRef<HTMLInputElement | null>(null);
   const maxSize = 1024 * 1024
 
   const handleFileUpload = async (file) => {
@@ -125,11 +125,11 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
           try {
               const payload: InsurancePayload = {
                   id: selectedRow._id,
-                  insurance_status: 'Rejected',
-                  insurance_remark: rejectRemark,
+                  hotel_status: 'Rejected',
+                  hotel_remark: rejectRemark,
               };
 
-              const response = await axiosInstance.post('/backend/upload_insurance_file', payload);
+              const response = await axiosInstance.post('/backend/upload_hotel_file', payload);
               if (response.data.success === 1) {
                   toast.success('Application rejected successfully');
                   handleCloseRejectModal();
@@ -147,30 +147,30 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
   };
 
   const handleIssueSubmit = async () => {
-    if (selectedRow && selectedRow.insurance_pdf) {
+    if (selectedRow && selectedRow.hotel_pdf) {
       try {
         const payload: InsurancePayload = {
           id: selectedRow._id,
-          insurance_status: 'Issued',
-          insurance_pdf: selectedRow.insurance_pdf,
+          hotel_status: 'Issued',
+          hotel_pdf: selectedRow.hotel_pdf,
         };
   
-        const response = await axiosInstance.post('/backend/upload_insurance_file', payload);
+        const response = await axiosInstance.post('/backend/upload_hotel_file', payload);
         if (response.data.success === 1) {
-          toast.success('Visa issued successfully');
+          toast.success('Hotel issued successfully');
           handleCloseIssueModal();
           setTimeout(() => {
             window.location.reload();
           }, 2500);
         } else {
-          toast.error('Error issuing visa');
+          toast.error('Error issuing hotel');
         }
       } catch (error) {
         console.error('Error submitting issuance:', error);
         toast.error('Error submitting issuance');
       }
     } else {
-      toast.error('Please upload the insurance file before submitting');
+      toast.error('Please upload the hotel file before submitting');
     }
   };
   
@@ -191,7 +191,7 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
         if (selectedRow) {
           setSelectedRow({
             ...selectedRow,
-            insurance_pdf: imageLink,
+            hotel_pdf: imageLink,
           });
         }
         toast.success('File uploaded successfully', { position: 'top-center' });
@@ -381,12 +381,12 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
                       </td>
                       <td>
                         <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.insurance_status}
+                          {row.hotel_status}
                         </a>
                       </td>
                       <td>
                         <a href='#' className='text-muted text-center text-hover-primary d-block mb-1 fs-7'>
-                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.insurance_amount))}
+                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.hotel_original_amount))}
                         </a>
                       </td>
                       <td className='text-end d-flex'>
@@ -468,13 +468,13 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
                       <CloseOutlined />
                   </div>
                   <div className='mb-5'>
-                    <label className='form-label fw-bolder text-dark required fs-6'>Insurance Upload</label>
+                    <label className='form-label fw-bolder text-dark required fs-6'>Hotel Doc Upload</label>
                     <input
                       type='file'
-                      ref={insuranceFileInputRef}
+                      ref={hotelFileInputRef}
                       className='form-control'
-                      id='insurance_pdf'
-                      name='insurance_pdf'
+                      id='hotel_pdf'
+                      name='hotel_pdf'
                       accept='.pdf'
                       onChange={handleFileSelect}
                     />
@@ -483,7 +483,7 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
                       <button 
                           className='btn btn-primary' 
                           onClick={handleIssueSubmit}
-                          disabled={!selectedRow || !selectedRow.insurance_pdf}
+                          disabled={!selectedRow || !selectedRow.hotel_pdf}
                       >
                           Upload
                       </button>
@@ -497,4 +497,4 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
   )
 }
 
-export { IwaitingTable }
+export { Whwaiting }

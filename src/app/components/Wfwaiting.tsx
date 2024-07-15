@@ -75,7 +75,7 @@ const inputStyle = {
 
 
 
-const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
+const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
   const [visible, setVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [tableData, setTableData] = useState(data);
@@ -381,12 +381,12 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
                       </td>
                       <td>
                         <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.insurance_status}
+                          {row.flight_status}
                         </a>
                       </td>
                       <td>
                         <a href='#' className='text-muted text-center text-hover-primary d-block mb-1 fs-7'>
-                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.insurance_amount))}
+                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.flight_original_amount))}
                         </a>
                       </td>
                       <td className='text-end d-flex'>
@@ -497,4 +497,4 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
   )
 }
 
-export { IwaitingTable }
+export { Wfwaiting }

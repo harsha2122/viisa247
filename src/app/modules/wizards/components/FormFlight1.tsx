@@ -13,6 +13,7 @@ import OrderSuccess from '../../../components/OrderSuccess'
 import ClearIcon from '@mui/icons-material/Delete';
 import qr from '../../../../_metronic/assets/card/qr.png' 
 import HotelForm1 from './HotelForm1'
+import FlightForm1 from './FlightForm1'
 
 interface VerticalProps {
   selectedEntry: any
@@ -22,7 +23,7 @@ interface VerticalProps {
   showfinalSubmitLoader: (value: boolean) => void
 }
 
-const FormHotel1: React.FC<VerticalProps> = ({
+const FormFlight1: React.FC<VerticalProps> = ({
   selectedEntry,
   showfinalSubmitLoader,
   visaList,
@@ -183,19 +184,8 @@ const FormHotel1: React.FC<VerticalProps> = ({
     const year = date.getFullYear()
     return `${month} ${day}, ${year}`
   }
-
   const handleReviewAndSave = async () => {
-    try {
-      const totalPrice = parseFloat(totalAmount.toFixed(0));
-      const walletBalance = parseFloat(currentWallet);
-  
-      if (totalPrice > walletBalance) {
-        toast.error('Insufficient Balance!', {
-          position: 'top-center',
-        });
-        return;
-      }
-  
+    try {  
       setLoading(true);
   
       for (const travelerForm of travelerForms) {
@@ -204,27 +194,27 @@ const FormHotel1: React.FC<VerticalProps> = ({
           nationality_code: selectedEntry.nationality_code,
           first_name: travelerForm.firstName,
           traveller: travelerForms.length,
-          hotel_id: selectedEntry.id,
-          hotel_amount: selectedEntry.totalAmount,
-          hotel_original_amount: selectedEntry.hotel_original_amount,
+          flight_id: selectedEntry.id,
+          flight_amount: selectedEntry.totalAmount,
+          flight_original_amount: selectedEntry.flight_original_amount,
           receipt_url: reciept,
-          merchant_hotel_amount: selectedEntry.merchant_hotel_amount,
+          merchant_flight_amount: selectedEntry.totalAmount,
         };
   
         try {
-          const response = await axiosInstance.post('/backend/create_hotel_application', postData);
+          const response = await axiosInstance.post('/backend/create_flight_application', postData);
           setInsuranceResponse(response.data.data);
   
           const user_id = Cookies.get('user_id');
           const data = {
-           user_id: user_id,
-            hotel_application_id: response.data.data._id,
+            user_id: user_id,
+            flight_application_id: response.data.data._id,
           };
   
-          const applicantResponse = await axiosInstance.post('/backend/add_user_hotel_applicant', data);
+          const applicantResponse = await axiosInstance.post('/backend/add_user_flight_applicant', data);
   
           if (applicantResponse.status === 200) {
-            toast.success('Applied successfully!');
+            toast.success('Insurance Applied successfully!');
             setConfetti(true);
             setModalShow(true);
           } else {
@@ -233,8 +223,8 @@ const FormHotel1: React.FC<VerticalProps> = ({
             });
           }
         } catch (error) {
-          console.error('Error creating or applying for hotel application:', error);
-          toast.error('Error creating or applying for hotel application', {
+          console.error('Error creating or applying for flight application:', error);
+          toast.error('Error creating or applying for flight application', {
             position: 'top-center',
           });
         }
@@ -308,7 +298,7 @@ const FormHotel1: React.FC<VerticalProps> = ({
         orderTime={insuranceResponse ? formatDate(insuranceResponse.created_at) : ''} 
         account={insuranceResponse ? insuranceResponse.insurance_id : ''} 
         name={`${insuranceResponse ? insuranceResponse.first_name : ''} ${insuranceResponse ? insuranceResponse.last_name : ''}`} 
-        amount={insuranceResponse ? Number(insuranceResponse.merchant_hotel_amount) * travelerForms.length : 0} 
+        amount={insuranceResponse ? Number(insuranceResponse.merchant_flight_amount) * travelerForms.length : 0} 
       />
 
       <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
@@ -358,7 +348,7 @@ const FormHotel1: React.FC<VerticalProps> = ({
         <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
           {travelerForms.map((_, index) => (
             <div key={index}>
-              <HotelForm1
+              <FlightForm1
                 ind={index}
                 onDataChange={(newData) => handleTravelerDataChange(newData, index)}
               />
@@ -571,7 +561,7 @@ const FormHotel1: React.FC<VerticalProps> = ({
                   }}
                 />
                 <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
-                  <p>Pay Amount via QR then on verification your application will be processed further</p>
+                  <p>Customer will have to pay the amount via QR. Once verified we will process your request</p>
                 </div>
               </div>
               <div
@@ -609,4 +599,4 @@ const FormHotel1: React.FC<VerticalProps> = ({
   )
 }
 
-export {FormHotel1}
+export {FormFlight1}

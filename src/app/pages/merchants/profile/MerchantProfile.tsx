@@ -113,6 +113,8 @@ function MerchantProfile() {
   const [checked, setChecked] = React.useState(true);
   const [transaction, setTransaction] = useState<Transaction[]>([]);
   const [revenue, setRevenue] = useState<Revenue[]>([]);
+  const [flight, setFlight] = useState<Revenue[]>([]);
+  const [hotel, setHotel] = useState<Revenue[]>([]);
   const [insurance, setInsurance] = useState<Revenue[]>([]);
   const [filteredData, setFilteredData] = useState<Transaction[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -150,6 +152,8 @@ function MerchantProfile() {
     fetchCommission()
     fetchRevenueData()
     fetchRevenueData1()
+    fetchRevenueData2()
+    fetchRevenueData3()
   }, [])
 
   useEffect(() => {
@@ -203,6 +207,12 @@ function MerchantProfile() {
 
   const [currentPageInsurance, setCurrentPageInsurance] = useState(1);
   const itemsPerPageInsurance = 10; // Adjust the number of items per page as needed
+
+  const [currentPageFlight, setCurrentPageFlight] = useState(1);
+  const itemsPerPageFlight = 10; // Adjust the number of items per page as needed
+
+  const [currentPageHotel, setCurrentPageHotel] = useState(1);
+  const itemsPerPageHotel = 10; // Adjust the number of items per page as needed
   
 
   const fetchTransactionData = async () => {
@@ -243,6 +253,16 @@ const currentItemsRevenue = revenue.slice(indexOfFirstItemRevenue, indexOfLastIt
 const indexOfLastItemInsurance = currentPageInsurance * itemsPerPageInsurance;
 const indexOfFirstItemInsurance = indexOfLastItemInsurance - itemsPerPageInsurance;
 const currentItemsInsurance = insurance.slice(indexOfFirstItemInsurance, indexOfLastItemInsurance);
+
+const indexOfLastItemFlight = currentPageFlight * itemsPerPageFlight;
+const indexOfFirstItemFlight = indexOfLastItemFlight - itemsPerPageFlight;
+const currentItemsFlight = flight.slice(indexOfFirstItemFlight, indexOfLastItemFlight);
+
+const indexOfLastItemHotel = currentPageHotel * itemsPerPageHotel;
+const indexOfFirstItemHotel = indexOfLastItemHotel - itemsPerPageHotel;
+const currentItemsHotel = hotel.slice(indexOfFirstItemHotel, indexOfLastItemHotel);
+
+
 const renderPageNumbersRevenue = () => {
   const totalPagesRevenue = Math.ceil(revenue.length / itemsPerPageRevenue);
 
@@ -303,6 +323,66 @@ const renderPageNumbersInsurance = () => {
     }
   }
 };
+const renderPageNumbersFlight = () => {
+  const totalPagesFlight = Math.ceil(flight.length / itemsPerPageFlight);
+
+  if (totalPagesFlight <= MAX_VISIBLE_PAGES) {
+    return addRangeOfPages(1, totalPagesFlight);
+  } else {
+    if (currentPage <= MAX_VISIBLE_PAGES - 3) {
+      return [
+        ...addRangeOfPages(1, MAX_VISIBLE_PAGES - 2),
+        '...',
+        totalPages - 1,
+        totalPages,
+      ];
+    } else if (currentPage >= totalPages - (MAX_VISIBLE_PAGES - 4)) {
+      return [
+        1,
+        '...',
+        ...addRangeOfPages(totalPages - (MAX_VISIBLE_PAGES - 3), totalPages),
+      ];
+    } else {
+      return [
+        1,
+        '...',
+        ...addRangeOfPages(currentPage - 1, currentPage + 1),
+        '...',
+        totalPages,
+      ];
+    }
+  }
+};
+const renderPageNumbersHotel = () => {
+  const totalPagesHotel = Math.ceil(hotel.length / itemsPerPageHotel);
+
+  if (totalPagesHotel <= MAX_VISIBLE_PAGES) {
+    return addRangeOfPages(1, totalPagesHotel);
+  } else {
+    if (currentPage <= MAX_VISIBLE_PAGES - 3) {
+      return [
+        ...addRangeOfPages(1, MAX_VISIBLE_PAGES - 2),
+        '...',
+        totalPages - 1,
+        totalPages,
+      ];
+    } else if (currentPage >= totalPages - (MAX_VISIBLE_PAGES - 4)) {
+      return [
+        1,
+        '...',
+        ...addRangeOfPages(totalPages - (MAX_VISIBLE_PAGES - 3), totalPages),
+      ];
+    } else {
+      return [
+        1,
+        '...',
+        ...addRangeOfPages(currentPage - 1, currentPage + 1),
+        '...',
+        totalPages,
+      ];
+    }
+  }
+};
   const fetchRevenueData = async () => {
     try {
       const user_id = Cookies.get('user_id')
@@ -338,6 +418,48 @@ const renderPageNumbersInsurance = () => {
       }
       // Assuming the response contains the profile data, update the state with the data
       setInsurance(response.data.data)
+    } catch (error) {
+      console.error('Error fetching profile data:', error)
+      // Handle error (e.g., show an error message)
+    }
+  }
+
+  const fetchRevenueData2 = async () => {
+    try {
+      const user_id = Cookies.get('user_id')
+      const postData = {
+        merchant_id: user_id,
+      }
+      const response = await axiosInstance.post('/backend/merchant/flight_revenue', postData)
+
+      if (response.status == 203) {
+        toast.error('Please Logout And Login Again', {
+          position: 'top-center',
+        })
+      }
+      // Assuming the response contains the profile data, update the state with the data
+      setFlight(response.data.data)
+    } catch (error) {
+      console.error('Error fetching profile data:', error)
+      // Handle error (e.g., show an error message)
+    }
+  }
+
+  const fetchRevenueData3 = async () => {
+    try {
+      const user_id = Cookies.get('user_id')
+      const postData = {
+        merchant_id: user_id,
+      }
+      const response = await axiosInstance.post('/backend/merchant/hotel_revenue', postData)
+
+      if (response.status == 203) {
+        toast.error('Please Logout And Login Again', {
+          position: 'top-center',
+        })
+      }
+      // Assuming the response contains the profile data, update the state with the data
+      setHotel(response.data.data)
     } catch (error) {
       console.error('Error fetching profile data:', error)
       // Handle error (e.g., show an error message)
@@ -1790,6 +1912,226 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
       </ul>
     </div>
   );
+
+  const flightContent = (
+    <div
+      className='w-full mt-5 mx-10 pt-5'
+      style={{
+        backgroundColor: '#fff',
+        justifyContent: 'space-between',
+        borderRadius: 10,
+        borderColor: '#d3d3d3',
+        border: '1px solid #d3d3d3',
+        boxShadow: '0px 0px 7px rgba(0, 0, 0, 0.2)',
+        width: '95%',
+        overflow: 'hidden',
+      }}
+    >
+      <div className='d-flex align-items-center px-10'>
+        <div className='d-flex align-items-center' style={{ flex: 1 }}>
+          <h2 className=''>Flight Revenue</h2>
+        </div>
+  
+        <div className='fv-row w-50' style={{ position: 'relative', right: '4%' }}>
+          
+        </div>
+  
+        <div
+          className='px-5 py-2'
+          style={{
+            border: '1px solid #327113',
+            borderRadius: 10,
+            alignItems: 'center',
+            display: 'flex',
+            marginLeft: 'auto',
+            backgroundColor: '#fff',
+            cursor: 'pointer',
+          }}
+          onClick={handleDownloadCSVRevenue}
+        >
+          <h6 className='fs-4' style={{ marginTop: 5 }}>
+            Download CSV
+          </h6>
+        </div>
+      </div>
+  
+      <table className='table align-middle gs-10 mt-10'>
+        {/* begin::Table head */}
+        <thead>
+          <tr style={{ background: '#f2f2f2', color: '#000' }} className='fw-bold'>
+            <th className='min-w-100px'>Name</th>
+            <th className='min-w-100px'>Transaction time</th>
+            <th className='min-w-100px'>Application No.</th>
+            <th className='min-w-100px text-center'>Paid</th>
+            <th className='min-w-100px text-center'>Receive</th>
+            <th className='text-center min-w-100px'>Merchant Margin</th>
+          </tr>
+        </thead>
+        {/* end::Table head */}
+        {/* begin::Table body */}
+        <tbody style={{ borderBottom: '1px solid #cccccc' }}>
+          {currentItemsFlight.map((item, index) => (
+            <tr key={index}>
+              <td className='text-start'>
+                <a href='#' className='text-dark text-hover-primary mb-1 fs-6'>
+                  {item.name}
+                </a>
+              </td>
+              <td className='text-start'>
+                <span className='text-dark d-block fs-6'>
+                  {formatDate1(item.transaction_time)}
+                </span>
+              </td>
+              <td className='text-start'>
+                <span className='text-dark d-block fs-6'>
+                  {item.application_no}
+                </span>
+              </td>
+              <td className='text-center'>
+                <span className='text-dark d-block fs-6'>₹ {item.paid}</span>
+              </td>
+              <td className='text-center'>
+                <span className='text-dark d-block fs-6'>₹ {item.receive}</span>
+              </td>
+              <td className='text-center'>
+                <span className='text-dark d-block fs-6'>₹ {item.revenue}</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+        {/* end::Table body */}
+      </table>
+      <ul className='pagination mb-5'>
+        {renderPageNumbersFlight().map((page, index) => (
+          <li
+            key={index}
+            className={`page-item ${
+              page === '...' ? '' : page === currentPage ? 'active' : ''
+            }`}
+            onClick={() => handlePageClick(page as number)}
+          >
+            {page === '...' ? (
+              <span className='page-link'>{page}</span>
+            ) : (
+              <a className='page-link' href='#'>
+                {page}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+
+  const hotelContent = (
+    <div
+      className='w-full mt-5 mx-10 pt-5'
+      style={{
+        backgroundColor: '#fff',
+        justifyContent: 'space-between',
+        borderRadius: 10,
+        borderColor: '#d3d3d3',
+        border: '1px solid #d3d3d3',
+        boxShadow: '0px 0px 7px rgba(0, 0, 0, 0.2)',
+        width: '95%',
+        overflow: 'hidden',
+      }}
+    >
+      <div className='d-flex align-items-center px-10'>
+        <div className='d-flex align-items-center' style={{ flex: 1 }}>
+          <h2 className=''>Hotel Revenue</h2>
+        </div>
+  
+        <div className='fv-row w-50' style={{ position: 'relative', right: '4%' }}>
+          
+        </div>
+  
+        <div
+          className='px-5 py-2'
+          style={{
+            border: '1px solid #327113',
+            borderRadius: 10,
+            alignItems: 'center',
+            display: 'flex',
+            marginLeft: 'auto',
+            backgroundColor: '#fff',
+            cursor: 'pointer',
+          }}
+          onClick={handleDownloadCSVRevenue}
+        >
+          <h6 className='fs-4' style={{ marginTop: 5 }}>
+            Download CSV
+          </h6>
+        </div>
+      </div>
+  
+      <table className='table align-middle gs-10 mt-10'>
+        {/* begin::Table head */}
+        <thead>
+          <tr style={{ background: '#f2f2f2', color: '#000' }} className='fw-bold'>
+            <th className='min-w-100px'>Name</th>
+            <th className='min-w-100px'>Transaction time</th>
+            <th className='min-w-100px'>Application No.</th>
+            <th className='min-w-100px text-center'>Paid</th>
+            <th className='min-w-100px text-center'>Receive</th>
+            <th className='text-center min-w-100px'>Merchant Margin</th>
+          </tr>
+        </thead>
+        {/* end::Table head */}
+        {/* begin::Table body */}
+        <tbody style={{ borderBottom: '1px solid #cccccc' }}>
+          {currentItemsHotel.map((item, index) => (
+            <tr key={index}>
+              <td className='text-start'>
+                <a href='#' className='text-dark text-hover-primary mb-1 fs-6'>
+                  {item.name}
+                </a>
+              </td>
+              <td className='text-start'>
+                <span className='text-dark d-block fs-6'>
+                  {formatDate1(item.transaction_time)}
+                </span>
+              </td>
+              <td className='text-start'>
+                <span className='text-dark d-block fs-6'>
+                  {item.application_no}
+                </span>
+              </td>
+              <td className='text-center'>
+                <span className='text-dark d-block fs-6'>₹ {item.paid}</span>
+              </td>
+              <td className='text-center'>
+                <span className='text-dark d-block fs-6'>₹ {item.receive}</span>
+              </td>
+              <td className='text-center'>
+                <span className='text-dark d-block fs-6'>₹ {item.revenue}</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+        {/* end::Table body */}
+      </table>
+      <ul className='pagination mb-5'>
+        {renderPageNumbersHotel().map((page, index) => (
+          <li
+            key={index}
+            className={`page-item ${
+              page === '...' ? '' : page === currentPage ? 'active' : ''
+            }`}
+            onClick={() => handlePageClick(page as number)}
+          >
+            {page === '...' ? (
+              <span className='page-link'>{page}</span>
+            ) : (
+              <a className='page-link' href='#'>
+                {page}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
   
 
     const user_type = Cookies.get('user_type');
@@ -2005,6 +2347,8 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
     { label: 'Transactions', icon: <FaMoneyCheckDollar style={{ width: 25, height: 25, marginTop:"-5px" }} />, content: transactionContent },
     { label: 'Visa Revenue', icon: <BsClipboardDataFill style={{ width: 25, height: 25, marginTop:"-5px" }} />, content: revenueContent },
     { label: 'Insurance Revenue', icon: <BsClipboardDataFill style={{ width: 25, height: 25, marginTop:"-5px" }} />, content: insuranceContent },
+    { label: 'Flight Revenue', icon: <BsClipboardDataFill style={{ width: 25, height: 25, marginTop:"-5px" }} />, content: flightContent },
+    { label: 'Hotel Revenue', icon: <BsClipboardDataFill style={{ width: 25, height: 25, marginTop:"-5px" }} />, content: hotelContent },
     { label: 'Commisions', icon: <HiReceiptPercent style={{ width: 25, height: 25, marginTop:"-5px" }} />, content: commissionContent },
     ...(formData2.issued_api.length > 0
       ? [

@@ -13,6 +13,10 @@ import { InsuranceTablec } from '../../../components/InsuranceTablec';
 import CustomerApplyInsurance from '../../../components/CustomerApplyInsurance';
 import { Verticali } from '../../../modules/wizards/components/Verticali';
 import { Verticalii } from '../../../modules/wizards/components/Verticalii';
+import MerchantApplyFlight from '../../../components/MerchantApplyFlight';
+import { FlightTable } from '../../../components/FlightTable';
+import { FormFlight1 } from '../../../modules/wizards/components/FormFlight1';
+import { FormFlight2 } from '../../../modules/wizards/components/FormFlight2';
 
 function MerchantNewFlight() {
   const [visaForm, showVisaForm] = useState(false);
@@ -52,7 +56,7 @@ function MerchantNewFlight() {
           {finalSubmitLoader ? (
             <Loader loading={finalSubmitLoader} />
           ) : (
-              <Verticalii 
+              <FormFlight2
                 visaListLoader={setVisalistLoader}
                 show={(value: any) => setVisaList(value)}
                 visaList={visaList} 
@@ -65,7 +69,7 @@ function MerchantNewFlight() {
       ) : (
         <>
           {visaList ? (
-            <InsuranceTablec
+            <FlightTable
               className=''
               title={'VISA'}
               visaListLoader={setVisalistLoader}
@@ -77,7 +81,7 @@ function MerchantNewFlight() {
             />
           ) : (
             <>
-              <MerchantApplyInsurance
+              <MerchantApplyFlight
                 show={(value: any) => setVisaList(value)}
                 visaList={visaList}
                 visaListLoader={setVisalistLoader}

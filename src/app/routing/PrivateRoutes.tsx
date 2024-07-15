@@ -55,6 +55,14 @@ import HotelWrapper from '../pages/dummy/HotelWrapper';
 import FlightWrapper from '../pages/dummy/FlightWrapper';
 import MerchantNewFlight from '../pages/merchants/apply-others/MerchantNewFlight';
 import MerchantNewHotel from '../pages/merchants/apply-others/MerchantNewHotel';
+import CustomerNewFlight from '../pages/merchants/apply-others/CustomerNewFlight';
+import CustomerNewHotel from '../pages/merchants/apply-others/CustomerNewHotel';
+import Hprocessed from '../pages/hotel-wrapper/Hprocessed';
+import Hwaiting from '../pages/hotel-wrapper/Hwaiting';
+import Hreject from '../pages/hotel-wrapper/Hrejected';
+import Fwaiting from '../pages/flight-wrapper/Fwaiting';
+import Fprocessed from '../pages/flight-wrapper/Fprocessed';
+import Freject from '../pages/flight-wrapper/Frejected';
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'));
@@ -89,6 +97,8 @@ const PrivateRoutes = () => {
             <Route path='/customer/dashboard' element={<CustomerDashboard />} />
             <Route path='/customer/apply-visa' element={<CustomerNewVisaWrapper />} />
             <Route path='/customer/apply-insurance' element={<CustomerNewInsurance />} />
+            <Route path='/customer/apply-hotel' element={<CustomerNewHotel />} />
+            <Route path='/customer/apply-flight' element={<CustomerNewFlight />} />
           </>
         )}
 
@@ -116,6 +126,14 @@ const PrivateRoutes = () => {
             <Route path='/superadmin/insurance/processed' element={<Iprocessed />} />
             <Route path='/superadmin/insurance/waiting' element={<Iwaiting />} />
             <Route path='/superadmin/insurance/rejected' element={<Ireject />} />
+
+            <Route path='/superadmin/hotel/processed' element={<Hprocessed />} />
+            <Route path='/superadmin/hotel/waiting' element={<Hwaiting />} />
+            <Route path='/superadmin/hotel/rejected' element={<Hreject />} />
+
+            <Route path='/superadmin/flight/processed' element={<Fprocessed />} />
+            <Route path='/superadmin/flight/waiting' element={<Fwaiting />} />
+            <Route path='/superadmin/flight/rejected' element={<Freject />} />
 
             <Route path='/superadmin/wallet' element={<WalletWrapper />} />
             <Route path='/superadmin/report' element={<ReportWrapper />} />

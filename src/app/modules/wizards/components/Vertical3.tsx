@@ -114,12 +114,8 @@ const Vertical3: React.FC<VerticalProps> = ({
   const markup_percentage = localStorage.getItem('markup_percentage') ?? '1';
 
   const additionalFees =
-    ((selectedEntry.receipt['Visa Fees']
-      ? selectedEntry.receipt['Visa Fees']
-      : 0) * ((parseFloat(markup_percentage) ? (1 + (parseFloat(markup_percentage) / 100)) : 1))) +
-    (selectedEntry.receipt['Service Fees']
-      ? selectedEntry.receipt['Service Fees']
-      : 0)
+  Number(selectedEntry?.receipt['Visa Fees'] ?? 0) +
+  Number(selectedEntry?.receipt['Service Fees'] ?? 0);
   const totalAmount = travelerForms.length * additionalFees
 
   const addTravelerForm = () => {
@@ -580,21 +576,12 @@ const Vertical3: React.FC<VerticalProps> = ({
                   >
                     <h5>Traveler {index + 1}:</h5>
                     <h5>
-                      {(
-                        (
-                          selectedEntry.receipt['Visa Fees']
-                            ? selectedEntry.receipt['Visa Fees']
-                            : 0
-                        ) *
-                          (parseFloat(markup_percentage)
-                            ? 1 + parseFloat(markup_percentage) / 100
-                            : 1) +
-                        (selectedEntry.receipt['Service Fees']
-                          ? selectedEntry.receipt['Service Fees']
-                          : 0)
-                      ).toFixed(0)}
-                      /-
-                    </h5>
+                        {(
+                          Number(selectedEntry?.receipt?.['Visa Fees'] ?? 0) +
+                          Number(selectedEntry?.receipt?.['Service Fees'] ?? 0)
+                        ).toFixed(0)}
+                        /-
+                      </h5>
                   </div>
                 ))}
 

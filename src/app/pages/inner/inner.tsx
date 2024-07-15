@@ -65,13 +65,12 @@ type Props = {
     const handleTicketSelection = (ticketIndex) => {
         setSelectedTicket(ticketIndex);
         const selectedEntry = receivedData.apiData[ticketIndex];
-        const visaFees = selectedEntry.receipt['Visa Fees'] || 0;
-        const serviceFees = selectedEntry.receipt['Service Fees'] || 0;
-        
+        const visaFees = selectedEntry.receipt['Visa Fees'] || '';
+        const serviceFees = selectedEntry.receipt['Service Fees'] || '';
         const calculatedPrice = Math.ceil(
           visaFees  + serviceFees
         );
-        const initialPrice = calculatedPrice * selectedQuantity;
+        const initialPrice = calculatedPrice ;
         setSelectedTicketPrice(initialPrice);
       };
 
@@ -97,11 +96,11 @@ type Props = {
         setShowSignUpModal(true);
     }
     const sortedTickets = receivedData.apiData.sort((a, b) => {
-        const getPrice = (entry: any) => {
-          const visaFees = entry.receipt['Visa Fees'] || 0;
-          const serviceFees = entry.receipt['Service Fees'] || 0;
-          return Math.ceil((visaFees + serviceFees));
-        };
+    const getPrice = (entry: any) => {
+        const visaFees = entry.receipt['Visa Fees'] || 0;
+        const serviceFees = entry.receipt['Service Fees'] || 0;
+        return Math.ceil((visaFees + serviceFees));
+    };
     
         const priceA = getPrice(a);
         const priceB = getPrice(b);

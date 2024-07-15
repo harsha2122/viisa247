@@ -1,33 +1,24 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { CSSProperties, useState, useRef, ChangeEvent } from 'react'
+import React, { CSSProperties, useState } from 'react'
 import { KTIcon, toAbsoluteUrl } from '../../_metronic/helpers'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { CloseOutlined, DeleteOutline } from '@mui/icons-material'
 import ApplicationFormView from './ApplicationFormView'
+import ConfirmationModal from './ConfirmationModal'
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import axiosInstance from '../helpers/axiosInstance'
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom'
 import Loader from './Loader'
+import { FcFullTrash } from "react-icons/fc";
 import Cookies from 'js-cookie'
-import { FcCancel, FcInfo } from "react-icons/fc";
-import axiosInstance from '../helpers/axiosInstance'
+import { FcInfo } from "react-icons/fc";
 import Pagination from 'react-bootstrap/Pagination';
-import InsuranceFormView from './InsuranceFormView'
-
-interface InsurancePayload {
-  id: string;
-  insurance_status: string;
-  insurance_remark?: string;
-  insurance_pdf?: string;
-}
-
-type TableRow = InsurancePayload & {
-  first_name: string;
-  merchant_email_id: string;
-  merchant_phone_number: string;
-  nationality: string;
-  insurance_amount: string;
-  _id: string;
-};
 
 type Props = {
   className: string
@@ -56,154 +47,24 @@ const activeOverlayStyle: CSSProperties = {
   visibility: 'visible',
 };
 const contentStyle: CSSProperties = {
-  backgroundColor: '#fff',
-  padding: '10px', 
-  borderRadius: '5px', 
+  backgroundColor: '#fff', // Background color for highlighting
+  padding: '10px', // Adjust padding as needed
+  borderRadius: '5px', // Rounded corners for the highlight
+  // textAlign:'center',
   width: '70%',
   height: '70%',
   overflowY: 'auto'
 };
 
-const inputStyle = {
-  border: '1.5px solid #d3d3d3',
-  borderRadius: '10px', 
-  padding: '10px',
-  paddingLeft: '20px', 
-  width: '90%', 
-  boxSizing: 'border-box', 
-}
 
 
-
-const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
+const Whreject: React.FC<Props> = ({ className, title, data,loading }) => {
   const [visible, setVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [tableData, setTableData] = useState(data);
   const [issueVisaLoader, setissueVisaLoader] = useState(false);
   const [deleteSelectedItem, setDeleteSelectedItem] = useState(null);
   const [open, setOpen] = React.useState(false);
-  const [loading, setLoading] = useState(false)
-  const [selectedRow, setSelectedRow] = useState<TableRow | null>(null);
-  const [file, setFile] = useState(null);
-  const [showRejectModal, setShowRejectModal] = useState(false);
-  const [showIssueModal, setShowIssueModal] = useState(false);
-  const [rejectRemark, setRejectRemark] = useState('');
-  const insuranceFileInputRef = useRef<HTMLInputElement | null>(null);
-  const maxSize = 1024 * 1024
-
-  const handleFileUpload = async (file) => {
-    try {
-      setLoading(true)
-      const formData = new FormData()
-      formData.append('file', file)
-      const response = await axiosInstance.post('/backend/upload_image/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      const fileUrl = response.data.data
-      setLoading(false)
-      return fileUrl
-    } catch (error) {
-      console.error('Error uploading file:', error)
-      setLoading(false)
-      return ''
-    }
-  }
-
-  const handleStatusChange = async (row: any, selectedStatus: string) => {
-    setSelectedRow(row);
-    if (selectedStatus === 'Reject') {
-        setShowRejectModal(true);
-    } else if (selectedStatus === 'Issue') {
-        setShowIssueModal(true);
-    }
-  };
-
-  const handleRejectSubmit = async () => {
-      if (selectedRow) {
-          try {
-              const payload: InsurancePayload = {
-                  id: selectedRow._id,
-                  insurance_status: 'Rejected',
-                  insurance_remark: rejectRemark,
-              };
-
-              const response = await axiosInstance.post('/backend/upload_insurance_file', payload);
-              if (response.data.success === 1) {
-                  toast.success('Application rejected successfully');
-                  handleCloseRejectModal();
-                  setTimeout(() => {
-                    window.location.reload();
-                  }, 2500);
-              } else {
-                  toast.error('Error rejecting application');
-              }
-          } catch (error) {
-              console.error('Error submitting rejection:', error);
-              toast.error('Error submitting rejection');
-          }
-      }
-  };
-
-  const handleIssueSubmit = async () => {
-    if (selectedRow && selectedRow.insurance_pdf) {
-      try {
-        const payload: InsurancePayload = {
-          id: selectedRow._id,
-          insurance_status: 'Issued',
-          insurance_pdf: selectedRow.insurance_pdf,
-        };
   
-        const response = await axiosInstance.post('/backend/upload_insurance_file', payload);
-        if (response.data.success === 1) {
-          toast.success('Visa issued successfully');
-          handleCloseIssueModal();
-          setTimeout(() => {
-            window.location.reload();
-          }, 2500);
-        } else {
-          toast.error('Error issuing visa');
-        }
-      } catch (error) {
-        console.error('Error submitting issuance:', error);
-        toast.error('Error submitting issuance');
-      }
-    } else {
-      toast.error('Please upload the insurance file before submitting');
-    }
-  };
-  
-
-  console.log("sdfg", data)
-
-  const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-  
-    if (file) {
-      if (file.size > maxSize) {
-        toast.error('File size exceeds 300KB limit.', { position: 'top-center' });
-        return;
-      }
-  
-      try {
-        const imageLink = await handleFileUpload(file);
-        if (selectedRow) {
-          setSelectedRow({
-            ...selectedRow,
-            insurance_pdf: imageLink,
-          });
-        }
-        toast.success('File uploaded successfully', { position: 'top-center' });
-      } catch (error) {
-        console.error('Error uploading image:', error);
-        toast.error('Error uploading image. Please try again.', { position: 'top-center' });
-      }
-    }
-  };
-  
-
-
   const [activePage, setActivePage] = useState(1);
   const itemsPerPage = 10;
   const MAX_VISIBLE_PAGES = 7; 
@@ -249,6 +110,58 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
     }
   }
 
+  const [visaDialogOpen, setVisaDialogOpen] = React.useState(false);
+
+  const handleClickOpen1 = (item) => {
+    setDeleteSelectedItem(item)
+    setOpen(true);
+  };
+  
+  const handleClose1 = () => {
+    setDeleteSelectedItem(null)
+    setOpen(false);
+  };
+  
+  const handleVisaDialogOpen = (item) => {
+    setSelectedItem(item); // Set the selected item
+    setVisaDialogOpen(true);
+  };
+  
+  const handleVisaDialogClose = () => {
+    setSelectedItem(null); // Set the selected item
+    setVisaDialogOpen(false);
+  };
+
+  const handleApproveClick = async () => {
+    try {
+      if(deleteSelectedItem){
+        const selectedEntry = deleteSelectedItem as { _id: string }; 
+      if(deleteSelectedItem == null){
+        toast.error('Selected entry is null', {
+          position: 'top-center',
+        });
+      }
+      const response = await axiosInstance.post('/backend/delete_application', {
+        application_id: selectedEntry._id,
+      });
+
+      if (response.status === 200) {
+        toast.success(response.data.msg, {
+          position: 'top-center',
+        });
+
+        window.location.reload();
+        // Handle any additional actions after a successful API call
+      } else {
+        toast.error(response.data.msg, {
+          position: 'top-center',
+        });
+      }
+    }
+    } catch (error) {
+      console.error('API error:', error);
+    }
+  };
 
   const handleClickOpen = (item) => {
     setDeleteSelectedItem(item)
@@ -264,24 +177,49 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
     setSelectedItem(item); // Set the selected item
     setVisible(true);
   };
-  const handleVisibilityyClick = (item) => {
-    setSelectedItem(item); // Set the selected item
-    setShowRejectModal(true);
-  };
   const handleCloseClick = () => {
     setSelectedItem(null); // Set the selected item
     setVisible(false);
   };
-  const handleCloseRejectModal = () => {
-    setShowRejectModal(false);
-    setRejectRemark('');
+
+  const handleDownloadClick = async (item) => {
+    const response = await axiosInstance.post('/backend/download_visa', {
+      application_id: item._id
+    })
+
+    if (response.status == 200) {
+      toast.success(response.data.msg, {
+        position: 'top-center', // Center the toast notification
+      })
+      // navigate('/merchant/apply-visa')
+    } else {
+      toast.error(response.data.msg.error, {
+        position: 'top-center',
+      })
+    }
   };
-  
-  const handleCloseIssueModal = () => {
-    setShowIssueModal(false);
-    setFile(null);
+  const navigate = useNavigate();
+
+  const handleIssueVisaClick = async (item) => {
+    setissueVisaLoader(true);
+    const response = await axiosInstance.post('/backend/apply_visa', {
+      application_id: item._id
+    })
+
+    if (response.status == 200) {
+      toast.success(response.data.msg, {
+        position: 'top-center', // Center the toast notification
+      })
+      window.location.reload();
+      navigate('/superadmin/processed')
+      setissueVisaLoader(false);
+    } else {
+      toast.error(response.data.msg, {
+        position: 'top-center',
+      })
+      setissueVisaLoader(false);
+    }
   };
-  
   return (
     <div style={{boxShadow:"none"}} className={`card ${className}`}>
       <Toaster />
@@ -343,7 +281,6 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
                       <th className='fs-5 min-w-40px'>Channel</th>
                       <th className='fs-5 text-center min-w-70px'>Status</th>
                       <th className='fs-5 text-center min-w-70px'>Amount</th>
-                      <th className='fs-5 min-w-150px text-center'>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -381,32 +318,14 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
                       </td>
                       <td>
                         <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.insurance_status}
+                            {row.hotel_status}
                         </a>
                       </td>
                       <td>
                         <a href='#' className='text-muted text-center text-hover-primary d-block mb-1 fs-7'>
-                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.insurance_amount))}
+                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.hotel_original_amount))}
                         </a>
                       </td>
-                      <td className='text-end d-flex'>
-                          <button
-                              title='Edit'
-                              onClick={() => handleVisibilityClick(row)}
-                              className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                          >
-                              <KTIcon iconName='eye' className='fs-3' />
-                          </button>
-                          <select
-                              className='form-select form-select-sm form-select-white w-75'
-                              onChange={(e) => handleStatusChange(row, e.target.value)}
-                          >
-                              <option value='Not Issued'>Update</option>
-                              <option value='Issue'>Issue</option>
-                              <option value='Reject'>Reject</option>
-                          </select>
-                      </td>
-
                     </tr>
                     ))}
                   </tbody>
@@ -442,59 +361,57 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
             <div onClick={() => handleCloseClick()} style={{ backgroundColor: '#d3d3d3', padding: 10, position: 'absolute', right: "193px", borderRadius: 20, cursor: 'pointer', top: '83px' }}>
               <CloseOutlined />
             </div>
-            <InsuranceFormView viewApplication={selectedItem} />
+            <ApplicationFormView viewApplication={selectedItem} />
           </div>
         </div>
       }
-      {showRejectModal && (
-          <div className='loader-overlay' style={{ ...overlayStyle, ...(showRejectModal && activeOverlayStyle) }}>
-              <div style={contentStyle}>
-                  <div onClick={handleCloseRejectModal} style={{ backgroundColor: '#d3d3d3', padding: 10, position: 'absolute', right: "193px", borderRadius: 20, cursor: 'pointer', top: '83px' }}>
-                      <CloseOutlined />
-                  </div>
-                  <div style={{ justifyContent: "center", alignItems: "center", marginTop: "50px" }} className='d-flex flex-column gap-5'>
-                      <h2>Reject Application</h2>
-                      <textarea style={{ ...inputStyle, boxSizing: 'border-box' }} value={rejectRemark} onChange={(e) => setRejectRemark(e.target.value)} placeholder="Enter your remark"></textarea>
-                      <button className='btn' style={{ background: "#327113", width: "100px", color: "#fff" }} onClick={handleRejectSubmit}>Reject</button>
-                  </div>
-              </div>
-          </div>
-      )}
+      <div>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="draggable-dialog-title"
+        >
+          <DialogTitle style={{ cursor: 'move', color: 'red' }} id="draggable-dialog-title">
+            Confirm Deletion
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete this item?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleClose1}>
+              Cancel
+            </Button>
+            <Button onClick={handleApproveClick}>Yes</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
 
-      {showIssueModal && (
-          <div className='loader-overlay' style={{ ...overlayStyle, ...(showIssueModal && activeOverlayStyle) }}>
-              <div style={contentStyle}>
-                  <div onClick={handleCloseIssueModal} style={{ backgroundColor: '#d3d3d3', padding: 10, position: 'absolute', right: "193px", borderRadius: 20, cursor: 'pointer', top: '83px' }}>
-                      <CloseOutlined />
-                  </div>
-                  <div className='mb-5'>
-                    <label className='form-label fw-bolder text-dark required fs-6'>Insurance Upload</label>
-                    <input
-                      type='file'
-                      ref={insuranceFileInputRef}
-                      className='form-control'
-                      id='insurance_pdf'
-                      name='insurance_pdf'
-                      accept='.pdf'
-                      onChange={handleFileSelect}
-                    />
-                  </div>
-                  <div>
-                      <button 
-                          className='btn btn-primary' 
-                          onClick={handleIssueSubmit}
-                          disabled={!selectedRow || !selectedRow.insurance_pdf}
-                      >
-                          Upload
-                      </button>
-                  </div>
-              </div>
-          </div>
-      )}
-
-
+      <div>
+        <Dialog
+          open={visaDialogOpen}
+          onClose={handleVisaDialogClose}
+          aria-labelledby="draggable-dialog-title"
+        >
+          <DialogTitle style={{ cursor: 'move', color: 'red' }} id="draggable-dialog-title">
+            Confirm Visa Issue
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to issue visa for this application?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleVisaDialogClose}>
+              Cancel
+            </Button>
+            <Button onClick={handleIssueVisaClick}>Confirm</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </div>
   )
 }
 
-export { IwaitingTable }
+export { Whreject }

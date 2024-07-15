@@ -5,17 +5,38 @@ import axiosInstance from '../helpers/axiosInstance';
 import toast, { Toaster } from 'react-hot-toast';
 import { Modal, Button } from 'react-bootstrap';
 
+type Plan = {
+  plan_name: string;
+  age_groups: AgeGroup[];
+};
+
+type AgeGroup = {
+  age_group: string;
+  description: string;
+  partner: Price;
+  retailer: Price;
+  customer: Price;
+  benefits: string[];
+  _id: string;
+};
+
+type Price = {
+  base_price: string;
+  price_per_day: string;
+  _id: string;
+};
+
 type Insurance = {
   _id: string;
   insurance_description: string;
   insurance_base_price: string;
   insurance_per_day_price: string;
   nationality_code: string;
-  country_code: string;
+  country_code: string[];
   plans: {
-    platinum: any[];
-    gold: any[];
-    silver: any[];
+    platinum: Plan;
+    gold: Plan;
+    silver: Plan;
   };
 };
 
@@ -91,7 +112,7 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
   const filteredData = data.filter((insurance: Insurance) =>
     insurance.insurance_description.toLowerCase().includes(searchTerm.toLowerCase()) ||
     insurance.nationality_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    insurance.country_code.toLowerCase().includes(searchTerm.toLowerCase())
+    insurance.country_code.some(code => code.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -99,27 +120,27 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
       <Toaster />
       <div className="container px-4 py-10">
         <div className="age-group-tabs">
-            <h1>All added insurance</h1>
-            <div className='w-75 d-flex justify-content-end gap-3'>
-              <Link to='/superadmin/addInsurance' className='boton'>+ Add New Insurance</Link>
-              <input
-                type="text"
-                className="form-control w-50"
-                placeholder="Search by description, nationality code, or country code"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              </div>
+          <h1>{title}</h1>
+          <div className='w-75 d-flex justify-content-end gap-3'>
+            <Link to='/superadmin/addInsurance' className='boton'>+ Add New Insurance</Link>
+            <input
+              type="text"
+              className="form-control w-50"
+              placeholder="Search by description, nationality code, or country code"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
         {filteredData.map((insurance: Insurance) => (
           <div className={`card ${className} px-10 mb-8`} key={insurance._id}>
             <div className="age-group-tabs">
-              <h2>{insurance.insurance_description} from {insurance.nationality_code} to {insurance.country_code}</h2>
+              <h2>{insurance.insurance_description} from {insurance.nationality_code} to {insurance.country_code.join(', ')}</h2>
               <button onClick={() => openModal(insurance._id)} className='btn btn-danger'>Delete</button>
             </div>
             <div className="d-flex flex-column">
               <h2>Insurance Base Price - ₹{insurance.insurance_base_price}</h2>
-              <h2>Insurance Price Per Day- ₹{insurance.insurance_per_day_price}</h2>
+              <h2>Insurance Price Per Day - ₹{insurance.insurance_per_day_price}</h2>
             </div>
             <div className='d-flex justify-content-center best-tab my-8 gap-4'>
               {Object.keys(insurance.plans).map((planType: string) => {
@@ -130,7 +151,7 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
                       className={`age-group-tab capitalize ${activeTab === planType ? 'active' : ''}`}
                       onClick={() => handleTabChange(planType)}
                     >
-                      {planType}
+                      {insurance.plans[planType as keyof typeof insurance.plans].plan_name}
                     </button>
                   );
                 }
@@ -138,7 +159,7 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
               })}
             </div>
             <div className="row">
-              {(insurance.plans[activeTab as keyof typeof insurance.plans] || []).map((plan: any, index: number) => (
+              {(insurance.plans[activeTab as keyof typeof insurance.plans].age_groups || []).map((plan: AgeGroup, index: number) => (
                 <div key={`${insurance._id}-${activeTab}-${index}`} className="col-md-4">
                   <div
                     style={{
@@ -161,17 +182,16 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
                         <div className="feature">Customer Price per Day: <span>₹{plan.customer.price_per_day}</span></div>
                         <hr className='aahr' />
                         <div className="feature">
-                          <h4>Benefits :</h4>
+                          <h4>Benefits:</h4>
                           <ul className='d-flex flex-column gap-2'>
                             {plan.benefits.map((benefit, index) => (
                               <li key={index}>
-                                <strong>{benefit.key}:</strong> <span>{benefit.value}</span>
+                                <span>{benefit}</span>
                               </li>
                             ))}
                           </ul>
                         </div>
                       </div>
-
                       <div className="price-tag">
                         <span className="symbol">₹</span>
                         <span className="amount">{plan.customer.base_price}</span>
@@ -204,3 +224,4 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
 };
 
 export { InsuranceTable };
+

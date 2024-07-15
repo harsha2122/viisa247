@@ -51,18 +51,16 @@ const CustomerVisaTable: React.FC<Props> = ({
 
   const calculateTotalPrice = (entry) => {
     if (!entry || !entry.receipt) {
-      // Handle the case where entry or entry.receipt is undefined
       return 0; // or any default value you want to set
     }
   
-    const visaFees = entry.receipt['Visa Fees'] || 0;
-    const serviceFees = entry.receipt['Service Fees'] || 0;
-    const markupPercentageString = localStorage.getItem('markup_percentage') ?? '1';
-    const markupPercentage = parseFloat(markupPercentageString);
-    const calculatedPrice = Math.ceil((visaFees * (1 + markupPercentage / 100)) + serviceFees);
+    const visaFees = entry.receipt['Visa Fees'] || '';
+    const serviceFees = entry.receipt['Service Fees'] || '';
+    const calculatedPrice = Math.ceil(visaFees + serviceFees);
   
     return calculatedPrice;
   };
+  
 
   const handleApplyNowClick = () => {
     onSelectClick(sortedData[selectedTicket]);
@@ -87,16 +85,15 @@ const CustomerVisaTable: React.FC<Props> = ({
   
     // Add a null check for selectedEntry and its receipt property
     if (selectedEntry && selectedEntry.receipt) {
-      const visaFees = selectedEntry.receipt['Visa Fees'] || 0;
-      const serviceFees = selectedEntry.receipt['Service Fees'] || 0;
-      const markupPercentageString = localStorage.getItem('markup_percentage');
-      const markupPercentage = markupPercentageString !== null ? parseFloat(markupPercentageString) : 1;
-      const calculatedPrice = Math.ceil((visaFees * (1 + markupPercentage / 100)) + serviceFees);
+      const visaFees = selectedEntry.receipt['Visa Fees'] || '';
+      const serviceFees = selectedEntry.receipt['Service Fees'] || '';
+      const calculatedPrice = Math.ceil(visaFees + serviceFees);
   
       // Update the state with selected ticket price
       setSelectedTicketPrice(calculatedPrice);
     }
   };
+  
 
   return (
     <div className="choice">
@@ -181,10 +178,10 @@ const CustomerVisaTable: React.FC<Props> = ({
                       <div className="details1">
                         <h6>Price</h6>
                         <h2>₹ {Math.ceil(
-                          ((entry && entry.receipt && entry.receipt['Visa Fees']) ? entry.receipt['Visa Fees'] : 0) * 
-                          ((parseFloat(markup_percentage) ? (1 + (parseFloat(markup_percentage) / 100)) : 1)) +
-                          ((entry && entry.receipt && entry.receipt['Service Fees']) ? entry.receipt['Service Fees'] : 0)
+                          ((entry && entry.receipt && entry.receipt['Visa Fees']) ? entry.receipt['Visa Fees'] : '') +
+                          ((entry && entry.receipt && entry.receipt['Service Fees']) ? entry.receipt['Service Fees'] : '')
                         )}</h2>
+
                       </div>
 
                   </div>

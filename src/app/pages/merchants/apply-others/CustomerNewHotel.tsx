@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import Loader from '../../../components/Loader';
-import { InsuranceTablec } from '../../../components/InsuranceTablec';
-import { Verticalii } from '../../../modules/wizards/components/Verticalii';
-import MerchantApplyHotel from '../../../components/MerchantApplyHotel';
-import { HotelTable } from '../../../components/HotelTable';
-import HotelForm1 from '../../../modules/wizards/components/HotelForm1';
 import { FormHotel1 } from '../../../modules/wizards/components/FormHotel1';
-import { FormHotel2 } from '../../../modules/wizards/components/FormHotel2';
+import CustomerApplyHotel from '../../../components/CustomerApplyHotel';
+import { HotelTable1 } from '../../../components/HotelTable1';
 
-function MerchantNewHotel() {
+function CustomerNewHotel() {
   const [visaForm, showVisaForm] = useState(false);
   const [visaList, setVisaList] = useState(false);
   const [manualValue, setManualValue] = useState(false); // Initialize as false
@@ -47,7 +43,7 @@ function MerchantNewHotel() {
           {finalSubmitLoader ? (
             <Loader loading={finalSubmitLoader} />
           ) : (
-              <FormHotel2
+              <FormHotel1
                 visaListLoader={setVisalistLoader}
                 show={(value: any) => setVisaList(value)}
                 visaList={visaList} 
@@ -60,7 +56,7 @@ function MerchantNewHotel() {
       ) : (
         <>
           {visaList ? (
-            <HotelTable
+            <HotelTable1
               className=''
               title={'VISA'}
               visaListLoader={setVisalistLoader}
@@ -72,7 +68,7 @@ function MerchantNewHotel() {
             />
           ) : (
             <>
-              <MerchantApplyHotel
+              <CustomerApplyHotel
                 show={(value: any) => setVisaList(value)}
                 visaList={visaList}
                 visaListLoader={setVisalistLoader}
@@ -91,4 +87,4 @@ function MerchantNewHotel() {
   );
 }
 
-export default MerchantNewHotel;
+export default CustomerNewHotel;

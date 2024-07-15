@@ -178,15 +178,18 @@ const DashboardPage: FC<Props> = (data) => (
       <div className=' col-md-5 col-lg-5 col-xl-5 col-xxl-5'>
         <ChartsWidget9 className='border' />
       </div>
+      <div className=' col-md-7 col-lg-7 col-xl-7 col-xxl-7'>
+        <ChartsWidget3 className='border' />
+      </div>
     </div>
-    <div className='row gx-3 mb-3 gy-5'>
+    {/* <div className='row gx-3 mb-3 gy-5'>
       <div className=' col-md-6 col-lg-6 col-xl-6 col-xxl-6'>
         <ChartsWidget3 className='border' />
       </div>
       <div className=' col-md-6 col-lg-6 col-xl-6 col-xxl-6'>
         <ChartsWidget1 className='border' />
       </div>
-    </div>
+    </div> */}
   </>
 )
 
