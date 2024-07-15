@@ -1173,7 +1173,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
               <span className='indicator-label'>Select Files</span>
             </button>
             <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
-              Supports JPEG, JPG, PNG.
+              Supports Image Only
             </p>
             <input
               type='file'
@@ -1350,7 +1350,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
               <span className='indicator-label'>Select Files</span>
             </button>
             <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
-              Supports JPEG, JPG, PNG.
+              Supports Image Only
             </p>
             <input
               type='file'
@@ -1595,7 +1595,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
       <table className='table align-middle gs-10 mt-10'>
         {/* begin::Table head */}
         <thead >
-        <tr style={{ background: '#f2f2f2', color: '#000', border:"1px solid #000"}} className='fw-bold'>
+        <tr style={{ background: '#f2f2f2', color: '#000'}} className='fw-bold'>
             <th className='min-w-100px'>Date/Time</th>
             <th className='min-w-100px'>Particular</th>
             <th className='min-w-100px'>Status</th>
@@ -1606,9 +1606,9 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
         </thead>
         {/* end::Table head */}
         {/* begin::Table body */}
-        <tbody style={{border:"1px solid #cccccc"}} >
+        <tbody style={{borderBottom:"1px solid #cccccc"}} >
         {currentItems.map((item, index) => (
-          <tr key={index} className={index % 2 === 0 ? "even-row" : "odd-row"}>
+          <tr key={index}>
             <td className='text-start'>
               <a href='#' className='text-dark text-hover-primary mb-1 fs-6 '>
                 {item && moment(item.created_at).format('DD MMM YYYY hh:mm a')}

@@ -58,10 +58,18 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
   const handleSubmit = async () => {
     try {
       const response = await axiosInstance.post('/backend/create_dummy_flight', formData);
-      console.log(response.data);
       handleClose();
+      toast.success('Flight created successfully!', {
+        position: 'top-center',
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
     } catch (error) {
       console.error(error);
+      toast.error('Something went wrong. Please try again later.', {
+        position: 'top-center',
+      });
     }
   };
 
@@ -134,8 +142,8 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
                     <hr className='aahr' />
                     <div className="price-tag">
                       <span className="symbol">₹</span>
-                      <span className="amount">{flight.flight_price_b2c}</span>
-                      <span className="after">&nbsp;&nbsp;&nbsp;B2C Base Price</span>
+                      <span className="amount">{flight.flight_actual_price}</span>
+                      <span className="after">&nbsp;&nbsp;&nbsp;Actual Base Price</span>
                     </div>
                     <button
                         title='Delete'

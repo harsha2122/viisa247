@@ -56,6 +56,7 @@ const CustomerDashboard: React.FC = () => {
 
   const fetchData = async () => {
     try {
+      setLoading(true)
       const merchant_id = Cookies.get('user_id');
       let postBody = {
         user_id: merchant_id
@@ -131,6 +132,7 @@ const CustomerDashboard: React.FC = () => {
           navigate('/customer/apply-flight');
         }
       }
+      setLoading(false)
     } catch (error) {
       console.error("Error fetching data:", error);
     }

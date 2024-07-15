@@ -362,6 +362,20 @@ const SidebarMenuMain = () => {
         hasBullet={true}
       />
 
+      <SidebarMenuItem
+        to='/superadmin/revenue/hotel'
+        title={'Hotel'}
+        fontIcon='bi-app-indicator'
+        hasBullet={true}
+      />
+
+      <SidebarMenuItem
+        to='/superadmin/revenue/flight'
+        title={'Flight'}
+        fontIcon='bi-app-indicator'
+        hasBullet={true}
+      />
+
       </SidebarMenuItemWithSub>
       <SidebarMenuItem
         to='/superadmin/wallet'

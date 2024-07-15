@@ -59,13 +59,18 @@ const DummyHotel: React.FC<Props> = ({ className, title, data, loading }) => {
   const handleSubmit = async () => {
     try {
       const response = await axiosInstance.post('/backend/create_dummy_hotel', formData);
-      console.log(response.data);
       handleClose();
+      toast.success('Hotel created successfully!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
     } catch (error) {
       console.error(error);
+      toast.error('Something went wrong. Please try again later.', {
+        position: 'top-center',
+      });
     }
   };
-
   const backgroundImages = [
     '/media/svg/shapes/abstract-1.svg',
     '/media/svg/shapes/abstract-2.svg',
@@ -135,8 +140,8 @@ const DummyHotel: React.FC<Props> = ({ className, title, data, loading }) => {
                     <hr className='aahr' />
                     <div className="price-tag">
                       <span className="symbol">₹</span>
-                      <span className="amount">{hotel.hotel_price_b2c}</span>
-                      <span className="after">&nbsp;&nbsp;&nbsp;B2C Base Price</span>
+                      <span className="amount">{hotel.hotel_actual_price}</span>
+                      <span className="after">&nbsp;&nbsp;&nbsp;Actual Base Price</span>
                     </div>
                     <button
                         title='Delete'

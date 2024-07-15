@@ -79,7 +79,7 @@ const CustomerApplyVisa: React.FC<Props> = ({ show, visaList, onApiDataReceived,
           const country = countryTypeMatch ? countryTypeMatch[1] : null;
           const entryTypeMatch = description.match(/Days\s+(\w+)/i);
           const entryType = entryTypeMatch ? entryTypeMatch[1] : null;
-          const receipt = manualFieldValue ? { "Visa Fees": apiData.visa_price_retailer } : apiData.receipt;
+          const receipt = manualFieldValue ? { "Visa Fees": apiData.visa_price_b2c } : apiData.receipt;
 
   
           const extractedData = {

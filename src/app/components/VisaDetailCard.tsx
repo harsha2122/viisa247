@@ -7,6 +7,7 @@ import html2pdf from 'html2pdf.js'
 import {toAbsoluteUrl} from '../../_metronic/helpers'
 import image from '../../_metronic/assets/card/nodata.jpg'
 import imag from '../../../public/media/logos/logo.png'
+import Loader from '../components/Loader'
 import axiosInstance from '../helpers/axiosInstance'
 
 type VisaData = {
@@ -426,6 +427,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
 
   const [Detail, seeDetail] = useState(false)
   const [selectedVisa, setSelectedVisa] = useState<VisaData | null>(null)
+  const [loading, setLoading] = useState(false);
   const [viewApplication, setViewApplication] = useState<VisaData | null>(null)
   const [activeTab, setActiveTab] = useState('visa')
   const handleTabChange = (tab) => {

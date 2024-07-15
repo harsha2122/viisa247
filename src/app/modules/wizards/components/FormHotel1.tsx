@@ -203,7 +203,7 @@ const FormHotel1: React.FC<VerticalProps> = ({
           country_code: selectedEntry.country_code,
           nationality_code: selectedEntry.nationality_code,
           first_name: travelerForm.firstName,
-          traveller: travelerForms.length,
+          traveller: travelerForm.traveller,
           hotel_id: selectedEntry.id,
           hotel_amount: selectedEntry.totalAmount,
           hotel_original_amount: selectedEntry.hotel_original_amount,

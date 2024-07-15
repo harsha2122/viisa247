@@ -3,6 +3,8 @@ import toast, { Toaster } from 'react-hot-toast';
 import { Button } from 'react-bootstrap';
 import { KTIcon } from '../../_metronic/helpers';
 import { toAbsoluteUrl } from '../../_metronic/helpers';
+import Ticket1 from '../../_metronic/assets/card/ticket1.svg'
+import Ticket2 from '../../_metronic/assets/card/ticket2.svg'
 
 type Props = {
   className: string
@@ -75,56 +77,85 @@ const FlightTable1: React.FC<Props> = ({ className, title, apiData = {}, onSelec
       });
     }
   };
-  console.log("adsf", apiData)
+
+  const selectedFlightPrice = selectedflight ? calculateRetailerPrice(parseFloat(selectedflight.flight_price_b2c)) : 0;
+  const selectedDays = selectedflight ? numberOfDays : "--";
+
   return (
     <div style={{ boxShadow: "none" }} className={`card ${className}`}>
       <Toaster />
       <div className="card-body">
-        <div className="age-group-tabs">
-          <h1>Flight</h1>
-        </div>
-        <hr className='aahr' />
-        <div className="row justify-content-center mt-12">
-          {apiData.flightData.map((flight, index) => (
-            <div key={index} className="col-md-4">
+        <div className="choice">
+          <div className="ticket-container" id="ticketContainer">
+            {apiData.flightData.map((flight, index) => (
               <div
+                key={index}
+                className={`ticket ${selectedflight && selectedflight._id === flight._id ? 'selected' : ''}`}
                 onClick={() => handleflightSelect(flight)}
                 style={{
                   backgroundPosition: 'right top',
                   backgroundSize: '30% auto',
                   backgroundRepeat: 'no-repeat',
                   backgroundImage: `url(${toAbsoluteUrl(getRandomBackgroundImage())})`,
-                  border: selectedflight && selectedflight._id === flight._id ? '2px solid #327113' : '1px solid #dadada',
-                  cursor: 'pointer',
                 }}
-                className="mb-xl-8 pricing-table purple"
               >
-                <div className="pricing-label fs-4">{flight.name}</div>
-                <div className="pricing-details">
-                  <h6 style={{ fontWeight: "500", fontSize: "16px" }}>{flight.description}</h6>
-                  <div className="pricing-features">
-                    <div className="feature">Retailer Price: <span>₹{calculateRetailerPrice(parseFloat(flight.flight_price_b2c))}</span></div>
-                    <div className="feature">No of Days: <span>{numberOfDays}</span></div>
+                <div className="days">
+                  <h1 className="days-size">{numberOfDays}</h1>
+                  <span>Days</span>
+                </div>
+                <div className="ticket-area">
+                  <div className="visa-type">FLIGHT&nbsp;
+                    <img src={Ticket1} alt="" />
                   </div>
-                  <hr className='aahr' />
-                  <div className="price-tag">
-                    <span className="symbol">₹</span>
-                    <span className="amount">{calculateRetailerPrice(parseFloat(flight.flight_price_b2c))}</span>
-                    <span className="after">&nbsp;&nbsp;&nbsp;for {numberOfDays} Days</span>
+                  <div className="visa-des">
+                    <div className="upper">
+                      <div className="travel-from">
+                        <h6 className="from">From</h6>
+                        <h2 className="country">{apiData.selectedFromCountry}</h2>
+                      </div>
+                      <div className="svg-area">
+                        <img src={Ticket2} alt="" />
+                      </div>
+                      <div className="travel-to">
+                        <h6 className="from">To</h6>
+                        <h2 className="country">{apiData.selectedToCountry}</h2>
+                      </div>
+                    </div>
+                    <div className="lower">
+                      <div className="details">
+                        <h6>Description</h6>
+                        <h2>{flight.description}</h2>
+                      </div>
+                      <div className="details1">
+                        <h6>Price</h6>
+                        <h2>₹ {calculateRetailerPrice(parseFloat(flight.flight_price_b2c))}</h2>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-        {selectedflight && (
-          <div className="d-flex justify-content-center mt-4">
-            <Button variant="primary" onClick={handleProceed}>Proceed</Button>
+            ))}
           </div>
-        )}
+          <div style={{ top: "25px" }} className="apply-card">
+            <div className="text-cont">
+              <h2><img className="icons" src="/media/assets/vt2.png" alt="" />Length of Stay</h2>
+              <h6>{selectedDays} Days</h6>
+            </div>
+            <div className="text-cont1">
+              <h2 className="tb"><img className="icons" src="/media/assets/vt4.png" alt="" />Total</h2>
+              <div className="pb">
+                <h6 style={{ top: "10px" }} className="amount">₹{selectedFlightPrice}</h6>
+                <h2 className="tax-des">(includes all government related fees)</h2>
+              </div>
+            </div>
+            <button onClick={handleProceed}>
+              Apply Now
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
 export { FlightTable1 }

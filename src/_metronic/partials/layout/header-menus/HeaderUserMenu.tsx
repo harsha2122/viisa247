@@ -102,11 +102,11 @@ const HeaderUserMenu: React.FC<Props> = ({ profile }) => {
           </>
         )}
 
-        {user_type === "customer" && (
+        {/* {user_type === "customer" && (
           <Link to={'/customer/profile'} className='menu-link px-5'>
             My Profile
           </Link>
-        )}
+        )} */}
       </div>
 
 

@@ -230,7 +230,7 @@ const RevenueInsuranceTable: React.FC<Props> = ({ className, title, data, loadin
                       </td>
                       <td>
                         <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.insurance_provider}
+                          {row.insurance_provider || row.hotel_provider || row.flight_provider}
                         </a>
                       </td>
                       <td>

@@ -63,6 +63,8 @@ import Hreject from '../pages/hotel-wrapper/Hrejected';
 import Fwaiting from '../pages/flight-wrapper/Fwaiting';
 import Fprocessed from '../pages/flight-wrapper/Fprocessed';
 import Freject from '../pages/flight-wrapper/Frejected';
+import RevenueHotel from '../pages/revenue/RevenueHotel';
+import RevenueFlight from '../pages/revenue/RevenueFlight';
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'));
@@ -139,6 +141,8 @@ const PrivateRoutes = () => {
             <Route path='/superadmin/report' element={<ReportWrapper />} />
             <Route path='/superadmin/revenue/visa' element={<RevenueWrapper />} />
             <Route path='/superadmin/revenue/insurance' element={<RevenueInsurance />} />
+            <Route path='/superadmin/revenue/hotel' element={<RevenueHotel />} />
+            <Route path='/superadmin/revenue/flight' element={<RevenueFlight />} />
             <Route path='/superadmin/insurance' element={<InsuranceWrapper />} />
             <Route path='/superadmin/testing' element={<TestingWrapper />} />
             <Route path='/builder' element={<BuilderPageWrapper />} />

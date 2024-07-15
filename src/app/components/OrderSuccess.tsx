@@ -62,9 +62,9 @@ const OrderSuccess: React.FC<OrderSuccessModalProps> = ({
         </div>
         <h4 className="font-weight-bold">Order Success!</h4>
         <p>Your order request has been successfully placed.</p>
-        <div className="withdrawal-amount display-4">₹ {amount.toLocaleString()}</div>
+        {/* <div className="withdrawal-amount display-4">₹ {amount.toLocaleString()}</div> */}
         <div className="mt-4 d-flex flex-column gap-3">
-          <div className="d-flex justify-content-between">
+          {/* <div className="d-flex justify-content-between">
             <span className="font-weight-bold">Order Name</span>
             <span>{orderId}</span>
           </div>
@@ -79,7 +79,7 @@ const OrderSuccess: React.FC<OrderSuccessModalProps> = ({
           <div className="d-flex justify-content-between">
             <span className="font-weight-bold">Name</span>
             <span>{name}</span>
-          </div>
+          </div> */}
           <div className="d-flex justify-content-center mt-4">
             {user_type === "merchant" && (
                 <Link style={{width:"90%", background:"#327113", justifyContent:"center", alignItems:"center", color:"#fff", borderRadius:"15px", border:"none", padding:"15px 10px"}} to={'/merchant/dashboard'} className='menu-link px-5'>

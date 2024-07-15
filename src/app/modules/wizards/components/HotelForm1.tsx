@@ -17,7 +17,7 @@ function HotelForm1({ onDataChange, ind }) {
   const [loading, setLoading] = useState(false); 
 
   const validationSchema = Yup.object().shape({
-    firstName: Yup.string().required('First Name is required'),
+    fullName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
     birthDetail: Yup.string().required('Date of Birth is required'),
     passportIssueDate: Yup.string().required('Passport Issue Date is required'),
@@ -28,16 +28,8 @@ function HotelForm1({ onDataChange, ind }) {
   });
 
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    birthPlace: '',
-    birthday_date: '',
-    gender: '',
-    maritalStatus: '',
-    passportNumber: '',
-    passportIssueDate: '',
-    passPortExpiryDate: '',
-    passport_front: '',
+    fullName: '',
+    traveller: '',
   })
 
   const inputStyle = {
@@ -70,45 +62,6 @@ function HotelForm1({ onDataChange, ind }) {
       return '';
     }
   };
-
-    // Function to handle file selection
-    const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-          if (file.size > maxSize) {
-            toast.error('File size exceeds the limit of 1MB.', {
-              position: 'top-center',
-            });
-            return;
-          }
-    
-          const reader = new FileReader();
-          reader.onload = async (e) => {
-            if (e.target) {
-              setPassportFrontImageURL(e.target.result as string);
-    
-              try {
-                // Assuming handleFileUpload is an asynchronous function that returns a promise
-                const imageLink = await handleFileUpload(file);
-    
-                // Update the form data with the image link
-                setFormData({ ...formData, passport_front: imageLink });
-                onDataChange({ ...formData, passport_front: imageLink });
-              } catch (error) {
-                console.error('Error uploading image:', error);
-              }
-            }
-          };
-          reader.readAsDataURL(file);
-        }
-      };
-    
-      const handleImageUpload = () => {
-        // Trigger the hidden file input
-        if (passportFrontFileInputRef.current) {
-          passportFrontFileInputRef.current.click()
-        }
-      }
 
   const handleFieldChange = (fieldName, value) => {
     setFormData({ ...formData, [fieldName]: value })
@@ -172,12 +125,28 @@ function HotelForm1({ onDataChange, ind }) {
 
                     <Field
                       style={{ ...inputStyle, width: '500px' }}
-                      name='firstName'
+                      name='fullName'
                       className='form-control form-control-lg form-control-solid'
-                      onChange={(e) => handleFieldChange('firstName', e.target.value)}
+                      onChange={(e) => handleFieldChange('fullName', e.target.value)}
                     />
                     <div className='text-danger mt-2'>
-                      <ErrorMessage name='firstName' />
+                      <ErrorMessage name='fullName' />
+                    </div>
+                  </div>
+                  <div className='fv-row mb-5'>
+                    <label className='d-flex align-items-center form-label'>
+                      <span className='required'>Traveller Count</span>
+                    </label>
+
+                    <Field
+                      style={{ ...inputStyle, width: '500px' }}
+                      name='traveller'
+                      type='number'
+                      className='form-control form-control-lg form-control-solid'
+                      onChange={(e) => handleFieldChange('traveller', e.target.value)}
+                    />
+                    <div className='text-danger mt-2'>
+                      <ErrorMessage name='traveller' />
                     </div>
                   </div>
                 </div>
