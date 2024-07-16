@@ -249,7 +249,7 @@ const Verticali: React.FC<VerticalProps> = ({
 
                     .then((response) => {
                       if (response.status === 200) {
-                        toast.success('Insurance Applied successfully!');
+                        setIsReviewModal(false)
                         setConfetti(true);
                         setModalShow(true); 
                       } else {

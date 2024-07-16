@@ -56,6 +56,7 @@ const MerchantDashboard = () => {
 
   const fetchData = async () => {
     try {
+      setLoading(true)
       const merchant_id = Cookies.get('user_id');
       let postBody = {
         merchant_id: merchant_id
@@ -131,6 +132,7 @@ const MerchantDashboard = () => {
           navigate('/merchant/apply-flight');
         }
       }
+      setLoading(false)
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -257,7 +259,7 @@ const MerchantDashboard = () => {
               {sidebarOpen && <><MdOutlineFlight style={iconStyle1} /> Apply Flight</>}
             </div>
             <h5 className="py-7" style={{ padding: 8 }}>
-              {sidebarOpen && '─────VISA──────'}
+              {sidebarOpen && '───Application────'}
             </h5>
             <div
               onClick={() => handleTabClick("All")}

@@ -132,7 +132,7 @@ const HotelTable1: React.FC<Props> = ({ className, title, apiData = {}, onSelect
           </div>
           <div style={{ top: "25px" }} className="apply-card">
             <div className="text-cont">
-              <h2><img className="icons" src="/media/assets/vt2.png" alt="" />Length of Stay</h2>
+              <h2><img className="icons" src="/media/assets/vt2.png" alt="" />No of Days</h2>
               <h6>{selectedDays} Days</h6>
             </div>
             <div className="text-cont1">

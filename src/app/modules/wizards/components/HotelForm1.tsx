@@ -1,20 +1,21 @@
-import { useEffect, useState, useRef, ChangeEvent } from 'react'
-import { KTIcon } from '../../../../_metronic/helpers'
-import { ErrorMessage, Field, Form, Formik, FormikValues } from 'formik'
-import { ICreateAccount, inits } from './CreateAccountWizardHelper'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState, useRef, ChangeEvent } from 'react';
+import { KTIcon } from '../../../../_metronic/helpers';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { ICreateAccount, inits } from './CreateAccountWizardHelper';
+import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
-import ClearIcon from '@mui/icons-material/Delete'
-import axiosInstance from '../../../helpers/axiosInstance'
-import { DatePicker } from 'antd'
+import ClearIcon from '@mui/icons-material/Delete';
+import axiosInstance from '../../../helpers/axiosInstance';
+import { DatePicker } from 'antd';
 import * as Yup from 'yup';
-import 'react-datepicker/dist/react-datepicker.css'
+import 'react-datepicker/dist/react-datepicker.css';
+
 function HotelForm1({ onDataChange, ind }) {
-  const [initValues] = useState<ICreateAccount>(inits)
-  const passportFrontFileInputRef = useRef<HTMLInputElement | null>(null)
-  const [passportFrontImageURL, setPassportFrontImageURL] = useState('')
-  const maxSize = 1024 * 1024; 
-  const [loading, setLoading] = useState(false); 
+  const [initValues] = useState<ICreateAccount>(inits);
+  const passportFrontFileInputRef = useRef<HTMLInputElement | null>(null);
+  const [passportFrontImageURL, setPassportFrontImageURL] = useState('');
+  const maxSize = 1024 * 1024;
+  const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object().shape({
     fullName: Yup.string().required('First Name is required'),
@@ -24,22 +25,23 @@ function HotelForm1({ onDataChange, ind }) {
     passPortExpiryDate: Yup.string().required('Passport Expiry Date is required'),
     gender: Yup.string().required('Gender is required'),
     maritalStatus: Yup.string().required('Marital Status is required'),
-    panNo: Yup.string().required('PAN number is required')
+    panNo: Yup.string().required('PAN number is required'),
   });
 
   const [formData, setFormData] = useState({
     fullName: '',
     traveller: '',
-  })
+  });
 
   const inputStyle = {
-    border: '1.5px solid #d3d3d3', // Border width and color
-    borderRadius: '15px', // Border radius
+    border: '1.5px solid #d3d3d3',
+    borderRadius: '15px',
     padding: '10px',
-    paddingLeft: '20px', // Padding
-    width: '100%', // 100% width
-    boxSizing: 'border-box', // Include padding and border in the width calculation
-  }
+    paddingLeft: '20px',
+    width: '100%',
+    boxSizing: 'border-box',
+  };
+
   const handleFileUpload = async (file: File) => {
     try {
       setLoading(true);
@@ -64,22 +66,22 @@ function HotelForm1({ onDataChange, ind }) {
   };
 
   const handleFieldChange = (fieldName, value) => {
-    setFormData({ ...formData, [fieldName]: value })
-    onDataChange({ ...formData, [fieldName]: value })
+    setFormData({ ...formData, [fieldName]: value });
+    onDataChange({ ...formData, [fieldName]: value });
 
-    if (fieldName == 'birthDetail') {
-      setDob(value)
+    if (fieldName === 'birthDetail') {
+      setDob(value);
     }
-    if (fieldName == 'passportIssueDate') {
-      setIssueDate(value)
+    if (fieldName === 'passportIssueDate') {
+      setIssueDate(value);
     }
-    if (fieldName == 'passPortExpiryDate') {
-      setExpiryDate(value)
+    if (fieldName === 'passPortExpiryDate') {
+      setExpiryDate(value);
     }
-  }
+  };
 
   const [issueDate, setIssueDate] = useState<string | undefined>('');
-  const [expiryDate, setExpiryDate] =useState<string | undefined>('');
+  const [expiryDate, setExpiryDate] = useState<string | undefined>('');
   const [dob, setDob] = useState<string | undefined>('');
 
   return (
@@ -95,60 +97,46 @@ function HotelForm1({ onDataChange, ind }) {
       }}
     >
       <Toaster />
-      <h5 style={{ fontSize: 30, letterSpacing: 0.3 }}>Traveller {ind + 1} </h5>
-      <hr style={{
-        width:"100%",
-        border: 0,
-        height: "0.5px",
-        backgroundImage: "linear-gradient(to right, rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0))"
-      }} />
+      <h5 style={{ fontSize: 30, letterSpacing: 0.3 }}>Traveller {ind + 1}</h5>
+      <hr
+        style={{
+          width: '100%',
+          border: 0,
+          height: '0.5px',
+          backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0))',
+        }}
+      />
       <br />
-      <h3 style={{color:"red", margin:"20px 0px 20px 0px"}}>Note - All fields are mandatory.</h3>
-      <h3>Upload Traveler's Front Passport Page</h3>
+      <h3 style={{ color: 'red', margin: '20px 0px 20px 0px' }}>Note - All fields are mandatory.</h3>
+      <h3>Upload Traveler's Details</h3>
       <p>
-      The destination country requires a scan of the traveler's passport. Upload a clear passport
-        image and Visa 247 will scan and enter all the details directly from the file.
+        Please fill out the travaller name and count
       </p>
-      <div className='d-flex ' style={{ width: '100%' }}>
-        <div
-          className='d-flex flex-row-fluid flex-center bg-body rounded'
-          style={{ width: '70%', backgroundColor: 'blue' }}
-        >
+      <div className='d-flex flex-column flex-md-row'>
+        <div className='flex-grow-1 bg-body rounded p-3'>
           <Formik initialValues={initValues} onSubmit={() => { }} validationSchema={validationSchema}>
             {() => (
-              <Form className='py-20 px-9' noValidate id='kt_create_account_form'>
-                <div>
-                  <div className='fv-row mb-5'>
-                    <label className='d-flex align-items-center form-label'>
-                      <span className='required'>Full Name</span>
-                    </label>
-
-                    <Field
-                      style={{ ...inputStyle, width: '500px' }}
-                      name='fullName'
-                      className='form-control form-control-lg form-control-solid'
-                      onChange={(e) => handleFieldChange('fullName', e.target.value)}
-                    />
-                    <div className='text-danger mt-2'>
-                      <ErrorMessage name='fullName' />
-                    </div>
-                  </div>
-                  <div className='fv-row mb-5'>
-                    <label className='d-flex align-items-center form-label'>
-                      <span className='required'>Traveller Count</span>
-                    </label>
-
-                    <Field
-                      style={{ ...inputStyle, width: '500px' }}
-                      name='traveller'
-                      type='number'
-                      className='form-control form-control-lg form-control-solid'
-                      onChange={(e) => handleFieldChange('traveller', e.target.value)}
-                    />
-                    <div className='text-danger mt-2'>
-                      <ErrorMessage name='traveller' />
-                    </div>
-                  </div>
+              <Form className='row g-3'>
+                <div className='col-md-6'>
+                  <label className='form-label'>Full Name</label>
+                  <Field
+                    style={inputStyle}
+                    name='fullName'
+                    className='form-control form-control-lg form-control-solid'
+                    onChange={(e) => handleFieldChange('fullName', e.target.value)}
+                  />
+                  <ErrorMessage name='fullName' component='div' className='text-danger mt-2' />
+                </div>
+                <div className='col-md-6'>
+                  <label className='form-label'>Traveller Count</label>
+                  <Field
+                    style={inputStyle}
+                    name='traveller'
+                    type='number'
+                    className='form-control form-control-lg form-control-solid'
+                    onChange={(e) => handleFieldChange('traveller', e.target.value)}
+                  />
+                  <ErrorMessage name='traveller' component='div' className='text-danger mt-2' />
                 </div>
               </Form>
             )}
@@ -156,7 +144,7 @@ function HotelForm1({ onDataChange, ind }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default HotelForm1
+export default HotelForm1;

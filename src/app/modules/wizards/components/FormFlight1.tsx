@@ -193,7 +193,8 @@ const FormFlight1: React.FC<VerticalProps> = ({
           country_code: selectedEntry.country_code,
           nationality_code: selectedEntry.nationality_code,
           first_name: travelerForm.firstName,
-          traveller: travelerForms.length,
+          gender: travelerForm.gender,
+          age: travelerForm.age,
           flight_id: selectedEntry.id,
           flight_amount: selectedEntry.totalAmount,
           flight_original_amount: selectedEntry.flight_original_amount,
@@ -482,7 +483,7 @@ const FormFlight1: React.FC<VerticalProps> = ({
               }}
             >
               <div>
-                <h2>Insurance Information</h2>
+                <h2>Information</h2>
               </div>
               <hr
                 style={{

@@ -14,6 +14,7 @@ import TravelerForm2 from './TravelerForm2'
 import qr from '../../../../_metronic/assets/card/qr.png'
 import { Modal, Button } from 'react-bootstrap';
 import Confetti from 'react-confetti'
+import OrderSuccess from '../../../components/OrderSuccess'
 
 const inputStyle = {
     border: '1.5px solid #d3d3d3', // Border width and color
@@ -79,6 +80,7 @@ const Vertical5: React.FC<VerticalProps> = ({
   const recieptFileInputRef = useRef<HTMLInputElement | null>(null)
   const [reciept, setReciept] = useState('')
   const maxSize = 1024 * 1024
+  const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null);
   const [confetti, setConfetti] = useState(false)
   const navigate = useNavigate()
   const [selectedEntry, setSelectedEntry] = useState<SelectedEntry | null>(null);
@@ -104,6 +106,13 @@ const Vertical5: React.FC<VerticalProps> = ({
       window.removeEventListener('scroll', handleScroll)
     }
   }, [])
+
+  const [modalShow, setModalShow] = useState(false);
+  const handleShow = () => setModalShow(true);
+  const handleClose = () => {
+    setModalShow(false);
+    navigate('/');
+  };
 
   const handleReviewModal = () => {
     const formData = travelerForms.map((form) => ({
@@ -296,11 +305,9 @@ const Vertical5: React.FC<VerticalProps> = ({
 
           if (patchResponse.status === 200) {
             toast.success('Visa Applied Succesfully')
+            setIsReviewModal(false)
             setConfetti(true);
-            setTimeout(() => {
-              setConfetti(false);
-              window.location.href = '/';
-            }, 4000);
+            setModalShow(true); 
           } else {
             toast.error(patchResponse.data.msg, { position: 'top-center' });
           }
@@ -336,6 +343,26 @@ const Vertical5: React.FC<VerticalProps> = ({
     navigate('/customer/login')
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.getFullYear();
+    
+    let dayWithSuffix;
+    if (day === 1 || day === 21 || day === 31) {
+      dayWithSuffix = `${day}st`;
+    } else if (day === 2 || day === 22) {
+      dayWithSuffix = `${day}nd`;
+    } else if (day === 3 || day === 23) {
+      dayWithSuffix = `${day}rd`;
+    } else {
+      dayWithSuffix = `${day}th`;
+    }
+  
+    return `${dayWithSuffix} ${month} ${year}`;
+  };
+
   const stepsContent = [
     {
       title: 'Auto-validation upon submission',
@@ -364,6 +391,15 @@ const Vertical5: React.FC<VerticalProps> = ({
     <div style={{backgroundColor: '#fff'}} className='w-full'>
       {confetti && <Confetti />}
       <Toaster />
+      <OrderSuccess 
+        show={modalShow} 
+        handleClose={handleClose} 
+        orderId={insuranceResponse ? insuranceResponse.insurance_plan_type : ''} 
+        orderTime={insuranceResponse ? formatDate(insuranceResponse.created_at) : ''} 
+        account={insuranceResponse ? insuranceResponse.insurance_id : ''} 
+        name={`${insuranceResponse ? insuranceResponse.first_name : ''} ${insuranceResponse ? insuranceResponse.last_name : ''}`} 
+        amount={insuranceResponse ? Number(insuranceResponse.insurance_plan_type) * travelerForms.length : 0} 
+      />
       <div id="nav1">
         <a href='/' className="part11">
             <img className="logo" src="./media/logos/logo.png" alt="logo" />

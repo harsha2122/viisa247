@@ -221,7 +221,7 @@ const FormHotel2: React.FC<VerticalProps> = ({
           country_code: selectedEntry.country_code,
           nationality_code: selectedEntry.nationality_code,
           first_name: travelerForm.firstName,
-          traveller: travelerForms.length,
+          traveller: travelerForm.traveller,
           hotel_id: selectedEntry.id,
           hotel_amount: selectedEntry.totalAmount,
           hotel_original_amount: selectedEntry.hotel_original_amount,
@@ -297,13 +297,13 @@ const FormHotel2: React.FC<VerticalProps> = ({
 
   const stepsContent = [
     {
-      title: 'Claims',
+      title: 'Quick and Easy',
       description:
-        'Quick and easy claims on insurance provider website',
+        'Enter your details and generate dummy hotel for immigration purpose',
     },
     {
-      title: 'About Settlement',
-      description: '98% settlement ratio.',
+      title: 'Easy Immigration',
+      description: 'You can show this hotel to immigration officer for easy immigrations',
     },
   ]
 
@@ -357,10 +357,6 @@ const FormHotel2: React.FC<VerticalProps> = ({
                 <CheckCircleOutline style={{color: '#327113', marginRight: 10}} />
                 Applicant Details
               </div>
-              <div onClick={() => {}} style={{...tabTextStyle}}>
-                <CheckCircleOutline style={{color: '#327113', marginRight: 10}} />
-                Payment Reciept
-              </div>
             </div>
           </>
           ))}
@@ -401,26 +397,7 @@ const FormHotel2: React.FC<VerticalProps> = ({
             </div>
           ))}
           <div className='d-flex my-10' style={{justifyContent: 'flex-end', display: 'flex'}}>
-            <div
-              onClick={addTravelerForm}
-              style={{
-                height: 40,
-                paddingLeft: 15,
-                paddingRight: 15,
-                border: '1px solid',
-                borderColor: '#696969',
-                borderRadius: 10,
-                alignItems: 'center',
-                display: 'flex',
-                justifyContent: 'center',
-                backgroundColor: '#fff',
-                cursor: 'pointer',
-              }}
-            >
-              <h6 className='fs-4' style={{color: '#327113', paddingTop: 5, fontSize: 10}}>
-                + Add Another Applicant
-              </h6>
-            </div>
+            
           </div>
           <div className='d-flex'>
             <div
@@ -435,7 +412,7 @@ const FormHotel2: React.FC<VerticalProps> = ({
               }}
             >
               <div>
-                <h2>Insurance Information</h2>
+                <h2>Booking Information</h2>
               </div>
               <hr
                 style={{

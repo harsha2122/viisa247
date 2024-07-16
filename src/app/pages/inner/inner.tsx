@@ -194,7 +194,7 @@ type Props = {
         </div>
         <div style={{top:"25px"}} className="apply-card">
             <div className="text-cont">
-                <h2><img className="icons" src="/media/assets/vt2.png"/>Length of Stay</h2>
+                <h2><img className="icons" src="/media/assets/vt2.png"/>No of Days</h2>
                 <h6>{receivedData.apiData[selectedTicket].day} Days</h6>
             </div>
 

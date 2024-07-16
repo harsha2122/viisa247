@@ -78,7 +78,7 @@ const FlightTable1: React.FC<Props> = ({ className, title, apiData = {}, onSelec
     }
   };
 
-  const selectedFlightPrice = selectedflight ? calculateRetailerPrice(parseFloat(selectedflight.flight_price_b2c)) : 0;
+  const selectedFlightPrice = selectedflight ? parseFloat(selectedflight.flight_price_b2c) : 0;
   const selectedDays = selectedflight ? numberOfDays : "--";
 
   return (
@@ -128,7 +128,7 @@ const FlightTable1: React.FC<Props> = ({ className, title, apiData = {}, onSelec
                       </div>
                       <div className="details1">
                         <h6>Price</h6>
-                        <h2>₹ {calculateRetailerPrice(parseFloat(flight.flight_price_b2c))}</h2>
+                        <h2>₹ {parseFloat(flight.flight_price_b2c)}</h2>
                       </div>
                     </div>
                   </div>
@@ -138,7 +138,7 @@ const FlightTable1: React.FC<Props> = ({ className, title, apiData = {}, onSelec
           </div>
           <div style={{ top: "25px" }} className="apply-card">
             <div className="text-cont">
-              <h2><img className="icons" src="/media/assets/vt2.png" alt="" />Length of Stay</h2>
+              <h2><img className="icons" src="/media/assets/vt2.png" alt="" />No of Days</h2>
               <h6>{selectedDays} Days</h6>
             </div>
             <div className="text-cont1">

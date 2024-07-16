@@ -52,7 +52,7 @@ const FormFlight2: React.FC<VerticalProps> = ({
   const handleShow = () => setModalShow(true);
   const handleClose = () => {
     setModalShow(false);
-    navigate('/customer/dashboard');
+    navigate('/merchant/dashboard');
   };
   const handleReviewModal = () => {
     const formData = travelerForms.map((form) => ({
@@ -220,8 +220,8 @@ const FormFlight2: React.FC<VerticalProps> = ({
         const postData = {
           country_code: selectedEntry.country_code,
           nationality_code: selectedEntry.nationality_code,
-          first_name: travelerForm.firstName,
-          traveller: travelerForms.length,
+          full_name: travelerForm.fullName,
+          traveller: travelerForm.travelerCount,
           flight_id: selectedEntry.id,
           flight_amount: selectedEntry.totalAmount,
           flight_original_amount: selectedEntry.flight_original_amount,
@@ -296,13 +296,13 @@ const FormFlight2: React.FC<VerticalProps> = ({
 
   const stepsContent = [
     {
-      title: 'Claims',
+      title: 'Quick and Easy',
       description:
-        'Quick and easy claims on insurance provider website',
+        'Enter your details and generate dummy tickets for immigration purpose',
     },
     {
-      title: 'About Settlement',
-      description: '98% settlement ratio.',
+      title: 'Easy Immigration',
+      description: 'You can show this ticket to immigration officer for easy immigrations',
     },
   ]
 
@@ -356,10 +356,6 @@ const FormFlight2: React.FC<VerticalProps> = ({
                 <CheckCircleOutline style={{color: '#327113', marginRight: 10}} />
                 Applicant Details
               </div>
-              <div onClick={() => {}} style={{...tabTextStyle}}>
-                <CheckCircleOutline style={{color: '#327113', marginRight: 10}} />
-                Payment Reciept
-              </div>
             </div>
           </>
           ))}
@@ -400,7 +396,7 @@ const FormFlight2: React.FC<VerticalProps> = ({
             </div>
           ))}
           <div className='d-flex my-10' style={{justifyContent: 'flex-end', display: 'flex'}}>
-            <div
+          <div
               onClick={addTravelerForm}
               style={{
                 height: 40,
@@ -434,7 +430,7 @@ const FormFlight2: React.FC<VerticalProps> = ({
               }}
             >
               <div>
-                <h2>Insurance Information</h2>
+                <h2>Information</h2>
               </div>
               <hr
                 style={{
