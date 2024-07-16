@@ -248,7 +248,7 @@ const Vertical5: React.FC<VerticalProps> = ({
           !travelerForm.birthDetail || !travelerForm.passportNumber ||
           !travelerForm.passportIssueDate || !travelerForm.passPortExpiryDate ||
           !travelerForm.gender || !travelerForm.maritalStatus || !travelerForm.fatherName ||
-          !travelerForm.passFrontPhoto || !travelerForm.panNo || !travelerForm.passBackPhoto) {
+          !travelerForm.passFrontPhoto || !travelerForm.panNo || !travelerForm.passBackPhoto || !reciept) {
           toast.error('All fields are required!', { position: 'top-center' });
           setLoading(false);
           return;
@@ -288,7 +288,7 @@ const Vertical5: React.FC<VerticalProps> = ({
           photo: travelerForm.travelerPhoto,
           itr: travelerForm.itr,
           visa_amount: Math.ceil(selectedEntry?.receipt?.['Visa Fees'] ?? 0) + (selectedEntry?.receipt?.['Service Fees'] ?? 0),
-          markup_visa_amount: Math.ceil((selectedEntry?.receipt?.['Visa Fees'] ?? 0) * (parseFloat(markup_percentage) ? 1 + parseFloat(markup_percentage) / 100 : 1)) + (selectedEntry?.receipt?.['Service Fees'] ?? 0),
+          markup_visa_amount: Math.ceil(selectedEntry?.receipt?.['Visa Fees'] ?? 0) + (selectedEntry?.receipt?.['Service Fees'] ?? 0),
           visa_description: selectedEntry?.description ?? '',
           receipt_url: reciept,
         };

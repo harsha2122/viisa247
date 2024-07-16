@@ -266,7 +266,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
                       <th className='fs-5 min-w-160px'>Name</th>
                       <th className='fs-5 min-w-100px'>Email</th>
                       <th className='fs-5 min-w-100px'>Contact</th>
-                      <th className='fs-5 min-w-40px'>From</th>
+                      <th className='fs-5 min-w-40px'>Channel</th>
                       <th className='fs-5 text-center min-w-40px'>To</th>
                       <th className='fs-5 text-center min-w-70px'>Date</th>
                       <th className='fs-5 text-center min-w-70px'>Status</th>
@@ -284,17 +284,17 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
                       </td>
                       <td>
                         <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                            {row.merchant_email_id}
+                            {row.merchant_email_id || row.customer_email_id}
                         </a>
                       </td>
                       <td>
                         <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.merchant_phone_number}
+                          {row.merchant_phone_number || row.customer_phone_number}
                         </a>
                       </td>
                       <td>
                         <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.nationality}
+                        {row.customer_email_id ? 'Customer' : 'Merchant'}
                         </a>
                       </td>
                       <td>

@@ -12,6 +12,7 @@ import { FcCancel, FcInfo } from "react-icons/fc";
 import axiosInstance from '../helpers/axiosInstance'
 import Pagination from 'react-bootstrap/Pagination';
 import InsuranceFormView from './InsuranceFormView'
+import HotelFormView from './HotelFormView'
 
 interface InsurancePayload {
   id: string;
@@ -442,7 +443,7 @@ const Whwaiting: React.FC<Props> = ({ className, title, data}) => {
             <div onClick={() => handleCloseClick()} style={{ backgroundColor: '#d3d3d3', padding: 10, position: 'absolute', right: "193px", borderRadius: 20, cursor: 'pointer', top: '83px' }}>
               <CloseOutlined />
             </div>
-            <InsuranceFormView viewApplication={selectedItem} />
+            <HotelFormView viewApplication={selectedItem} />
           </div>
         </div>
       }

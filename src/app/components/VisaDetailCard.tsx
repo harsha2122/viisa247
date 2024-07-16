@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, CSSProperties} from 'react'
 import BackIcon from '@mui/icons-material/ArrowBackOutlined'
 import ApplicationFormView from './ApplicationFormView'
 import {Box, Step, StepLabel, Stepper} from '@mui/material'
@@ -9,6 +9,9 @@ import image from '../../_metronic/assets/card/nodata.jpg'
 import imag from '../../../public/media/logos/logo.png'
 import Loader from '../components/Loader'
 import axiosInstance from '../helpers/axiosInstance'
+import { CloseOutlined } from '@mui/icons-material'
+import TravelerForm1 from '../modules/wizards/components/TravelerForm1'
+import TraverlerReForm from './TraverlerReForm'
 
 type VisaData = {
   country_code: string
@@ -115,6 +118,36 @@ type Props = {
   insuranceData: InsuranceData[] | null
   hotelData: HotelData[] | null
   flightData: FlightData[] | null
+}
+
+const overlayStyle: CSSProperties = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 9999,
+  opacity: 0,
+  visibility: 'hidden',
+  transition: 'opacity 0.3s, visibility 0.3s',
+}
+
+const activeOverlayStyle: CSSProperties = {
+  opacity: 1,
+  visibility: 'visible',
+}
+
+const contentStyle: CSSProperties = {
+  backgroundColor: '#fff', 
+  padding: '15px',
+  borderRadius: '5px',
+  width: '70%',
+  height: '70%',
+  overflowY: 'auto',
 }
 
 const formatDate = (timestamp: string) => {
@@ -427,9 +460,12 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
 
   const [Detail, seeDetail] = useState(false)
   const [selectedVisa, setSelectedVisa] = useState<VisaData | null>(null)
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
   const [viewApplication, setViewApplication] = useState<VisaData | null>(null)
   const [activeTab, setActiveTab] = useState('visa')
+  const [visible, setVisible] = useState(false)
+  const [selectedItem, setSelectedItem] = useState(null)
+
   const handleTabChange = (tab) => {
     setActiveTab(tab)
   }
@@ -697,6 +733,23 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
     window.open(pdfUrl, '_blank')
   }
 
+  const handleVisibilityClick = (entry) => {
+    console.log(entry)
+    setSelectedItem(entry) // Set the selected item
+    setVisible(true)
+  }
+
+  const handleCloseClick = () => {
+    setSelectedItem(null)
+    setVisible(false)
+  }
+
+  const handleTravelerDataChange = (newData, index) => {
+    console.log("Updated data:", newData);
+    setSelectedItem(newData);
+  };
+
+
   return (
     <div>
       <div className='d-flex justify-content-center best-tab my-8 gap-4'>
@@ -777,10 +830,10 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 <h6 style={{color: 'red'}}>{entry.visa_status}</h6>
                 <br />
                 {entry.visa_remark && (
-                <h6>
-                  Remarks -{' '}
-                  <span style={{color: 'red'}}>{entry.visa_remark ? entry.visa_remark : ''}</span>
-                </h6>
+                  <h6>
+                    Remarks -{' '}
+                    <span style={{color: 'red'}}>{entry.visa_remark ? entry.visa_remark : ''}</span>
+                  </h6>
                 )}
               </div>
               <div
@@ -810,6 +863,19 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 >
                   Download Invoice
                 </button>
+                {(entry.visa_status === 'Reject' || entry.visa_status === 'Rejected') && (
+                  <button
+                    type='submit'
+                    id='kt_sign_in_submit'
+                    className='btn btn-success'
+                    onClick={() => handleVisibilityClick(entry)}
+                    style={{ backgroundColor: '#327113', marginTop: 20 }}
+                  >
+                    Re - Submit Form
+                  </button>
+                )}
+
+
                 {entry.visa_pdf && (
                   <button
                     type='submit'
@@ -865,51 +931,64 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 <h6 style={{color: 'red'}}>{entry.insurance_status}</h6>
                 <br />
                 {entry.insurance_remark && (
-                <h6>
-                  Remarks -{' '}
-                  <span style={{color: 'red'}}>
-                    {entry.insurance_remark ? entry.insurance_remark : ''}
-                  </span>
-                </h6>
+                  <h6>
+                    Remarks -{' '}
+                    <span style={{color: 'red'}}>
+                      {entry.insurance_remark ? entry.insurance_remark : ''}
+                    </span>
+                  </h6>
                 )}
               </div>
               <div
                 style={{
-                    flex: '1',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    padding: '10px',
+                  flex: '1',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: '10px',
                 }}
-                >
+              >
                 {entry.insurance_pdf ? (
-                    <button
+                  <button
                     type='submit'
                     id='kt_sign_in_submit'
                     className='btn btn-success'
                     onClick={() => downloadInsurance(entry)}
                     style={{
-                        backgroundColor: '#327113',
-                        marginTop: 20,
+                      backgroundColor: '#327113',
+                      marginTop: 20,
                     }}
-                    >
+                  >
                     Download Insurance
-                    </button>
+                  </button>
                 ) : (
-                    <p style={{ color: 'red', marginTop: 20 }}>Once available your insurance pdf will be shown here and you can download it from here only</p>
+                  <p style={{color: 'red', marginTop: 20}}>
+                    Once available your insurance pdf will be shown here and you can download it
+                    from here only
+                  </p>
                 )}
-                </div>
-
+                                {(entry.insurance_status === 'Reject' || entry.insurance_status === 'Rejected') && (
+                  <button
+                    type='submit'
+                    id='kt_sign_in_submit'
+                    className='btn btn-success'
+                    onClick={() => handleVisibilityClick(entry)}
+                    style={{ backgroundColor: '#327113', marginTop: 20 }}
+                  >
+                    Re - Submit Form
+                  </button>
+                )}
+              </div>
             </div>
           ))}
 
         {activeTab === 'hotel' &&
-        hotelData?.map((entry, index) => (
+          hotelData?.map((entry, index) => (
             <div
-            className='w-full mt-5'
-            key={index}
-            style={{
+              className='w-full mt-5'
+              key={index}
+              style={{
                 display: 'flex',
                 backgroundColor: '#fff',
                 justifyContent: 'space-between',
@@ -917,68 +996,85 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 borderColor: '#f5f5f5',
                 boxShadow: '0px 0px 7px rgba(0, 0, 0, 0.1)',
                 width: '100%',
-            }}
+              }}
             >
-            <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
+              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
                 <h2 style={{textTransform: 'capitalize'}}>
-                {entry.first_name} - {entry.country_code} - {entry.nationality_code}
+                  {entry.first_name} - {entry.country_code} - {entry.nationality_code}
                 </h2>
                 <h6>Created: {formatDate(entry.created_at)}</h6>
                 <h5 style={{marginTop: 20}}>{entry.country_code}</h5>
                 <p>
-                <strong>Hotel ID: &nbsp;&nbsp;&nbsp;</strong>{entry.hotel_id }
-                <br />
-                <strong>Total Amount:</strong> &nbsp;&nbsp;₹{entry.merchant_hotel_amount}
+                  <strong>Hotel ID: &nbsp;&nbsp;&nbsp;</strong>
+                  {entry.hotel_id}
+                  <br />
+                  <strong>Total Amount:</strong> &nbsp;&nbsp;₹{entry.merchant_hotel_amount}
                 </p>
-            </div>
-            <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
+              </div>
+              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
                 <h2>Applicants: {entry.traveller}</h2>
                 <br />
                 <h6 style={{color: 'red'}}>Status: {entry.hotel_status}</h6>
                 <br />
                 {entry.hotel_remark && (
-                <h6>
-                Remarks -{' '}
-                <span style={{color: 'red'}}>{entry.hotel_remark ? entry.hotel_remark : ''}</span>
-                </h6>)}
-            </div>
-            <div
-            style={{
-                flex: '1',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '10px',
-            }}
-            >
-            {entry.hotel_pdf ? (
-                <button
-                type='submit'
-                id='kt_sign_in_submit'
-                className='btn btn-success'
-                onClick={() => downloadHotelPDF(entry)}
+                  <h6>
+                    Remarks -{' '}
+                    <span style={{color: 'red'}}>
+                      {entry.hotel_remark ? entry.hotel_remark : ''}
+                    </span>
+                  </h6>
+                )}
+              </div>
+              <div
                 style={{
-                    backgroundColor: '#327113',
-                    marginTop: 20,
+                  flex: '1',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: '10px',
                 }}
-                >
-                Download Hotel
-                </button>
-            ) : (
-                <p style={{ color: 'red', marginTop: 20 }}>Once available your hotel pdf will be shown here and you can download it from here only</p>
-            )}
+              >
+                {entry.hotel_pdf ? (
+                  <button
+                    type='submit'
+                    id='kt_sign_in_submit'
+                    className='btn btn-success'
+                    onClick={() => downloadHotelPDF(entry)}
+                    style={{
+                      backgroundColor: '#327113',
+                      marginTop: 20,
+                    }}
+                  >
+                    Download Hotel
+                  </button>
+                ) : (
+                  <p style={{color: 'red', marginTop: 20}}>
+                    Once available your hotel pdf will be shown here and you can download it from
+                    here only
+                  </p>
+                )}
+                                {(entry.hotel_status === 'Reject' || entry.hotel_status === 'Rejected') && (
+                  <button
+                    type='submit'
+                    id='kt_sign_in_submit'
+                    className='btn btn-success'
+                    onClick={() => handleVisibilityClick(entry)}
+                    style={{ backgroundColor: '#327113', marginTop: 20 }}
+                  >
+                    Re - Submit Form
+                  </button>
+                )}
+              </div>
             </div>
-
-            </div>
-        ))}
+          ))}
 
         {activeTab === 'flight' &&
-        flightData?.map((entry, index) => (
+          flightData?.map((entry, index) => (
             <div
-            className='w-full mt-5'
-            key={index}
-            style={{
+              className='w-full mt-5'
+              key={index}
+              style={{
                 display: 'flex',
                 backgroundColor: '#fff',
                 justifyContent: 'space-between',
@@ -986,64 +1082,112 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 borderColor: '#f5f5f5',
                 boxShadow: '0px 0px 7px rgba(0, 0, 0, 0.1)',
                 width: '100%',
-            }}
+              }}
             >
-            <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
+              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
                 <h2 style={{textTransform: 'capitalize'}}>
-                {entry.first_name} - {entry.country_code} - {entry.nationality_code}
+                  {entry.first_name} - {entry.country_code} - {entry.nationality_code}
                 </h2>
                 <h6>Created: {formatDate(entry.created_at)}</h6>
                 <h5 style={{marginTop: 20}}>{entry.country_code}</h5>
                 <p>
-                <strong>Flight ID: &nbsp;&nbsp;&nbsp;</strong>{entry.flight_id }
-                <br />
-                <strong>Total Amount:</strong> &nbsp;&nbsp;₹{entry.merchant_flight_amount}
+                  <strong>Flight ID: &nbsp;&nbsp;&nbsp;</strong>
+                  {entry.flight_id}
+                  <br />
+                  <strong>Total Amount:</strong> &nbsp;&nbsp;₹{entry.merchant_flight_amount}
                 </p>
-            </div>
-            <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
+              </div>
+              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
                 <h2>Applicants: {entry.traveller}</h2>
                 <br />
                 <h6 style={{color: 'red'}}>Status: {entry.flight_status}</h6>
                 <br />
                 {entry.flight_remark && (
-                <h6>
-                Remarks -{' '}
-                <span style={{color: 'red'}}>{entry.flight_remark ? entry.flight_remark : ''}</span>
-                </h6>)}
-            </div>
-            <div
-            style={{
-                flex: '1',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '10px',
-            }}
-            >
-            {entry.flight_pdf ? (
-                <button
-                type='submit'
-                id='kt_sign_in_submit'
-                className='btn btn-success'
-                onClick={() => downloadFlightPDF(entry)}
+                  <h6>
+                    Remarks -{' '}
+                    <span style={{color: 'red'}}>
+                      {entry.flight_remark ? entry.flight_remark : ''}
+                    </span>
+                  </h6>
+                )}
+              </div>
+              <div
                 style={{
-                    backgroundColor: '#fff',
-                    marginTop: 20,
-                    color: '#327113',
-                    border: '1px solid #327113',
+                  flex: '1',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: '10px',
                 }}
-                >
-                Download Flight
-                </button>
-            ) : (
-                <p style={{ color: 'red', marginTop: 20 }}>Once available your flight pdf will be shown here and you can download it from here only</p>
-            )}
+              >
+                {entry.flight_pdf ? (
+                  <button
+                    type='submit'
+                    id='kt_sign_in_submit'
+                    className='btn btn-success'
+                    onClick={() => downloadFlightPDF(entry)}
+                    style={{
+                      backgroundColor: '#fff',
+                      marginTop: 20,
+                      color: '#327113',
+                      border: '1px solid #327113',
+                    }}
+                  >
+                    Download Flight
+                  </button>
+                ) : (
+                  <p style={{color: 'red', marginTop: 20}}>
+                    Once available your flight pdf will be shown here and you can download it from
+                    here only
+                  </p>
+                )}
+                                {(entry.flight_status === 'Reject' || entry.flight_status === 'Rejected') && (
+                  <button
+                    type='submit'
+                    id='kt_sign_in_submit'
+                    className='btn btn-success'
+                    onClick={() => handleVisibilityClick(entry)}
+                    style={{ backgroundColor: '#327113', marginTop: 20 }}
+                  >
+                    Re - Submit Form
+                  </button>
+                )}
+              </div>
             </div>
+          ))}
 
+        {visible && (
+          <div
+            className='loader-overlay'
+            style={{...overlayStyle, ...(visible && activeOverlayStyle)}}
+          >
+            <div style={contentStyle}>
+              <div
+                onClick={() => handleCloseClick()}
+                style={{
+                  backgroundColor: '#d3d3d3',
+                  padding: '9px',
+                  position: 'absolute',
+                  top: '15%',
+                  left: '84.5%',
+                  transform: 'translate(-35%, -40%)',
+                  borderRadius: 20,
+                  cursor: 'pointer',
+                }}
+              >
+                <CloseOutlined />
+              </div>
+              <h1>Edit Application</h1>
+              <hr className='ahr'/>
+              <TraverlerReForm
+              ind={0}
+              onDataChange={handleTravelerDataChange}
+              selectedEntry={selectedItem}
+            />
             </div>
-        ))}
-
+          </div>
+        )}
       </div>
     </div>
   )

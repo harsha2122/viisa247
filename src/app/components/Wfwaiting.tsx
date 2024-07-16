@@ -11,13 +11,13 @@ import Cookies from 'js-cookie'
 import { FcCancel, FcInfo } from "react-icons/fc";
 import axiosInstance from '../helpers/axiosInstance'
 import Pagination from 'react-bootstrap/Pagination';
-import InsuranceFormView from './InsuranceFormView'
+import FlightFormView from './FlightFormView'
 
 interface InsurancePayload {
   id: string;
-  insurance_status: string;
-  insurance_remark?: string;
-  insurance_pdf?: string;
+  flight_status: string;
+  flight_remark?: string;
+  flight_pdf?: string;
 }
 
 type TableRow = InsurancePayload & {
@@ -25,7 +25,7 @@ type TableRow = InsurancePayload & {
   merchant_email_id: string;
   merchant_phone_number: string;
   nationality: string;
-  insurance_amount: string;
+  flight_amount: string;
   _id: string;
 };
 
@@ -88,7 +88,7 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [rejectRemark, setRejectRemark] = useState('');
-  const insuranceFileInputRef = useRef<HTMLInputElement | null>(null);
+  const flightFileInputRef = useRef<HTMLInputElement | null>(null);
   const maxSize = 1024 * 1024
 
   const handleFileUpload = async (file) => {
@@ -125,11 +125,11 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
           try {
               const payload: InsurancePayload = {
                   id: selectedRow._id,
-                  insurance_status: 'Rejected',
-                  insurance_remark: rejectRemark,
+                  flight_status: 'Rejected',
+                  flight_remark: rejectRemark,
               };
 
-              const response = await axiosInstance.post('/backend/upload_insurance_file', payload);
+              const response = await axiosInstance.post('/backend/upload_flight_file', payload);
               if (response.data.success === 1) {
                   toast.success('Application rejected successfully');
                   handleCloseRejectModal();
@@ -147,15 +147,15 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
   };
 
   const handleIssueSubmit = async () => {
-    if (selectedRow && selectedRow.insurance_pdf) {
+    if (selectedRow && selectedRow.flight_pdf) {
       try {
         const payload: InsurancePayload = {
           id: selectedRow._id,
-          insurance_status: 'Issued',
-          insurance_pdf: selectedRow.insurance_pdf,
+          flight_status: 'Issued',
+          flight_pdf: selectedRow.flight_pdf,
         };
   
-        const response = await axiosInstance.post('/backend/upload_insurance_file', payload);
+        const response = await axiosInstance.post('/backend/upload_flight_file', payload);
         if (response.data.success === 1) {
           toast.success('Visa issued successfully');
           handleCloseIssueModal();
@@ -170,7 +170,7 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
         toast.error('Error submitting issuance');
       }
     } else {
-      toast.error('Please upload the insurance file before submitting');
+      toast.error('Please upload the flight file before submitting');
     }
   };
   
@@ -191,7 +191,7 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
         if (selectedRow) {
           setSelectedRow({
             ...selectedRow,
-            insurance_pdf: imageLink,
+            flight_pdf: imageLink,
           });
         }
         toast.success('File uploaded successfully', { position: 'top-center' });
@@ -442,7 +442,7 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
             <div onClick={() => handleCloseClick()} style={{ backgroundColor: '#d3d3d3', padding: 10, position: 'absolute', right: "193px", borderRadius: 20, cursor: 'pointer', top: '83px' }}>
               <CloseOutlined />
             </div>
-            <InsuranceFormView viewApplication={selectedItem} />
+            <FlightFormView viewApplication={selectedItem} />
           </div>
         </div>
       }
@@ -471,10 +471,10 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
                     <label className='form-label fw-bolder text-dark required fs-6'>Insurance Upload</label>
                     <input
                       type='file'
-                      ref={insuranceFileInputRef}
+                      ref={flightFileInputRef}
                       className='form-control'
-                      id='insurance_pdf'
-                      name='insurance_pdf'
+                      id='flight_pdf'
+                      name='flight_pdf'
                       accept='.pdf'
                       onChange={handleFileSelect}
                     />
@@ -483,7 +483,7 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
                       <button 
                           className='btn btn-primary' 
                           onClick={handleIssueSubmit}
-                          disabled={!selectedRow || !selectedRow.insurance_pdf}
+                          disabled={!selectedRow || !selectedRow.flight_pdf}
                       >
                           Upload
                       </button>

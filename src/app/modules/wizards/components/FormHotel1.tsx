@@ -202,7 +202,7 @@ const FormHotel1: React.FC<VerticalProps> = ({
         const postData = {
           country_code: selectedEntry.country_code,
           nationality_code: selectedEntry.nationality_code,
-          first_name: travelerForm.firstName,
+          full_name: travelerForm.fullName,
           traveller: travelerForm.traveller,
           hotel_id: selectedEntry.id,
           hotel_amount: selectedEntry.totalAmount,
@@ -254,8 +254,6 @@ const FormHotel1: React.FC<VerticalProps> = ({
       return updatedData
     })
   }
-
-  console.log("asc", selectedEntry)
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -458,26 +456,6 @@ const FormHotel1: React.FC<VerticalProps> = ({
             </div>
           </div>
           <div className='d-flex my-10' style={{justifyContent: 'flex-end', display: 'flex'}}>
-            <div
-              onClick={addTravelerForm}
-              style={{
-                height: 40,
-                paddingLeft: 15,
-                paddingRight: 15,
-                border: '1px solid',
-                borderColor: '#696969',
-                borderRadius: 10,
-                alignItems: 'center',
-                display: 'flex',
-                justifyContent: 'center',
-                backgroundColor: '#fff',
-                cursor: 'pointer',
-              }}
-            >
-              <h6 className='fs-4' style={{color: '#327113', paddingTop: 5, fontSize: 10}}>
-                + Add Another Applicant
-              </h6>
-            </div>
           </div>
           <div className='d-flex'>
             <div
