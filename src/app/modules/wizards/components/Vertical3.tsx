@@ -453,90 +453,100 @@ const Vertical3: React.FC<VerticalProps> = ({
               </div>
             </>
           ))}
-          <div
-            style={{alignItems: 'center'}}
-            className='d-flex flex-column w-50 my-8 justify-content-start'
+            <div
+            className='py-10 px-20'
+            style={{
+              borderRadius: 20,
+              borderColor: '#f2f2f2',
+              boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+              marginLeft: 10,
+              marginTop: 10,
+              backgroundColor: 'white',
+            }}
           >
-            <h1>Upload Reciept</h1>
-            <div className='d-flex flex-column align-items-center gap-4 w-100 '>
-              <img width='200px' src={qr} alt='qr-code' />
-            </div>
-            <div style={{width: '60%', marginLeft: '25px', marginTop: '30px'}}>
-              <h6>Reciept</h6>
-              {loading ? (
-                <div style={{color: '#000'}}>Loading...</div>
-              ) : reciept ? (
-                <div
-                  style={{
-                    border: '4px dotted gray',
-                    width: '100%',
-                    height: 200,
-                    borderRadius: '10px',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    marginTop: 20,
-                  }}
-                >
+            <div className='d-flex ' style={{width: '100%'}}>
+              <div style={{width: '40%', marginLeft: '25px', marginTop: '30px'}}>
+                <h6>Receipt</h6>
+                {loading ? (
+                  <div style={{color: '#000'}}>Loading...</div>
+                ) : reciept ? (
                   <div
-                    onClick={() => setReciept('')}
                     style={{
-                      justifyContent: 'flex-end',
+                      border: '4px dotted gray',
+                      width: '100%',
+                      height: 200,
+                      borderRadius: '10px',
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      marginTop: 20,
                       position: 'relative',
-                      backgroundColor: 'white',
-                      padding: 7,
-                      borderRadius: 50,
-                      left: '10px',
-                      width: '35px',
-                      zIndex: '1',
-                      cursor: 'pointer',
                     }}
                   >
-                    <ClearIcon style={{color: 'red'}} />
+                    <div
+                      onClick={() => setReciept('')}
+                      style={{
+                        justifyContent: 'flex-end',
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        padding: 7,
+                        borderRadius: '50%',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <ClearIcon style={{color: 'red'}} />
+                    </div>
+                    <img
+                      src={reciept}
+                      alt='Uploaded Image'
+                      style={{
+                        maxWidth: '100%',
+                        maxHeight: '100%',
+                        marginTop: '15px',
+                      }}
+                    />
                   </div>
-                  <img
-                    src={reciept}
-                    alt='Uploaded Image'
+                ) : (
+                  <div
                     style={{
-                      maxWidth: '100%',
-                      maxHeight: '100%',
-                      position: 'relative',
-                      marginTop: '-35px',
+                      border: '4px dotted gray',
+                      width: '100%',
+                      height: 200,
+                      borderRadius: '10px',
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      marginTop: 20,
                     }}
-                  />
-                </div>
-              ) : (
-                <div
-                  style={{
-                    border: '4px dotted gray',
-                    width: '100%',
-                    height: 200,
-                    borderRadius: '10px',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    marginTop: 20,
-                  }}
-                >
-                  <h4 className='mx-10 mt-10'>Reciept Photo</h4>
-                  <button
-                    type='button'
-                    onClick={handleRecieptUpload}
-                    className='btn btn-lg btn-success me-3 mt-7'
-                    style={{justifyContent: 'flex-end', backgroundColor: '#327113'}}
                   >
-                    <span className='indicator-label'>Select Files</span>
-                  </button>
-                  <p className='text-bold pt-5 fs-9' style={{color: '#555555'}}>
-                    Supports Image only.
-                  </p>
-                  <input
-                    type='file'
-                    ref={recieptFileInputRef}
-                    style={{display: 'none'}}
-                    accept='image/*'
-                    onChange={handleRecieptSelect}
-                  />
+                    <h4 className='mx-10 mt-10'>Receipt Photo</h4>
+                    <button
+                      type='button'
+                      onClick={handleRecieptUpload}
+                      className='btn btn-lg btn-success me-3 mt-7'
+                      style={{justifyContent: 'flex-end', backgroundColor: '#327113'}}
+                    >
+                      <span className='indicator-label'>Select Files</span>
+                    </button>
+                    <p className='text-bold pt-5 fs-9' style={{color: '#555555'}}>
+                      Supports Image only.
+                    </p>
+                    <input
+                      type='file'
+                      ref={recieptFileInputRef}
+                      style={{display: 'none'}}
+                      accept='image/*'
+                      onChange={handleRecieptSelect}
+                    />
+                  </div>
+                )}
+              </div>
+              <div style={{width: '60%', marginTop: 25, alignItems: 'center'}}>
+                <div className='d-flex flex-column align-items-center gap-4 w-100 '>
+                  <h1>Upload Reciept</h1>
+                  <img width='200px' src={qr} alt='qr-code' />
                 </div>
-              )}
+              </div>
             </div>
           </div>
           <div className='d-flex my-10' style={{justifyContent: 'flex-end', display: 'flex'}}>

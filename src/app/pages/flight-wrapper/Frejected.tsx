@@ -27,7 +27,7 @@ function Freject() {
 
   return (
     <div style={{ marginTop: '-50px' }}>
-      <Wfreject className='' title='Insurance Rejected' data={insuranceData} loading={loading} />
+      <Wfreject className='' title='Flight Rejected' data={insuranceData} loading={loading} />
     </div>
   );
 }

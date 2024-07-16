@@ -27,7 +27,7 @@ function Fprocessed() {
 
   return (
     <div style={{ marginTop: '-50px' }}>
-      <Wfprocessed className='' title='Insurance Issued' data={insuranceData} loading={loading} />
+      <Wfprocessed className='' title='Flight Issued' data={insuranceData} loading={loading} />
     </div>
   );
 }

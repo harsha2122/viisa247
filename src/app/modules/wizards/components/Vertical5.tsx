@@ -2,9 +2,9 @@ import {useEffect, useState, useRef, ChangeEvent} from 'react'
 import {useNavigate, useLocation} from 'react-router-dom'
 import Cookies from 'js-cookie'
 import toast, {Toaster} from 'react-hot-toast'
-import { ErrorMessage, Field, Form, Formik, FormikValues } from 'formik'
-import { ICreateAccount, inits } from './CreateAccountWizardHelper'
-import * as Yup from 'yup';
+import {ErrorMessage, Field, Form, Formik, FormikValues} from 'formik'
+import {ICreateAccount, inits} from './CreateAccountWizardHelper'
+import * as Yup from 'yup'
 import axiosInstance from '../../../helpers/axiosInstance'
 import ClearIcon from '@mui/icons-material/Delete'
 import {CheckCircleOutline, CircleOutlined} from '@mui/icons-material'
@@ -12,18 +12,18 @@ import Loader from '../../../components/Loader'
 import {Box, Step, StepLabel, Stepper, Theme, Typography} from '@mui/material'
 import TravelerForm2 from './TravelerForm2'
 import qr from '../../../../_metronic/assets/card/qr.png'
-import { Modal, Button } from 'react-bootstrap';
+import {Modal, Button} from 'react-bootstrap'
 import Confetti from 'react-confetti'
 import OrderSuccess from '../../../components/OrderSuccess'
 
 const inputStyle = {
-    border: '1.5px solid #d3d3d3', // Border width and color
-    borderRadius: '15px', // Border radius
-    padding: '10px',
-    paddingLeft: '20px', // Padding
-    width: '90%', // 100% width
-    boxSizing: 'border-box', // Include padding and border in the width calculation
-  }
+  border: '1.5px solid #d3d3d3', // Border width and color
+  borderRadius: '15px', // Border radius
+  padding: '10px',
+  paddingLeft: '20px', // Padding
+  width: '90%', // 100% width
+  boxSizing: 'border-box', // Include padding and border in the width calculation
+}
 
 interface VerticalProps {
   selectedEntry: any
@@ -34,21 +34,20 @@ interface VerticalProps {
 }
 
 interface SelectedEntry {
-    day: number;
-    entryType: string;
-    country: string;
-    description: string;
-    receipt: {
-      'Service Fees': number;
-      'Visa Fees': number;
-    };
-    value: string;
-    country_code: string;
-    nationality_code: string;
-    application_arrival_date: string;
-    application_departure_date: string;
+  day: number
+  entryType: string
+  country: string
+  description: string
+  receipt: {
+    'Service Fees': number
+    'Visa Fees': number
   }
-  
+  value: string
+  country_code: string
+  nationality_code: string
+  application_arrival_date: string
+  application_departure_date: string
+}
 
 const Vertical5: React.FC<VerticalProps> = ({
   showfinalSubmitLoader,
@@ -67,10 +66,10 @@ const Vertical5: React.FC<VerticalProps> = ({
     name: '',
     email: '',
     phone: '',
-  });
+  })
 
   const handleFieldChange = (fieldName, value) => {
-    setFormValues({ ...formValues, [fieldName]: value })
+    setFormValues({...formValues, [fieldName]: value})
   }
   const [applicantForms, setApplicantForms] = useState<any[]>([])
   const [currentStep, setCurrentStep] = useState(0)
@@ -80,10 +79,10 @@ const Vertical5: React.FC<VerticalProps> = ({
   const recieptFileInputRef = useRef<HTMLInputElement | null>(null)
   const [reciept, setReciept] = useState('')
   const maxSize = 1024 * 1024
-  const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null);
+  const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null)
   const [confetti, setConfetti] = useState(false)
   const navigate = useNavigate()
-  const [selectedEntry, setSelectedEntry] = useState<SelectedEntry | null>(null);
+  const [selectedEntry, setSelectedEntry] = useState<SelectedEntry | null>(null)
   const [travelerForms, setTravelerForms] = useState<any[]>([{}])
   const [isFixed, setIsFixed] = useState(false)
 
@@ -96,10 +95,10 @@ const Vertical5: React.FC<VerticalProps> = ({
   useEffect(() => {
     // Check if location.state has data and update selectedEntry state
     if (location.state) {
-      setSelectedEntry(location.state as SelectedEntry);
+      setSelectedEntry(location.state as SelectedEntry)
     }
-  }, [location.state]);
-  
+  }, [location.state])
+
   useEffect(() => {
     window.addEventListener('scroll', handleScroll)
     return () => {
@@ -107,12 +106,12 @@ const Vertical5: React.FC<VerticalProps> = ({
     }
   }, [])
 
-  const [modalShow, setModalShow] = useState(false);
-  const handleShow = () => setModalShow(true);
+  const [modalShow, setModalShow] = useState(false)
+  const handleShow = () => setModalShow(true)
   const handleClose = () => {
-    setModalShow(false);
-    navigate('/');
-  };
+    setModalShow(false)
+    navigate('/')
+  }
 
   const handleReviewModal = () => {
     const formData = travelerForms.map((form) => ({
@@ -131,17 +130,16 @@ const Vertical5: React.FC<VerticalProps> = ({
       panCard: form.pan_card,
       passBackPhoto: form.passport_back,
       photo: form.photo,
-      panNo: form.panNo
-    }));
-    setInsuranceFormData(formData);
-    handleShowReviewModal();
-  };
-  
-  
-  const [insuranceFormData, setInsuranceFormData] = useState<any | null>(null);
-  const [isReviewModal, setIsReviewModal] = useState<boolean>(false);  
-  const handleShowReviewModal = () => setIsReviewModal(true);
-  const handleCloseReviewModal = () => setIsReviewModal(false);
+      panNo: form.panNo,
+    }))
+    setInsuranceFormData(formData)
+    handleShowReviewModal()
+  }
+
+  const [insuranceFormData, setInsuranceFormData] = useState<any | null>(null)
+  const [isReviewModal, setIsReviewModal] = useState<boolean>(false)
+  const handleShowReviewModal = () => setIsReviewModal(true)
+  const handleCloseReviewModal = () => setIsReviewModal(false)
 
   const handleFileUpload = async (file) => {
     try {
@@ -196,9 +194,8 @@ const Vertical5: React.FC<VerticalProps> = ({
   const markup_percentage = localStorage.getItem('markup_percentage') ?? '1'
 
   const additionalFees =
-  Number(selectedEntry?.receipt['Visa Fees'] ?? 0) +
-  Number(selectedEntry?.receipt['Service Fees'] ?? 0);
-
+    Number(selectedEntry?.receipt['Visa Fees'] ?? 0) +
+    Number(selectedEntry?.receipt['Service Fees'] ?? 0)
 
   const totalAmount = travelerForms.length * additionalFees
 
@@ -241,26 +238,37 @@ const Vertical5: React.FC<VerticalProps> = ({
 
   const handleReviewAndSave = async (values) => {
     try {
-      setLoading(true);
+      setLoading(true)
 
       for (const travelerForm of travelerForms) {
-        if (!travelerForm.firstName || !travelerForm.lastName || !travelerForm.birthPlace ||
-          !travelerForm.birthDetail || !travelerForm.passportNumber ||
-          !travelerForm.passportIssueDate || !travelerForm.passPortExpiryDate ||
-          !travelerForm.gender || !travelerForm.maritalStatus || !travelerForm.fatherName ||
-          !travelerForm.passFrontPhoto || !travelerForm.panNo || !travelerForm.passBackPhoto || !reciept) {
-          toast.error('All fields are required!', { position: 'top-center' });
-          setLoading(false);
-          return;
+        if (
+          !travelerForm.firstName ||
+          !travelerForm.lastName ||
+          !travelerForm.birthPlace ||
+          !travelerForm.birthDetail ||
+          !travelerForm.passportNumber ||
+          !travelerForm.passportIssueDate ||
+          !travelerForm.passPortExpiryDate ||
+          !travelerForm.gender ||
+          !travelerForm.maritalStatus ||
+          !travelerForm.fatherName ||
+          !travelerForm.passFrontPhoto ||
+          !travelerForm.panNo ||
+          !travelerForm.passBackPhoto ||
+          !reciept
+        ) {
+          toast.error('All fields are required!', {position: 'top-center'})
+          setLoading(false)
+          return
         }
         const registerResponse = await axiosInstance.post('/backend/create_normal_user', {
-            user_name: formValues.name,
-            user_email_id: formValues.email,
-            user_phone_number: formValues.phone,
-            user_profile_photo: travelerForm.travelerPhoto
-          });
-          
-          let userId = registerResponse.data.data._id;
+          user_name: formValues.name,
+          user_email_id: formValues.email,
+          user_phone_number: formValues.phone,
+          user_profile_photo: travelerForm.travelerPhoto,
+        })
+
+        let userId = registerResponse.data.data._id
 
         const postData = {
           country_code: selectedEntry?.country_code ?? '',
@@ -276,8 +284,12 @@ const Vertical5: React.FC<VerticalProps> = ({
           passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
           gender: travelerForm.gender,
           marital_status: travelerForm.maritalStatus,
-          application_arrival_date: formatDateWithTimezoneToYMD(selectedEntry?.application_arrival_date ?? ''),
-          application_departure_date: formatDateWithTimezoneToYMD(selectedEntry?.application_departure_date ?? ''),
+          application_arrival_date: formatDateWithTimezoneToYMD(
+            selectedEntry?.application_arrival_date ?? ''
+          ),
+          application_departure_date: formatDateWithTimezoneToYMD(
+            selectedEntry?.application_departure_date ?? ''
+          ),
           application_destination: selectedEntry?.country_code ?? '',
           fathers_name: travelerForm.fatherName,
           mothers_name: travelerForm.motherName,
@@ -287,41 +299,45 @@ const Vertical5: React.FC<VerticalProps> = ({
           panNo: travelerForm.panNo,
           photo: travelerForm.travelerPhoto,
           itr: travelerForm.itr,
-          visa_amount: Math.ceil(selectedEntry?.receipt?.['Visa Fees'] ?? 0) + (selectedEntry?.receipt?.['Service Fees'] ?? 0),
-          markup_visa_amount: Math.ceil(selectedEntry?.receipt?.['Visa Fees'] ?? 0) + (selectedEntry?.receipt?.['Service Fees'] ?? 0),
+          visa_amount:
+            Math.ceil(selectedEntry?.receipt?.['Visa Fees'] ?? 0) +
+            (selectedEntry?.receipt?.['Service Fees'] ?? 0),
+          markup_visa_amount:
+            Math.ceil(selectedEntry?.receipt?.['Visa Fees'] ?? 0) +
+            (selectedEntry?.receipt?.['Service Fees'] ?? 0),
           visa_description: selectedEntry?.description ?? '',
           receipt_url: reciept,
-        };
+        }
 
-        const response = await axiosInstance.post('/backend/create_user_application', postData);
+        const response = await axiosInstance.post('/backend/create_user_application', postData)
 
         if (response.status === 200) {
           const data = {
             user_id: userId,
             application_id: response.data.data,
-          };
+          }
 
-          const patchResponse = await axiosInstance.patch('/backend/add_user_applicant', data);
+          const patchResponse = await axiosInstance.patch('/backend/add_user_applicant', data)
 
           if (patchResponse.status === 200) {
             toast.success('Visa Applied Succesfully')
             setIsReviewModal(false)
-            setConfetti(true);
-            setModalShow(true); 
+            setConfetti(true)
+            setModalShow(true)
           } else {
-            toast.error(patchResponse.data.msg, { position: 'top-center' });
+            toast.error(patchResponse.data.msg, {position: 'top-center'})
           }
         } else {
-          toast.error(response.data.msg, { position: 'top-center' });
+          toast.error(response.data.msg, {position: 'top-center'})
         }
       }
-      setLoading(false);
+      setLoading(false)
     } catch (error) {
-      console.error('Error while making API calls:', error);
-      toast.error('Error while making API calls', { position: 'top-center' });
-      setLoading(false);
+      console.error('Error while making API calls:', error)
+      toast.error('Error while making API calls', {position: 'top-center'})
+      setLoading(false)
     }
-  };
+  }
 
   const handleDeleteForm = (index) => {
     setTravelerForms((prevForms) => {
@@ -332,36 +348,36 @@ const Vertical5: React.FC<VerticalProps> = ({
   }
 
   const toggleMenu = () => {
-    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenu = document.getElementById('mobile-menu')
     if (mobileMenu) {
-      mobileMenu.style.display = mobileMenu.style.display === 'flex' ? 'none' : 'flex';
-      mobileMenu.classList.toggle('hamburger-open');
+      mobileMenu.style.display = mobileMenu.style.display === 'flex' ? 'none' : 'flex'
+      mobileMenu.classList.toggle('hamburger-open')
     }
-  };
+  }
 
   const handleLoginClick = () => {
     navigate('/customer/login')
-  };
+  }
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.toLocaleString('default', { month: 'short' });
-    const year = date.getFullYear();
-    
-    let dayWithSuffix;
+    const date = new Date(dateString)
+    const day = date.getDate()
+    const month = date.toLocaleString('default', {month: 'short'})
+    const year = date.getFullYear()
+
+    let dayWithSuffix
     if (day === 1 || day === 21 || day === 31) {
-      dayWithSuffix = `${day}st`;
+      dayWithSuffix = `${day}st`
     } else if (day === 2 || day === 22) {
-      dayWithSuffix = `${day}nd`;
+      dayWithSuffix = `${day}nd`
     } else if (day === 3 || day === 23) {
-      dayWithSuffix = `${day}rd`;
+      dayWithSuffix = `${day}rd`
     } else {
-      dayWithSuffix = `${day}th`;
+      dayWithSuffix = `${day}th`
     }
-  
-    return `${dayWithSuffix} ${month} ${year}`;
-  };
+
+    return `${dayWithSuffix} ${month} ${year}`
+  }
 
   const stepsContent = [
     {
@@ -391,33 +407,39 @@ const Vertical5: React.FC<VerticalProps> = ({
     <div style={{backgroundColor: '#fff'}} className='w-full'>
       {confetti && <Confetti />}
       <Toaster />
-      <OrderSuccess 
-        show={modalShow} 
-        handleClose={handleClose} 
-        orderId={insuranceResponse ? insuranceResponse.insurance_plan_type : ''} 
-        orderTime={insuranceResponse ? formatDate(insuranceResponse.created_at) : ''} 
-        account={insuranceResponse ? insuranceResponse.insurance_id : ''} 
-        name={`${insuranceResponse ? insuranceResponse.first_name : ''} ${insuranceResponse ? insuranceResponse.last_name : ''}`} 
-        amount={insuranceResponse ? Number(insuranceResponse.insurance_plan_type) * travelerForms.length : 0} 
+      <OrderSuccess
+        show={modalShow}
+        handleClose={handleClose}
+        orderId={insuranceResponse ? insuranceResponse.insurance_plan_type : ''}
+        orderTime={insuranceResponse ? formatDate(insuranceResponse.created_at) : ''}
+        account={insuranceResponse ? insuranceResponse.insurance_id : ''}
+        name={`${insuranceResponse ? insuranceResponse.first_name : ''} ${
+          insuranceResponse ? insuranceResponse.last_name : ''
+        }`}
+        amount={
+          insuranceResponse
+            ? Number(insuranceResponse.insurance_plan_type) * travelerForms.length
+            : 0
+        }
       />
-      <div id="nav1">
-        <a href='/' className="part11">
-            <img className="logo" src="./media/logos/logo.png" alt="logo" />
+      <div id='nav1'>
+        <a href='/' className='part11'>
+          <img className='logo' src='./media/logos/logo.png' alt='logo' />
         </a>
 
-        <div className="part21">
-          <button className="button2" onClick={handleLoginClick}>
+        <div className='part21'>
+          <button className='button2' onClick={handleLoginClick}>
             Login
           </button>
         </div>
 
-        <i className="ri-menu-3-fill hamburger" onClick={toggleMenu}></i>
-        <div id="mobile-menu">
-            <a href="#">Home</a>
-            <a href="#">Sign up</a>
-            <a href="#">Login</a>
+        <i className='ri-menu-3-fill hamburger' onClick={toggleMenu}></i>
+        <div id='mobile-menu'>
+          <a href='#'>Home</a>
+          <a href='#'>Sign up</a>
+          <a href='#'>Login</a>
         </div>
-        </div>
+      </div>
       <div className='d-flex' style={{justifyContent: 'space-between', width: '95%'}}>
         <div
           style={{
@@ -468,39 +490,65 @@ const Vertical5: React.FC<VerticalProps> = ({
         </div>
 
         <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
-        <Formik initialValues={initValues} onSubmit={() => { }}
-          >
-            <Form className='py-10 px-20' style={{ borderRadius: 20, borderColor: '#f2f2f2', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', marginLeft: 10, marginTop: 10, backgroundColor: 'white' }}>
-                <div className='w-100 mb-12'>
+          <Formik initialValues={initValues} onSubmit={() => {}}>
+            <Form
+              className='py-10 px-20'
+              style={{
+                borderRadius: 20,
+                borderColor: '#f2f2f2',
+                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+                marginLeft: 10,
+                marginTop: 10,
+                backgroundColor: 'white',
+              }}
+            >
+              <div className='w-100 mb-12'>
                 <h1>Please Fill the form below to apply for visa</h1>
-                </div>
-                <div className='d-flex w-100'>
+              </div>
+              <div className='d-flex w-100'>
                 <div className='fv-row mb-5 w-50'>
-                    <label className='form-label required'>Name</label>
-                    <Field onChange={(e) => handleFieldChange('name', e.target.value)} name='name' style={inputStyle} className='form-control form-control-lg form-control-solid' />
-                    <div className='text-danger mt-2'>
+                  <label className='form-label required'>Name</label>
+                  <Field
+                    onChange={(e) => handleFieldChange('name', e.target.value)}
+                    name='name'
+                    style={inputStyle}
+                    className='form-control form-control-lg form-control-solid'
+                  />
+                  <div className='text-danger mt-2'>
                     <ErrorMessage name='name' />
-                    </div>
+                  </div>
                 </div>
                 <div className='fv-row mb-5 w-50'>
-                    <label className='form-label required'>Email</label>
-                    <Field onChange={(e) => handleFieldChange('email', e.target.value)} name='email' style={inputStyle} className='form-control form-control-lg form-control-solid' />
-                    <div className='text-danger mt-2'>
+                  <label className='form-label required'>Email</label>
+                  <Field
+                    onChange={(e) => handleFieldChange('email', e.target.value)}
+                    name='email'
+                    style={inputStyle}
+                    className='form-control form-control-lg form-control-solid'
+                  />
+                  <div className='text-danger mt-2'>
                     <ErrorMessage name='email' />
-                    </div>
+                  </div>
                 </div>
-                </div>
-                <div className='d-flex w-100'>
+              </div>
+              <div className='d-flex w-100'>
                 <div className='fv-row mb-5 w-50'>
-                    <label className='form-label required'>Phone</label>
-                    <Field onChange={(e) => handleFieldChange('phone', e.target.value)} type="number" maxLength={10} name='phone' style={inputStyle} className='form-control form-control-lg form-control-solid' />
-                    <div className='text-danger mt-2'>
+                  <label className='form-label required'>Phone</label>
+                  <Field
+                    onChange={(e) => handleFieldChange('phone', e.target.value)}
+                    type='number'
+                    maxLength={10}
+                    name='phone'
+                    style={inputStyle}
+                    className='form-control form-control-lg form-control-solid'
+                  />
+                  <div className='text-danger mt-2'>
                     <ErrorMessage name='phone' />
-                    </div>
+                  </div>
                 </div>
-                </div>
+              </div>
             </Form>
-            </Formik>
+          </Formik>
 
           {travelerForms.map((_, index) => (
             <>
@@ -531,89 +579,99 @@ const Vertical5: React.FC<VerticalProps> = ({
             </>
           ))}
           <div
-            style={{alignItems: 'center'}}
-            className='d-flex flex-column w-50 my-8 justify-content-start'
+            className='py-10 px-20'
+            style={{
+              borderRadius: 20,
+              borderColor: '#f2f2f2',
+              boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+              marginLeft: 10,
+              marginTop: 10,
+              backgroundColor: 'white',
+            }}
           >
-            <h1>Upload Reciept</h1>
-            <div className='d-flex flex-column align-items-center gap-4 w-100 '>
-              <img width='200px' src={qr} alt='qr-code' />
-            </div>
-            <div style={{width: '60%', marginLeft: '25px', marginTop: '30px'}}>
-              <h6>Reciept</h6>
-              {loading ? (
-                <div style={{color: '#000'}}>Loading...</div>
-              ) : reciept ? (
-                <div
-                  style={{
-                    border: '4px dotted gray',
-                    width: '100%',
-                    height: 200,
-                    borderRadius: '10px',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    marginTop: 20,
-                  }}
-                >
+            <div className='d-flex ' style={{width: '100%'}}>
+              <div style={{width: '40%', marginLeft: '25px', marginTop: '30px'}}>
+                <h6>Receipt</h6>
+                {loading ? (
+                  <div style={{color: '#000'}}>Loading...</div>
+                ) : reciept ? (
                   <div
-                    onClick={() => setReciept('')}
                     style={{
-                      justifyContent: 'flex-end',
+                      border: '4px dotted gray',
+                      width: '100%',
+                      height: 200,
+                      borderRadius: '10px',
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      marginTop: 20,
                       position: 'relative',
-                      backgroundColor: 'white',
-                      padding: 7,
-                      borderRadius: 50,
-                      left: '10px',
-                      width: '35px',
-                      zIndex: '1',
-                      cursor: 'pointer',
                     }}
                   >
-                    <ClearIcon style={{color: 'red'}} />
+                    <div
+                      onClick={() => setReciept('')}
+                      style={{
+                        justifyContent: 'flex-end',
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        padding: 7,
+                        borderRadius: '50%',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <ClearIcon style={{color: 'red'}} />
+                    </div>
+                    <img
+                      src={reciept}
+                      alt='Uploaded Image'
+                      style={{
+                        maxWidth: '100%',
+                        maxHeight: '100%',
+                        marginTop: '15px',
+                      }}
+                    />
                   </div>
-                  <img
-                    src={reciept}
-                    alt='Uploaded Image'
+                ) : (
+                  <div
                     style={{
-                      maxWidth: '100%',
-                      maxHeight: '100%',
-                      position: 'relative',
-                      marginTop: '-35px',
+                      border: '4px dotted gray',
+                      width: '100%',
+                      height: 200,
+                      borderRadius: '10px',
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      marginTop: 20,
                     }}
-                  />
-                </div>
-              ) : (
-                <div
-                  style={{
-                    border: '4px dotted gray',
-                    width: '100%',
-                    height: 200,
-                    borderRadius: '10px',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    marginTop: 20,
-                  }}
-                >
-                  <h4 className='mx-10 mt-10'>Reciept Photo</h4>
-                  <button
-                    type='button'
-                    onClick={handleRecieptUpload}
-                    className='btn btn-lg btn-success me-3 mt-7'
-                    style={{justifyContent: 'flex-end', backgroundColor: '#327113'}}
                   >
-                    <span className='indicator-label'>Select Files</span>
-                  </button>
-                  <p className='text-bold pt-5 fs-9' style={{color: '#555555'}}>
-                    Supports Image only.
-                  </p>
-                  <input
-                    type='file'
-                    ref={recieptFileInputRef}
-                    style={{display: 'none'}}
-                    accept='image/*'
-                    onChange={handleRecieptSelect}
-                  />
+                    <h4 className='mx-10 mt-10'>Receipt Photo</h4>
+                    <button
+                      type='button'
+                      onClick={handleRecieptUpload}
+                      className='btn btn-lg btn-success me-3 mt-7'
+                      style={{justifyContent: 'flex-end', backgroundColor: '#327113'}}
+                    >
+                      <span className='indicator-label'>Select Files</span>
+                    </button>
+                    <p className='text-bold pt-5 fs-9' style={{color: '#555555'}}>
+                      Supports Image only.
+                    </p>
+                    <input
+                      type='file'
+                      ref={recieptFileInputRef}
+                      style={{display: 'none'}}
+                      accept='image/*'
+                      onChange={handleRecieptSelect}
+                    />
+                  </div>
+                )}
+              </div>
+              <div style={{width: '60%', marginTop: 25, alignItems: 'center'}}>
+                <div className='d-flex flex-column align-items-center gap-4 w-100 '>
+                  <h1>Upload Reciept</h1>
+                  <img width='200px' src={qr} alt='qr-code' />
                 </div>
-              )}
+              </div>
             </div>
           </div>
           <div className='d-flex my-10' style={{justifyContent: 'flex-end', display: 'flex'}}>
@@ -653,28 +711,27 @@ const Vertical5: React.FC<VerticalProps> = ({
             >
               <div>
                 <h2>Visa Information</h2>
-                <p style={{ paddingTop: 5, lineHeight: 2, paddingBottom: 5 }}>
-                {selectedEntry && (
+                <p style={{paddingTop: 5, lineHeight: 2, paddingBottom: 5}}>
+                  {selectedEntry && (
                     <>
-                    {selectedEntry.country_code} - {selectedEntry.description}
-                    <br />
-                    Travelers: {travelerForms.length}
-                    <br />
-                    {selectedEntry.application_arrival_date &&
-                    selectedEntry.application_departure_date &&
-                    typeof selectedEntry.application_arrival_date === 'string' &&
-                    typeof selectedEntry.application_departure_date === 'string' ? (
+                      {selectedEntry.country_code} - {selectedEntry.description}
+                      <br />
+                      Travelers: {travelerForms.length}
+                      <br />
+                      {selectedEntry.application_arrival_date &&
+                      selectedEntry.application_departure_date &&
+                      typeof selectedEntry.application_arrival_date === 'string' &&
+                      typeof selectedEntry.application_departure_date === 'string' ? (
                         <>
-                        Travel Dates: {formatDate1(selectedEntry.application_arrival_date)} -{' '}
-                        {formatDate1(selectedEntry.application_departure_date)}
+                          Travel Dates: {formatDate1(selectedEntry.application_arrival_date)} -{' '}
+                          {formatDate1(selectedEntry.application_departure_date)}
                         </>
-                    ) : (
+                      ) : (
                         'Travel Dates: N/A'
-                    )}
+                      )}
                     </>
-                )}
+                  )}
                 </p>
-
               </div>
 
               <hr
@@ -744,17 +801,15 @@ const Vertical5: React.FC<VerticalProps> = ({
                     key={index}
                     className='d-flex'
                     style={{justifyContent: 'space-between', width: '100%'}}
-                    >
-                      <h5>Traveler {index + 1}:</h5>
-                      <h5>
-                        {(
-                          Number(selectedEntry?.receipt?.['Visa Fees'] ?? 0) +
-                          Number(selectedEntry?.receipt?.['Service Fees'] ?? 0)
-                        ).toFixed(0)}
-                        /-
-                      </h5>
-
-
+                  >
+                    <h5>Traveler {index + 1}:</h5>
+                    <h5>
+                      {(
+                        Number(selectedEntry?.receipt?.['Visa Fees'] ?? 0) +
+                        Number(selectedEntry?.receipt?.['Service Fees'] ?? 0)
+                      ).toFixed(0)}
+                      /-
+                    </h5>
                   </div>
                 ))}
 
@@ -815,29 +870,54 @@ const Vertical5: React.FC<VerticalProps> = ({
           <Modal.Title>Review Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {insuranceFormData && insuranceFormData.map((data, index) => (
-            <div key={index}>
-              <hr className='ahr'/>
-              <p><strong>First Name:</strong> {data.firstName}</p>
-              <p><strong>Last Name:</strong> {data.lastName}</p>
-              <p><strong>Birth Place:</strong> {data.birthPlace}</p>
-              <p><strong>Birth Detail:</strong> {data.birthDetail}</p>
-              <p><strong>Passport Number:</strong> {data.passportNumber}</p>
-              <p><strong>Passport Issue Date:</strong> {data.passportIssueDate}</p>
-              <p><strong>Father's Name:</strong> {data.fatherName}</p>
-              <p><strong>Mother's Name:</strong> {data.motherName}</p>
-              <p><strong>Passport Expiry Date:</strong> {data.passPortExpiryDate}</p>
-              <p><strong>Gender:</strong> {data.gender}</p>
-              <p><strong>Marital Status:</strong> {data.maritalStatus}</p>
-              <p><strong>Pan Number:</strong> {data.panNo}</p>
-            </div>
-          ))}
+          {insuranceFormData &&
+            insuranceFormData.map((data, index) => (
+              <div key={index}>
+                <hr className='ahr' />
+                <p>
+                  <strong>First Name:</strong> {data.firstName}
+                </p>
+                <p>
+                  <strong>Last Name:</strong> {data.lastName}
+                </p>
+                <p>
+                  <strong>Birth Place:</strong> {data.birthPlace}
+                </p>
+                <p>
+                  <strong>Birth Detail:</strong> {data.birthDetail}
+                </p>
+                <p>
+                  <strong>Passport Number:</strong> {data.passportNumber}
+                </p>
+                <p>
+                  <strong>Passport Issue Date:</strong> {data.passportIssueDate}
+                </p>
+                <p>
+                  <strong>Father's Name:</strong> {data.fatherName}
+                </p>
+                <p>
+                  <strong>Mother's Name:</strong> {data.motherName}
+                </p>
+                <p>
+                  <strong>Passport Expiry Date:</strong> {data.passPortExpiryDate}
+                </p>
+                <p>
+                  <strong>Gender:</strong> {data.gender}
+                </p>
+                <p>
+                  <strong>Marital Status:</strong> {data.maritalStatus}
+                </p>
+                <p>
+                  <strong>Pan Number:</strong> {data.panNo}
+                </p>
+              </div>
+            ))}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setIsReviewModal(false)}>
+          <Button variant='secondary' onClick={() => setIsReviewModal(false)}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleReviewAndSave}>
+          <Button variant='primary' onClick={handleReviewAndSave}>
             Confirm
           </Button>
         </Modal.Footer>

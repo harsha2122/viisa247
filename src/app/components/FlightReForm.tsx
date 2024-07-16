@@ -93,98 +93,7 @@ const FlightReForm = ({ ind, onDataChange, selectedEntry }) => {
     <Container>
     <Toaster />
       <Form onSubmit={handleSubmit}>
-        <Row>
-        {formData.passport_front && (
-            <Col md={6}>
-              <Form.Group controlId="passport_front" className="mb-3">
-                <Form.Label>Passport Front</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="passport_front"
-                  onChange={handleFileChange}
-                />
-                {formData.passport_front && (
-                  <img src={formData.passport_front} alt="Passport Front Preview" style={{ width: '100px', height: '100px' }} />
-                )}
-              </Form.Group>
-            </Col>
-          )}
-          {formData.passport_back && (
-            <Col md={6}>
-              <Form.Group controlId="passport_back" className="mb-3">
-                <Form.Label>Passport Back</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="passport_back"
-                  onChange={handleFileChange}
-                />
-                {formData.passport_back && (
-                  <img src={formData.passport_back} alt="Passport Back Preview" style={{ width: '100px', height: '100px' }} />
-                )}
-              </Form.Group>
-            </Col>
-          )}
-          {formData.photo && (
-            <Col md={6}>
-              <Form.Group controlId="photo" className="mb-3">
-                <Form.Label>Photo</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="photo"
-                  onChange={handleFileChange}
-                />
-                {formData.photo && (
-                  <img src={formData.photo} alt="Photo Preview" style={{ width: '100px', height: '100px' }} />
-                )}
-              </Form.Group>
-            </Col>
-          )}
-          {formData.pan_card && (
-            <Col md={6}>
-              <Form.Group controlId="pan_card" className="mb-3">
-                <Form.Label>PAN Card</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="pan_card"
-                  onChange={handleFileChange}
-                />
-                {formData.pan_card && (
-                  <img src={formData.pan_card} alt="PAN Card Preview" style={{ width: '100px', height: '100px' }} />
-                )}
-              </Form.Group>
-            </Col>
-          )}
-          {formData.tickets && (
-            <Col md={6}>
-              <Form.Group controlId="tickets" className="mb-3">
-                <Form.Label>Tickets</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="tickets"
-                  onChange={handleFileChange}
-                />
-                {formData.tickets && (
-                  <img src={formData.tickets} alt="Ticket Preview" style={{ width: '100px', height: '100px' }} />
-                )}
-              </Form.Group>
-            </Col>
-          )}
-          {formData.receipt_url && (
-            <Col md={6}>
-              <Form.Group controlId="receipt_url" className="mb-3">
-                <Form.Label>Receipt</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="receipt_url"
-                  onChange={handleFileChange}
-                />
-                {formData.receipt_url && (
-                  <img src={formData.receipt_url} alt="Receipt Preview" style={{ width: '100px', height: '100px' }} />
-                )}
-              </Form.Group>
-            </Col>
-          )}
-        </Row>
+       
 
         <Row>
           {formData.first_name && (
@@ -302,6 +211,99 @@ const FlightReForm = ({ ind, onDataChange, selectedEntry }) => {
                   value={formData.visa_description || ''}
                   onChange={handleChange}
                 />
+              </Form.Group>
+            </Col>
+          )}
+        </Row>
+
+        <Row>
+        {formData.passport_front && (
+            <Col md={6}>
+              <Form.Group controlId="passport_front" className="mb-3">
+                <Form.Label>Passport Front</Form.Label>
+                <Form.Control
+                  type="file"
+                  name="passport_front"
+                  onChange={handleFileChange}
+                />
+                {formData.passport_front && (
+                  <img src={formData.passport_front} alt="Passport Front Preview" style={{ width: '100px', height: '100px' }} />
+                )}
+              </Form.Group>
+            </Col>
+          )}
+          {formData.passport_back && (
+            <Col md={6}>
+              <Form.Group controlId="passport_back" className="mb-3">
+                <Form.Label>Passport Back</Form.Label>
+                <Form.Control
+                  type="file"
+                  name="passport_back"
+                  onChange={handleFileChange}
+                />
+                {formData.passport_back && (
+                  <img src={formData.passport_back} alt="Passport Back Preview" style={{ width: '100px', height: '100px' }} />
+                )}
+              </Form.Group>
+            </Col>
+          )}
+          {formData.photo && (
+            <Col md={6}>
+              <Form.Group controlId="photo" className="mb-3">
+                <Form.Label>Photo</Form.Label>
+                <Form.Control
+                  type="file"
+                  name="photo"
+                  onChange={handleFileChange}
+                />
+                {formData.photo && (
+                  <img src={formData.photo} alt="Photo Preview" style={{ width: '100px', height: '100px' }} />
+                )}
+              </Form.Group>
+            </Col>
+          )}
+          {formData.pan_card && (
+            <Col md={6}>
+              <Form.Group controlId="pan_card" className="mb-3">
+                <Form.Label>PAN Card</Form.Label>
+                <Form.Control
+                  type="file"
+                  name="pan_card"
+                  onChange={handleFileChange}
+                />
+                {formData.pan_card && (
+                  <img src={formData.pan_card} alt="PAN Card Preview" style={{ width: '100px', height: '100px' }} />
+                )}
+              </Form.Group>
+            </Col>
+          )}
+          {formData.tickets && (
+            <Col md={6}>
+              <Form.Group controlId="tickets" className="mb-3">
+                <Form.Label>Tickets</Form.Label>
+                <Form.Control
+                  type="file"
+                  name="tickets"
+                  onChange={handleFileChange}
+                />
+                {formData.tickets && (
+                  <img src={formData.tickets} alt="Ticket Preview" style={{ width: '100px', height: '100px' }} />
+                )}
+              </Form.Group>
+            </Col>
+          )}
+          {formData.receipt_url && (
+            <Col md={6}>
+              <Form.Group controlId="receipt_url" className="mb-3">
+                <Form.Label>Receipt</Form.Label>
+                <Form.Control
+                  type="file"
+                  name="receipt_url"
+                  onChange={handleFileChange}
+                />
+                {formData.receipt_url && (
+                  <img src={formData.receipt_url} alt="Receipt Preview" style={{ width: '100px', height: '100px' }} />
+                )}
               </Form.Group>
             </Col>
           )}

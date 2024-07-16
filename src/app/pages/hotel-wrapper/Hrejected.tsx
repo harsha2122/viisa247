@@ -28,7 +28,7 @@ function Hreject() {
 
   return (
     <div style={{ marginTop: '-50px' }}>
-      <Whreject className='' title='Insurance Rejected' data={insuranceData} loading={loading} />
+      <Whreject className='' title='Hotel Rejected' data={insuranceData} loading={loading} />
     </div>
   );
 }

@@ -29,7 +29,7 @@ function Fwaiting() {
 
   return (
     <div style={{ marginTop: "-50px" }}>
-      <Wfwaiting className='' title='Insurance Waiting for Approval' data={insuranceData} loading={loading} />
+      <Wfwaiting className='' title='Flight Waiting for Approval' data={insuranceData} loading={loading} />
     </div>
   );
 }

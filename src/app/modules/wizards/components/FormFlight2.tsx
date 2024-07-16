@@ -146,8 +146,8 @@ const FormFlight2: React.FC<VerticalProps> = ({
     }
   }, [])
 
-  const totalAmount = travelerForms.length * selectedEntry.totalAmount
-  const totalAmounta = selectedEntry.totalAmount
+  const totalAmount = travelerForms.length * selectedEntry.merchant_flight_amount
+  const totalAmounta = selectedEntry.merchant_flight_amount
 
   const addTravelerForm = () => {
     setTravelerForms((prevForms) => [...prevForms, {}])
