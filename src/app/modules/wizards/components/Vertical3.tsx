@@ -371,10 +371,7 @@ const Vertical3: React.FC<VerticalProps> = ({
         orderTime={insuranceResponse ? formatDate(insuranceResponse.created_at) : ''} 
         account={insuranceResponse ? insuranceResponse.insurance_id : ''} 
         name={`${insuranceResponse ? insuranceResponse.first_name : ''} ${insuranceResponse ? insuranceResponse.last_name : ''}`} 
-        amount={insuranceResponse ? Number(insuranceResponse.Math.ceil(
-          selectedEntry.receipt['Visa Fees'] ? selectedEntry.receipt['Visa Fees'] : 0
-        ) +
-        (selectedEntry.receipt['Service Fees'] ? selectedEntry.receipt['Service Fees'] : 0),) * travelerForms.length : 0} 
+        amount={insuranceResponse ? insuranceResponse.insurance_plan_type : ''} 
       />
       <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
         <div
