@@ -12,6 +12,9 @@ import axiosInstance from '../helpers/axiosInstance'
 import { CloseOutlined } from '@mui/icons-material'
 import TravelerForm1 from '../modules/wizards/components/TravelerForm1'
 import TraverlerReForm from './TraverlerReForm'
+import InsuranceReForm from './InsuranceReForm'
+import HotelReForm from './HotelReForm'
+import FlightReForm from './FlightReForm'
 
 type VisaData = {
   country_code: string
@@ -464,6 +467,9 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
   const [viewApplication, setViewApplication] = useState<VisaData | null>(null)
   const [activeTab, setActiveTab] = useState('visa')
   const [visible, setVisible] = useState(false)
+  const [visible1, setVisible1] = useState(false)
+  const [visible2, setVisible2] = useState(false)
+  const [visible3, setVisible3] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
 
   const handleTabChange = (tab) => {
@@ -739,9 +745,42 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
     setVisible(true)
   }
 
+  const handleVisibilityClick1 = (entry) => {
+    console.log(entry)
+    setSelectedItem(entry) // Set the selected item
+    setVisible1(true)
+  }
+
+  const handleVisibilityClick2 = (entry) => {
+    setSelectedItem(entry) // Set the selected item
+    setVisible2(true)
+
+  }
+
+  const handleVisibilityClick3 = (entry) => {
+    console.log(entry)
+    setSelectedItem(entry) // Set the selected item
+    setVisible3(true)
+  }
+
+  const handleCloseClick1 = () => {
+    setSelectedItem(null)
+    setVisible1(false)
+  }
+
   const handleCloseClick = () => {
     setSelectedItem(null)
     setVisible(false)
+  }
+
+  const handleCloseClick2 = () => {
+    setSelectedItem(null)
+    setVisible2(false)
+  }
+
+  const handleCloseClick3 = () => {
+    setSelectedItem(null)
+    setVisible3(false)
   }
 
   const handleTravelerDataChange = (newData, index) => {
@@ -973,7 +1012,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                     type='submit'
                     id='kt_sign_in_submit'
                     className='btn btn-success'
-                    onClick={() => handleVisibilityClick(entry)}
+                    onClick={() => handleVisibilityClick1(entry)}
                     style={{ backgroundColor: '#327113', marginTop: 20 }}
                   >
                     Re - Submit Form
@@ -1054,12 +1093,12 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                     here only
                   </p>
                 )}
-                                {(entry.hotel_status === 'Reject' || entry.hotel_status === 'Rejected') && (
+                {(entry.hotel_status === 'Reject' || entry.hotel_status === 'Rejected') && (
                   <button
                     type='submit'
                     id='kt_sign_in_submit'
                     className='btn btn-success'
-                    onClick={() => handleVisibilityClick(entry)}
+                    onClick={() => handleVisibilityClick2(entry)}
                     style={{ backgroundColor: '#327113', marginTop: 20 }}
                   >
                     Re - Submit Form
@@ -1147,7 +1186,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                     type='submit'
                     id='kt_sign_in_submit'
                     className='btn btn-success'
-                    onClick={() => handleVisibilityClick(entry)}
+                    onClick={() => handleVisibilityClick3(entry)}
                     style={{ backgroundColor: '#327113', marginTop: 20 }}
                   >
                     Re - Submit Form
@@ -1181,6 +1220,99 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
               <h1>Edit Application</h1>
               <hr className='ahr'/>
               <TraverlerReForm
+              ind={0}
+              onDataChange={handleTravelerDataChange}
+              selectedEntry={selectedItem}
+            />
+            </div>
+          </div>
+        )}
+        {visible1 && (
+          <div
+            className='loader-overlay'
+            style={{...overlayStyle, ...(visible1 && activeOverlayStyle)}}
+          >
+            <div style={contentStyle}>
+              <div
+                onClick={() => handleCloseClick1()}
+                style={{
+                  backgroundColor: '#d3d3d3',
+                  padding: '9px',
+                  position: 'absolute',
+                  top: '15%',
+                  left: '84.5%',
+                  transform: 'translate(-35%, -40%)',
+                  borderRadius: 20,
+                  cursor: 'pointer',
+                }}
+              >
+                <CloseOutlined />
+              </div>
+              <h1>Edit Application</h1>
+              <hr className='ahr'/>
+              <InsuranceReForm
+              ind={0}
+              onDataChange={handleTravelerDataChange}
+              selectedEntry={selectedItem}
+            />
+            </div>
+          </div>
+        )}
+        {visible2 && (
+          <div
+            className='loader-overlay'
+            style={{...overlayStyle, ...(visible2 && activeOverlayStyle)}}
+          >
+            <div style={contentStyle}>
+              <div
+                onClick={() => handleCloseClick2()}
+                style={{
+                  backgroundColor: '#d3d3d3',
+                  padding: '9px',
+                  position: 'absolute',
+                  top: '15%',
+                  left: '84.5%',
+                  transform: 'translate(-35%, -40%)',
+                  borderRadius: 20,
+                  cursor: 'pointer',
+                }}
+              >
+                <CloseOutlined />
+              </div>
+              <h1>Edit Application</h1>
+              <hr className='ahr'/>
+              <HotelReForm
+              ind={0}
+              onDataChange={handleTravelerDataChange}
+              selectedEntry={selectedItem}
+            />
+            </div>
+          </div>
+        )}
+        {visible3 && (
+          <div
+            className='loader-overlay'
+            style={{...overlayStyle, ...(visible3 && activeOverlayStyle)}}
+          >
+            <div style={contentStyle}>
+              <div
+                onClick={() => handleCloseClick3()}
+                style={{
+                  backgroundColor: '#d3d3d3',
+                  padding: '9px',
+                  position: 'absolute',
+                  top: '15%',
+                  left: '84.5%',
+                  transform: 'translate(-35%, -40%)',
+                  borderRadius: 20,
+                  cursor: 'pointer',
+                }}
+              >
+                <CloseOutlined />
+              </div>
+              <h1>Edit Application</h1>
+              <hr className='ahr'/>
+              <FlightReForm
               ind={0}
               onDataChange={handleTravelerDataChange}
               selectedEntry={selectedItem}

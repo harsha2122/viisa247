@@ -33,7 +33,7 @@ function VisasTable({ data }: Props) {
         <Link
           to='/superadmin/add-country'
           title='Add Visa'
-          className='btn btn-bg-light pt-4 d-flex btn-active-color-primary btn-sm my-auto'              >
+          className='btn btn-bg-light pt-4 d-flex btn-active-color-primary btn-sm my-auto'>
           <KTIcon iconName='pencil' className='fs-3' /> <h5 className='mx-2'>Add Visa</h5>
         </Link>
       </div>

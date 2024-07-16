@@ -271,13 +271,13 @@ const FormFlight1: React.FC<VerticalProps> = ({
 
   const stepsContent = [
     {
-      title: 'Claims',
+      title: 'Quick and Easy',
       description:
-        'Quick and easy claims on insurance provider website',
+        'Enter your details and generate dummy tickets for immigration purpose',
     },
     {
-      title: 'About Settlement',
-      description: '98% settlement ratio.',
+      title: 'Easy Immigration',
+      description: 'You can show this ticket to immigration officer for easy immigrations',
     },
   ]
 

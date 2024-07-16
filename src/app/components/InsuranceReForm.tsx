@@ -3,7 +3,7 @@ import { Form, Button, Row, Col, Container } from 'react-bootstrap';
 import axiosInstance from '../../app/helpers/axiosInstance';
 import toast, { Toaster } from 'react-hot-toast';
 
-const TraverlerReForm = ({ ind, onDataChange, selectedEntry }) => {
+const InsuranceReForm = ({ ind, onDataChange, selectedEntry }) => {
   const [formData, setFormData] = useState({ ...selectedEntry });
   const [loading, setLoading] = useState(false);
 
@@ -60,30 +60,26 @@ const TraverlerReForm = ({ ind, onDataChange, selectedEntry }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     const updatedData = {
-    _id: selectedEntry._id,
-      passport_front: formData.passport_front,
-      passport_back: formData.passport_back,
-      photo: formData.photo,
-      pan_card: formData.pan_card,
-      tickets: formData.tickets,
-      receipt_url: formData.receipt_url,
-      application_destination: formData.application_destination,
-      application_id: formData.application_id,
-      birth_place: formData.birth_place,
-      country_code: formData.country_code,
-      fathers_name: formData.fathers_name,
+      _id: selectedEntry._id,
       first_name: formData.first_name,
-      gender: formData.gender,
       last_name: formData.last_name,
+      birth_place: formData.birth_place,
+      birthday_date: formData.birthday_date, // Make sure this is included in your formData
+      nationality: formData.nationality, // Make sure this is included in your formData
       passport_number: formData.passport_number,
-      visa_amount: formData.visa_amount,
-      visa_description: formData.visa_description,
+      passport_issue_date: formData.passport_issue_date, // Make sure this is included in your formData
+      passport_expiry_date: formData.passport_expiry_date, // Make sure this is included in your formData
+      gender: formData.gender,
+      marital_status: formData.marital_status, // Make sure this is included in your formData
+      passport_front: formData.passport_front,
+      receipt_url: formData.receipt_url,
     };
   
     try {
-      const response = await axiosInstance.post('/backend/update_user_application', updatedData);
-  
+      const response = await axiosInstance.post('/backend/update_insurance_application', updatedData);
+      
       if (response.data.success === 1) {
         toast.success('Data updated successfully!');
         setTimeout(() => {
@@ -97,6 +93,9 @@ const TraverlerReForm = ({ ind, onDataChange, selectedEntry }) => {
       toast.error('Error updating data: ');
     }
   };
+  
+
+  console.log("asd", selectedEntry)
   
 
   return (
@@ -115,66 +114,6 @@ const TraverlerReForm = ({ ind, onDataChange, selectedEntry }) => {
                 />
                 {formData.passport_front && (
                   <img src={formData.passport_front} alt="Passport Front Preview" style={{ width: '100px', height: '100px' }} />
-                )}
-              </Form.Group>
-            </Col>
-          )}
-          {formData.passport_back && (
-            <Col md={6}>
-              <Form.Group controlId="passport_back" className="mb-3">
-                <Form.Label>Passport Back</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="passport_back"
-                  onChange={handleFileChange}
-                />
-                {formData.passport_back && (
-                  <img src={formData.passport_back} alt="Passport Back Preview" style={{ width: '100px', height: '100px' }} />
-                )}
-              </Form.Group>
-            </Col>
-          )}
-          {formData.photo && (
-            <Col md={6}>
-              <Form.Group controlId="photo" className="mb-3">
-                <Form.Label>Photo</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="photo"
-                  onChange={handleFileChange}
-                />
-                {formData.photo && (
-                  <img src={formData.photo} alt="Photo Preview" style={{ width: '100px', height: '100px' }} />
-                )}
-              </Form.Group>
-            </Col>
-          )}
-          {formData.pan_card && (
-            <Col md={6}>
-              <Form.Group controlId="pan_card" className="mb-3">
-                <Form.Label>PAN Card</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="pan_card"
-                  onChange={handleFileChange}
-                />
-                {formData.pan_card && (
-                  <img src={formData.pan_card} alt="PAN Card Preview" style={{ width: '100px', height: '100px' }} />
-                )}
-              </Form.Group>
-            </Col>
-          )}
-          {formData.tickets && (
-            <Col md={6}>
-              <Form.Group controlId="tickets" className="mb-3">
-                <Form.Label>Tickets</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="tickets"
-                  onChange={handleFileChange}
-                />
-                {formData.tickets && (
-                  <img src={formData.tickets} alt="Ticket Preview" style={{ width: '100px', height: '100px' }} />
                 )}
               </Form.Group>
             </Col>
@@ -302,6 +241,19 @@ const TraverlerReForm = ({ ind, onDataChange, selectedEntry }) => {
               </Form.Group>
             </Col>
           )}
+        {formData.visa_description && (
+            <Col md={6}>
+              <Form.Group controlId="visa_description" className="mb-3">
+                <Form.Label>Visa Description</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="visa_description"
+                  value={formData.visa_description || ''}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+            </Col>
+          )}
         </Row>
 
         <Button variant="primary" type="submit" className="mt-3">Submit</Button>
@@ -310,4 +262,4 @@ const TraverlerReForm = ({ ind, onDataChange, selectedEntry }) => {
   );
 };
 
-export default TraverlerReForm;
+export default InsuranceReForm;
