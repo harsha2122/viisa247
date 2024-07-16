@@ -4,6 +4,8 @@ import clsx from 'clsx'
 import {Link} from 'react-router-dom'
 import {useFormik} from 'formik'
 import {requestPassword} from '../../core/_requests'
+import axiosInstance from '../../../../helpers/axiosInstance'
+import toast, { Toaster } from 'react-hot-toast';
 
 const initialValues = {
   email: '',
@@ -24,21 +26,34 @@ export function ForgotPassword() {
     initialValues,
     validationSchema: forgotPasswordSchema,
     onSubmit: (values, {setStatus, setSubmitting}) => {
-      setLoading(true)
-      setHasErrors(undefined)
-      setTimeout(() => {
-        requestPassword(values.email)
-          .then(({data: {result}}) => {
-            setHasErrors(false)
-            setLoading(false)
+      try {
+        const requestBody = {
+          user_email_id: values.email,
+          resetpasslink:'https://visa247.co.in/passwordreset'
+        };
+        
+        axiosInstance.post('/backend/forgot_password/normal_user', requestBody)
+          .then((response) => {
+            if (response.status === 200) {
+              toast.success(response.data.msg, {
+                position: "top-center", // Center the toast notification
+              });
+              setTimeout(() => {
+                window.location.href = '/customer/login'                
+              }, 400);
+            } else {
+              setLoading(false);
+              toast.error(response.data.msg,{
+                position:'top-center'
+              });
+            }
           })
-          .catch(() => {
-            setHasErrors(true)
-            setLoading(false)
-            setSubmitting(false)
-            setStatus('The login detail is incorrect')
-          })
-      }, 1000)
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      } catch (error) {
+        console.error('Error:', error);
+      }
     },
   })
 
@@ -49,6 +64,7 @@ export function ForgotPassword() {
       id='kt_login_password_reset_form'
       onSubmit={formik.handleSubmit}
     >
+      <Toaster />
       <div className='text-center mb-10'>
         {/* begin::Title */}
         <h1 className='text-dark fw-bolder mb-3'>Forgot Password ?</h1>
@@ -105,7 +121,7 @@ export function ForgotPassword() {
 
       {/* begin::Form group */}
       <div className='d-flex flex-wrap justify-content-center pb-lg-0'>
-        <button type='submit' id='kt_password_reset_submit' className='btn btn-success me-4'>
+        <button style={{background:"#327113"}} type='submit' id='kt_password_reset_submit' className='btn btn-success me-4'>
           <span className='indicator-label'>Submit</span>
           {loading && (
             <span className='indicator-progress'>
@@ -114,7 +130,7 @@ export function ForgotPassword() {
             </span>
           )}
         </button>
-        <Link to='/customer/login'>
+        <Link to='/merchant/login'>
           <button
             type='button'
             id='kt_login_password_reset_form_cancel_button'

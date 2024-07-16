@@ -146,7 +146,7 @@ export function Login() {
         <div />
 
         {/* begin::Link */}
-        <Link to='/merchant/forgot-password' className='link-primary'>
+        <Link to='/customer/forgot-password' className='link-primary'>
           Forgot Password ?
         </Link>
         {/* end::Link */}
