@@ -346,7 +346,7 @@ const Verticalii: React.FC<VerticalProps> = ({
     fontSize: 16,
     fontWeight: 'bold',
   }
-
+console.log("sadf", selectedEntry)
   return (
     <div style={{backgroundColor: '#fff'}} className='w-full'>
       {confetti && <Confetti />}
@@ -589,6 +589,7 @@ const Verticalii: React.FC<VerticalProps> = ({
         <Modal.Body>
           {insuranceFormData && insuranceFormData.map((data, index) => (
             <div key={index}>
+              <hr className='ahr' />
               <p><strong>First Name:</strong> {data.firstName}</p>
               <p><strong>Last Name:</strong> {data.lastName}</p>
               <p><strong>Birth Place:</strong> {data.birthPlace}</p>

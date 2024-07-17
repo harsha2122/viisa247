@@ -94,7 +94,6 @@ const CustomerVisaTable: React.FC<Props> = ({
     }
   };
   
-
   return (
     <div className="choice">
       <div style={{marginTop:"-45px"}} className="ticket-container" id="ticketContainer">

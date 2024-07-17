@@ -7,7 +7,7 @@ import ClearIcon from '@mui/icons-material/Delete'
 import {CheckCircleOutline, CircleOutlined} from '@mui/icons-material'
 import Loader from '../../../components/Loader'
 import {Box, Step, StepLabel, Stepper, Theme, Typography} from '@mui/material'
-import TravelerForm2 from './TravelerForm2'
+import TravelerForm2 from './TravelerForm1'
 import qr from '../../../../_metronic/assets/card/qr.png'
 import {Modal, Button} from 'react-bootstrap'
 import Confetti from 'react-confetti'
@@ -261,10 +261,11 @@ const Vertical3: React.FC<VerticalProps> = ({
             (selectedEntry.receipt['Service Fees'] ? selectedEntry.receipt['Service Fees'] : 0),
             visa_description: selectedEntry.description,
             receipt_url: reciept,
+            original_visa_amount: selectedEntry.visa_actual_price,
           }
 
           axiosInstance
-            .post('/backend/create_user_application', postData)
+            .post('/backend/create_manual_user_application', postData)
             .then((response) => {
               setInsuranceResponse(response.data.data);
               const user_id = Cookies.get('user_id')
@@ -360,6 +361,7 @@ const Vertical3: React.FC<VerticalProps> = ({
     fontWeight: 'bold',
   }
 
+
   return (
     <div style={{backgroundColor: '#fff'}} className='w-full'>
       {confetti && <Confetti />}
@@ -428,6 +430,7 @@ const Vertical3: React.FC<VerticalProps> = ({
                 <TravelerForm2
                   ind={index}
                   onDataChange={(newData) => handleTravelerDataChange(newData, index)}
+                  selectedEntry={selectedEntry}
                 />
                 {travelerForms.length > 1 && index !== 0 && (
                   <button

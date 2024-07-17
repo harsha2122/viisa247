@@ -186,7 +186,7 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
                           <ul className='d-flex flex-column gap-2'>
                             {plan.benefits.map((benefit, index) => (
                               <li key={index}>
-                                <span>{benefit}</span>
+                                <h6>{benefit}</h6>
                               </li>
                             ))}
                           </ul>
