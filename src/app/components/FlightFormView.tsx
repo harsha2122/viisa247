@@ -79,7 +79,7 @@ function FlightFormView({ viewApplication }) {
                 <div>
                   <div className='d-flex' style={{ justifyContent: 'space-between' }}>
                     <div className='fv-row mb-5'>
-                      <label className='form-label required'>First Name</label>
+                      <label className='form-label required'>Full Name</label>
                       <Field
                         name='firstName'
                         readOnly
@@ -166,7 +166,7 @@ function FlightFormView({ viewApplication }) {
 
       <div className='d-flex' style={{ width: '100%' }}>
         <div style={{ width: '40%', marginTop: 70 }}>
-          <h6>Passport Front Page Image</h6>
+          <h6>Reciept Image</h6>
           <div style={{
             border: '4px dotted gray',
             width: '100%',
@@ -195,7 +195,7 @@ function FlightFormView({ viewApplication }) {
               marginTop: "20px"
             }}
           >
-            Download Passport Front
+            Download Reciept
           </button>
         </div>
 
@@ -206,7 +206,7 @@ function FlightFormView({ viewApplication }) {
                 <div>
                   <div className='d-flex' style={{ justifyContent: 'space-between' }}>
                     <div className='fv-row mb-5'>
-                      <label className='form-label required'>From</label>
+                      <label className='form-label required'>To</label>
                       <Field
                         name='firstName'
                         readOnly
@@ -222,7 +222,7 @@ function FlightFormView({ viewApplication }) {
 
                     <div className='fv-row mb-5'>
                       <label className='d-flex align-items-center form-label'>
-                        <span className='required'>To</span>
+                        <span className='required'>From</span>
                       </label>
                       <Field
                         style={inputStyle}
@@ -233,6 +233,23 @@ function FlightFormView({ viewApplication }) {
                       />
                       <div className='text-danger mt-2'>
                         <ErrorMessage name='lastName' />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='d-flex' style={{ justifyContent: 'space-between' }}>
+                    <div className='fv-row mb-5'>
+                      <label className='form-label required'>Gender</label>
+                      <Field
+                        name='firstName'
+                        readOnly
+                        value={viewApplication.gender
+                        }
+                        style={inputStyle}
+                        className='form-control form-control-lg form-control-solid'
+                      />
+                      <div className='text-danger mt-2'>
+                        <ErrorMessage name='firstName' />
                       </div>
                     </div>
                   </div>

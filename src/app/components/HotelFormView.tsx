@@ -25,6 +25,8 @@ function HotelFormView({ viewApplication }) {
     }
   };
 
+  console.log("asdc", viewApplication)
+
   return (
     <div className='py-10 px-20'>
       <h5 className='mx-auto' style={{ fontSize: 30, letterSpacing: 0.3 }}>Traveller 1</h5>
@@ -39,7 +41,7 @@ function HotelFormView({ viewApplication }) {
       <br />
       <div className='d-flex' style={{ width: '100%' }}>
         <div style={{ width: '40%', marginTop: 70 }}>
-          <h6>Passport Front Page Image</h6>
+          <h6>Reciept</h6>
           <div style={{
             border: '4px dotted gray',
             width: '100%',
@@ -79,7 +81,7 @@ function HotelFormView({ viewApplication }) {
                 <div>
                 <div className='d-flex' style={{ justifyContent: 'space-between' }}>
                     <div className='fv-row mb-5'>
-                      <label className='form-label required'>From</label>
+                      <label className='form-label required'>To</label>
                       <Field
                         name='firstName'
                         readOnly
@@ -94,7 +96,7 @@ function HotelFormView({ viewApplication }) {
 
                     <div className='fv-row mb-5'>
                       <label className='d-flex align-items-center form-label'>
-                        <span className='required'>To</span>
+                        <span className='required'>From</span>
                       </label>
                       <Field
                         style={inputStyle}
@@ -178,12 +180,12 @@ function HotelFormView({ viewApplication }) {
                   <div className='d-flex' style={{ justifyContent: 'space-between' }}>
                     <div className='fv-row mb-5'>
                       <label className='d-flex align-items-center form-label'>
-                        <span className='required'>Hotel Status</span>
+                        <span className='required'>Traveller Count</span>
                       </label>
                       <Field
                         style={inputStyle}
                         readOnly
-                        value={viewApplication.hotel_status}
+                        value={viewApplication.traveller}
                         name='hotelStatus'
                         className='form-control form-control-lg form-control-solid'
                       />

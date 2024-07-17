@@ -339,8 +339,8 @@ const Whwaiting: React.FC<Props> = ({ className, title, data}) => {
                       <th className='fs-5 min-w-160px'>Name</th>
                       <th className='fs-5 min-w-100px'>Email</th>
                       <th className='fs-5 min-w-100px'>Contact</th>
-                      <th className='fs-5 min-w-40px'>From</th>
                       <th className='fs-5 min-w-40px'>To</th>
+                      <th className='fs-5 min-w-40px'>From</th>
                       <th className='fs-5 min-w-40px'>Channel</th>
                       <th className='fs-5 text-center min-w-70px'>Status</th>
                       <th className='fs-5 text-center min-w-70px'>Amount</th>

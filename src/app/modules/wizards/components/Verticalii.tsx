@@ -210,6 +210,7 @@ const Verticalii: React.FC<VerticalProps> = ({
         })
       } else {
         setLoading(true)
+  
         for (const travelerForm of travelerForms) {
           if (
             !travelerForm.firstName ||
@@ -229,6 +230,7 @@ const Verticalii: React.FC<VerticalProps> = ({
             setLoading(false)
             return
           }
+  
           const postData = {
             country_code: selectedEntry.country_code,
             nationality_code: selectedEntry.nationality_code,
@@ -251,54 +253,45 @@ const Verticalii: React.FC<VerticalProps> = ({
             insurance_age_group: selectedEntry.age_group,
             merchant_insurance_amount: selectedEntry.merchant_insurance_amount
           }
-
-          axiosInstance
-            .post('/backend/create_insurance_application', postData)
-            .then((response) => {
-              setInsuranceResponse(response.data.data);
-              const user_id = Cookies.get('user_id')
-              const data = {
-                merchant_id: user_id,
-                insurance_application_id: response.data.data._id,
-              }
-              axiosInstance
-                .post('/backend/add_insurance_applicant', data)
-
-                    .then((response) => {
-                      if (response.status === 200) {
-                        setIsReviewModal(false)
-                        setConfetti(true);
-                        setModalShow(true); 
-                      } else {
-                        toast.error(response.data.msg, {
-                          position: 'top-center',
-                        })
-                      }
-                      setLoading(false)
-                    })
-                    .catch((error) => {
-                      console.error('Error applying for visa:', error)
-                      setLoading(false)
-                      toast.error('Error applying for visa', {
-                        position: 'top-center',
-                      })
-                    })
-                })
-
-
-            .catch((error) => {
-              console.error('Error creating user application:', error)
-              setLoading(false)
-              toast.error('Error creating user application', {
+  
+          try {
+            const createApplicationResponse = await axiosInstance.post('/backend/create_insurance_application', postData);
+            setInsuranceResponse(createApplicationResponse.data.data);
+  
+            const user_id = Cookies.get('user_id');
+            const data = {
+              merchant_id: user_id,
+              insurance_application_id: createApplicationResponse.data.data._id,
+            };
+  
+            const addApplicantResponse = await axiosInstance.post('/backend/add_insurance_applicant', data);
+  
+            if (addApplicantResponse.status === 200) {
+              setIsReviewModal(false);
+              setConfetti(true);
+              setModalShow(true);
+            } else {
+              toast.error(addApplicantResponse.data.msg, {
                 position: 'top-center',
-              })
-            })
+              });
+            }
+          } catch (error) {
+            console.error('Error while processing form:', error);
+            toast.error('Error while processing form', {
+              position: 'top-center',
+            });
+            setLoading(false);
+            return;
+          }
         }
+  
+        setLoading(false);
       }
     } catch (error) {
-      console.error('Error while making API calls:', error)
+      console.error('Error while making API calls:', error);
     }
-  }
+  };
+  
   const handleDeleteForm = (index) => {
     setTravelerForms((prevForms) => {
       const updatedData = [...prevForms]

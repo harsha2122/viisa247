@@ -18,8 +18,6 @@ function HotelForm1({ onDataChange, ind }) {
   const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object().shape({
-    fullName: Yup.string().required('First Name is required'),
-    lastName: Yup.string().required('Last Name is required'),
     birthDetail: Yup.string().required('Date of Birth is required'),
     passportIssueDate: Yup.string().required('Passport Issue Date is required'),
     passPortExpiryDate: Yup.string().required('Passport Expiry Date is required'),

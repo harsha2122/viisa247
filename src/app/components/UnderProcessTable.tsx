@@ -216,6 +216,7 @@ const UnderProcessTable: React.FC<Props> = ({ className, title, data,loading, on
       console.error('Error uploading file:', error);
     }
   };
+  console.log("as", data)
   return (
     <div style={{boxShadow:"none"}} className={`card ${className}`}>
       <Toaster />
@@ -290,12 +291,12 @@ const UnderProcessTable: React.FC<Props> = ({ className, title, data,loading, on
                       </td>
                       <td>
                         <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                            {row.merchant_email_id}
+                            {row.merchant_email_id || row.customer_email_id}
                         </a>
                       </td>
                       <td>
                         <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.merchant_phone_number}
+                          {row.merchant_phone_number || row.customer_phone_number}
                         </a>
                       </td>
                       <td>
@@ -334,21 +335,14 @@ const UnderProcessTable: React.FC<Props> = ({ className, title, data,loading, on
                       <div className='d-flex align-items-center justify-content-around flex-shrink-0'>
                       {row.visa_pdf === null ? (
                         <button
-                          onClick={() => handleVisibilityyClick(row)}
-                          style={{
-                            backgroundColor: '#327113',
-                            padding: '5px 10px',
-                            border: 'none',
-                            color: '#fff',
-                            borderRadius: '5px',
-                            fontSize: '12px',
-                          }}
-                          className=''
-                        >
-                          Upload Visa
-                        </button>
+                        title='Upload Visa'
+                        onClick={() => handleVisibilityyClick(row)}
+                        className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
+                      >
+                        <KTIcon iconName='exit-up' className='fs-3' />
+                      </button>
                       ) : (
-                        <FcOk title='Already Uploaded' style={{fontSize:"20px"}} />
+                        <FcOk title='Already Uploaded' style={{fontSize:"35px"}} />
                       )}
                       </div>
 
@@ -468,7 +462,7 @@ const UnderProcessTable: React.FC<Props> = ({ className, title, data,loading, on
             type='file'
             ref={visaFileInputRef}
             style={{ display: 'none' }}
-            accept="pdf/*"
+            accept="application/pdf"
             onChange={handleVisaSelect}
           />
         </div>

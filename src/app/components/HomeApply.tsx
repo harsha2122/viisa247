@@ -86,6 +86,7 @@ const HomeApply: React.FC<Props> = ({
           entryType: entryType ? entryType : 'Single',
           country: country,
           description: description,
+          original_visa_amount: apiData.visa_actual_price,
           receipt: receipt,
           value: apiData.value,
           country_code: values.toCountry,

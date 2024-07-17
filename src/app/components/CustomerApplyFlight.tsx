@@ -120,7 +120,7 @@ const CustomerApplyFlight: React.FC<Props> = ({ show, visaList, onApiDataReceive
             >
           <div style={{justifyContent:"center", alignItems:"center"}} className='d-flex flex-column mx-auto'>
             <h1 className='px-9 mt-25' style={{fontSize: 50 }}>
-              Get travel insurance
+              Get Dummy Flight
             </h1>
 
             <h3
@@ -133,7 +133,7 @@ const CustomerApplyFlight: React.FC<Props> = ({ show, visaList, onApiDataReceive
                 width: 220,
               }}
             >
-              Travel Insurance
+              Duummy Flight
               <GiCommercialAirplane style={{ marginLeft: '7px' }} />
             </h3>
           </div>

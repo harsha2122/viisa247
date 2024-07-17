@@ -157,25 +157,23 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
   
         const response = await axiosInstance.post('/backend/upload_flight_file', payload);
         if (response.data.success === 1) {
-          toast.success('Visa issued successfully');
+          toast.success('Issued successfully');
           handleCloseIssueModal();
           setTimeout(() => {
             window.location.reload();
           }, 2500);
         } else {
-          toast.error('Error issuing visa');
+          toast.error('Error issuing');
         }
       } catch (error) {
-        console.error('Error submitting issuance:', error);
-        toast.error('Error submitting issuance');
+        console.error('Error submitting flight:', error);
+        toast.error('Error submitting flight');
       }
     } else {
       toast.error('Please upload the flight file before submitting');
     }
   };
   
-
-  console.log("sdfg", data)
 
   const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -338,8 +336,8 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
                       <th className='fs-5 min-w-160px'>Name</th>
                       <th className='fs-5 min-w-100px'>Email</th>
                       <th className='fs-5 min-w-100px'>Contact</th>
-                      <th className='fs-5 min-w-40px'>From</th>
                       <th className='fs-5 min-w-40px'>To</th>
+                      <th className='fs-5 min-w-40px'>From</th>
                       <th className='fs-5 min-w-40px'>Channel</th>
                       <th className='fs-5 text-center min-w-70px'>Status</th>
                       <th className='fs-5 text-center min-w-70px'>Amount</th>
@@ -468,7 +466,7 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
                       <CloseOutlined />
                   </div>
                   <div className='mb-5'>
-                    <label className='form-label fw-bolder text-dark required fs-6'>Insurance Upload</label>
+                    <label className='form-label fw-bolder text-dark required fs-6'>Upload</label>
                     <input
                       type='file'
                       ref={flightFileInputRef}

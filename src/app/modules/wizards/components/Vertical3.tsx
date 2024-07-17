@@ -201,10 +201,6 @@ const Vertical3: React.FC<VerticalProps> = ({
         setLoading(true)
         for (const travelerForm of travelerForms) {
           if (
-            !travelerForm.firstName ||
-            !travelerForm.lastName ||
-            !travelerForm.birthPlace ||
-            !travelerForm.birthDetail ||
             !travelerForm.passportNumber ||
             !travelerForm.passportIssueDate ||
             !travelerForm.passPortExpiryDate ||
@@ -212,7 +208,6 @@ const Vertical3: React.FC<VerticalProps> = ({
             !travelerForm.maritalStatus ||
             !travelerForm.fatherName ||
             !travelerForm.passFrontPhoto ||
-            !travelerForm.panNo ||
             !travelerForm.passBackPhoto
           ) {
             toast.error('All fields are required!', {

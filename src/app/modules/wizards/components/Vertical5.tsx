@@ -47,6 +47,7 @@ interface SelectedEntry {
   nationality_code: string
   application_arrival_date: string
   application_departure_date: string
+  original_visa_amount: string
 }
 
 const Vertical5: React.FC<VerticalProps> = ({
@@ -130,7 +131,6 @@ const Vertical5: React.FC<VerticalProps> = ({
       panCard: form.pan_card,
       passBackPhoto: form.passport_back,
       photo: form.photo,
-      panNo: form.panNo,
     }))
     setInsuranceFormData(formData)
     handleShowReviewModal()
@@ -253,7 +253,6 @@ const Vertical5: React.FC<VerticalProps> = ({
           !travelerForm.maritalStatus ||
           !travelerForm.fatherName ||
           !travelerForm.passFrontPhoto ||
-          !travelerForm.panNo ||
           !travelerForm.passBackPhoto ||
           !reciept
         ) {
@@ -272,7 +271,7 @@ const Vertical5: React.FC<VerticalProps> = ({
 
         const postData = {
           country_code: selectedEntry?.country_code ?? '',
-          entry_process: selectedEntry?.value ?? '',
+          entry_process: selectedEntry?.value ?? 'Tourism',
           nationality_code: selectedEntry?.nationality_code ?? '',
           first_name: travelerForm.firstName,
           last_name: travelerForm.lastName,
@@ -307,9 +306,10 @@ const Vertical5: React.FC<VerticalProps> = ({
             (selectedEntry?.receipt?.['Service Fees'] ?? 0),
           visa_description: selectedEntry?.description ?? '',
           receipt_url: reciept,
+          original_visa_amount: selectedEntry?.original_visa_amount ?? '',
         }
 
-        const response = await axiosInstance.post('/backend/create_user_application', postData)
+        const response = await axiosInstance.post('/backend/create_manual_user_application', postData)
 
         if (response.status === 200) {
           const data = {
@@ -338,6 +338,8 @@ const Vertical5: React.FC<VerticalProps> = ({
       setLoading(false)
     }
   }
+
+  console.log("c", selectedEntry)
 
   const handleDeleteForm = (index) => {
     setTravelerForms((prevForms) => {
@@ -906,9 +908,6 @@ const Vertical5: React.FC<VerticalProps> = ({
                 </p>
                 <p>
                   <strong>Marital Status:</strong> {data.maritalStatus}
-                </p>
-                <p>
-                  <strong>Pan Number:</strong> {data.panNo}
                 </p>
               </div>
             ))}

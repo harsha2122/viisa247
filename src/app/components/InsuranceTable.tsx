@@ -135,7 +135,7 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
         {filteredData.map((insurance: Insurance) => (
           <div className={`card ${className} px-10 mb-8`} key={insurance._id}>
             <div className="age-group-tabs">
-              <h2>{insurance.insurance_description} from {insurance.nationality_code} to {insurance.country_code.join(', ')}</h2>
+              <h2>{insurance.insurance_description}</h2>
               <button onClick={() => openModal(insurance._id)} className='btn btn-danger'>Delete</button>
             </div>
             <div className="d-flex flex-column">

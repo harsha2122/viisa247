@@ -132,7 +132,7 @@ const handleDownload7 = () => {
         <ul className='d-flex flex-column gap-2'>
           {viewApplication.insurance_benefit.map((benefit, index) => (
             <li key={index}>
-              <strong>{benefit.key}:</strong> <span>{benefit.value}</span>
+              <h6>{benefit}</h6>
             </li>
           ))}
         </ul>

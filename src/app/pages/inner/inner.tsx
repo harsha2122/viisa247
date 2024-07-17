@@ -114,6 +114,7 @@ type Props = {
         navigate('/customer/login')
       };
 
+      console.log("d", receivedData)
 
   return (
     <div>

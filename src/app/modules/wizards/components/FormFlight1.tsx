@@ -192,7 +192,7 @@ const FormFlight1: React.FC<VerticalProps> = ({
         const postData = {
           country_code: selectedEntry.country_code,
           nationality_code: selectedEntry.nationality_code,
-          full_name: travelerForm.fullName,
+          first_name: travelerForm.fullName,
           gender: travelerForm.gender,
           age: travelerForm.age,
           flight_id: selectedEntry.id,

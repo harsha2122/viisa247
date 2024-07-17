@@ -1,44 +1,39 @@
 import { RejectTable } from '../../../components/RejectTable';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import axiosInstance from '../../../helpers/axiosInstance';
 
 function Reject() {
   const [visaStatsData, setVisaStatsData] = useState([]);
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Define a function to make the POST request
     const fetchData = async () => {
       setLoading(true);
       try {
-        axiosInstance.get('/backend/super_admin/fetch_all_visa')
-          .then((response) => {
-            const filteredData = response.data.data.filter(item => item.visa_provider === 'manual' && item.visa_status === 'Reject');
-            setVisaStatsData(filteredData);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.error('Error fetching Atlys data:', error);
-            setLoading(false);
-          });
-
-        
+        const response = await axiosInstance.get('/backend/super_admin/fetch_all_visa');
+        const data = [...(response.data.data || []), ...(response.data.data1 || [])];
+        const filteredData = data.filter(item => 
+          item.visa_provider === 'manual' && item.visa_status === 'Reject'
+        );
+        const sortedData = filteredData.sort((a, b) => 
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        setVisaStatsData(sortedData as any);
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching data:', error);
+      } finally {
         setLoading(false);
       }
     };
 
-    // Call the fetchData function when the component mounts
     fetchData();
-  }, []); // The empty dependency array ensures this effect runs once on mount
+  }, []);
 
   return (
-    <div style={{marginTop:"-50px"}}>
-      <RejectTable className='' title={'Visa247 Rejected'} data={visaStatsData} loading={loading}/>
+    <div style={{ marginTop: "-50px" }}>
+      <RejectTable className='' title={'Visa247 Rejected'} data={visaStatsData} loading={loading} />
     </div>
-  )
+  );
 }
 
-export default Reject
+export default Reject;

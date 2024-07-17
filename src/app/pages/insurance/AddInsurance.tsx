@@ -270,12 +270,28 @@ const AddInsurance = () => {
     );
   };
 
-  const initialValues: Plans = {
+  const initialValues = {
     platinum: {
       plan_name: 'Titan',
       age_groups: [
         {
-          age_group: '',
+          age_group: '3 mths–50 yrs',
+          description: '',
+          benefits: ['', '', ''],
+          partner: { base_price: '', price_per_day: '' },
+          retailer: { base_price: '', price_per_day: '' },
+          customer: { base_price: '', price_per_day: '' },
+        },
+        {
+          age_group: '50 yrs, 1 day–60 yrs',
+          description: '',
+          benefits: ['', '', ''],
+          partner: { base_price: '', price_per_day: '' },
+          retailer: { base_price: '', price_per_day: '' },
+          customer: { base_price: '', price_per_day: '' },
+        },
+        {
+          age_group: '60 yrs, 1 day–70 yrs',
           description: '',
           benefits: ['', '', ''],
           partner: { base_price: '', price_per_day: '' },
@@ -288,7 +304,23 @@ const AddInsurance = () => {
       plan_name: 'Shippuden',
       age_groups: [
         {
-          age_group: '',
+          age_group: '3 mths–50 yrs',
+          description: '',
+          benefits: ['', '', ''],
+          partner: { base_price: '', price_per_day: '' },
+          retailer: { base_price: '', price_per_day: '' },
+          customer: { base_price: '', price_per_day: '' },
+        },
+        {
+          age_group: '50 yrs, 1 day–60 yrs',
+          description: '',
+          benefits: ['', '', ''],
+          partner: { base_price: '', price_per_day: '' },
+          retailer: { base_price: '', price_per_day: '' },
+          customer: { base_price: '', price_per_day: '' },
+        },
+        {
+          age_group: '60 yrs, 1 day–70 yrs',
           description: '',
           benefits: ['', '', ''],
           partner: { base_price: '', price_per_day: '' },
@@ -301,7 +333,23 @@ const AddInsurance = () => {
       plan_name: 'Once Piece',
       age_groups: [
         {
-          age_group: '',
+          age_group: '3 mths–50 yrs',
+          description: '',
+          benefits: ['', '', ''],
+          partner: { base_price: '', price_per_day: '' },
+          retailer: { base_price: '', price_per_day: '' },
+          customer: { base_price: '', price_per_day: '' },
+        },
+        {
+          age_group: '50 yrs, 1 day–60 yrs',
+          description: '',
+          benefits: ['', '', ''],
+          partner: { base_price: '', price_per_day: '' },
+          retailer: { base_price: '', price_per_day: '' },
+          customer: { base_price: '', price_per_day: '' },
+        },
+        {
+          age_group: '60 yrs, 1 day–70 yrs',
           description: '',
           benefits: ['', '', ''],
           partner: { base_price: '', price_per_day: '' },
@@ -311,6 +359,7 @@ const AddInsurance = () => {
       ],
     },
   };
+  
 
   const handleSubmit = async (values: any, { resetForm }: any) => {
     try {
@@ -324,8 +373,10 @@ const AddInsurance = () => {
       };
 
       await axiosInstance.post('/backend/create_insurance', formData);
-      resetForm();
       toast.success('Insurance Created successfully!');
+      setTimeout(() => {
+        window.location.href = '/superadmin/insurance';
+    }, 2500);
     } catch (error) {
       console.error('Error submitting insurance data:', error);
       toast.error('Error submitting form. Please try again later.');
@@ -441,19 +492,7 @@ const AddInsurance = () => {
                       {['3 mths–50 yrs', '50 yrs, 1 day–60 yrs', '60 yrs, 1 day–70 yrs'].map((ageGroup, index) => (
                         <div key={index} className="card flex-fill mx-2">
                           <div className="card-body">
-                            <h5 className="card-title">{`${ageGroup}`}</h5>
-                            <div className='mb-3'>
-                              <label className='form-label required'>Age Group</label>
-                              <Field
-                                type='text'
-                                name={`platinum.age_groups[${index}].age_group`}
-                                className='form-control'
-                                style={inputStyle1}
-                              />
-                              <div className='text-danger'>
-                                <ErrorMessage name={`platinum.age_groups[${index}].age_group`} />
-                              </div>
-                            </div>
+                            <h3 className="card-title">{ageGroup}</h3>
                             <div className='mb-3'>
                               <label className='form-label required'>Description</label>
                               <Field
@@ -567,7 +606,6 @@ const AddInsurance = () => {
               </Accordion>
             </div>
 
-
             <div className='w-100 d-flex flex-column'>
               <Accordion>
                 <Accordion.Item eventKey="0">
@@ -590,19 +628,7 @@ const AddInsurance = () => {
                       {['3 mths–50 yrs', '50 yrs, 1 day–60 yrs', '60 yrs, 1 day–70 yrs'].map((ageGroup, index) => (
                         <div key={index} className="card flex-fill mx-2">
                           <div className="card-body">
-                            <h5 className="card-title">{`${ageGroup}`}</h5>
-                            <div className='mb-3'>
-                              <label className='form-label required'>Age Group</label>
-                              <Field
-                                type='text'
-                                name={`gold.age_groups[${index}].age_group`}
-                                className='form-control'
-                                style={inputStyle1}
-                              />
-                              <div className='text-danger'>
-                                <ErrorMessage name={`gold.age_groups[${index}].age_group`} />
-                              </div>
-                            </div>
+                            <h3 className="card-title">{ageGroup}</h3>
                             <div className='mb-3'>
                               <label className='form-label required'>Description</label>
                               <Field
@@ -716,7 +742,6 @@ const AddInsurance = () => {
               </Accordion>
             </div>
 
-
             <div className='w-100 d-flex flex-column'>
               <Accordion>
                 <Accordion.Item eventKey="0">
@@ -739,19 +764,7 @@ const AddInsurance = () => {
                       {['3 mths–50 yrs', '50 yrs, 1 day–60 yrs', '60 yrs, 1 day–70 yrs'].map((ageGroup, index) => (
                         <div key={index} className="card flex-fill mx-2">
                           <div className="card-body">
-                            <h5 className="card-title">{`${ageGroup}`}</h5>
-                            <div className='mb-3'>
-                              <label className='form-label required'>Age Group</label>
-                              <Field
-                                type='text'
-                                name={`silver.age_groups[${index}].age_group`}
-                                className='form-control'
-                                style={inputStyle1}
-                              />
-                              <div className='text-danger'>
-                                <ErrorMessage name={`silver.age_groups[${index}].age_group`} />
-                              </div>
-                            </div>
+                            <h3 className="card-title">{ageGroup}</h3>
                             <div className='mb-3'>
                               <label className='form-label required'>Description</label>
                               <Field
@@ -865,7 +878,7 @@ const AddInsurance = () => {
               </Accordion>
             </div>
 
-
+            
               <div className='w-100 d-flex justify-content-end my-5'>
                 <button type='submit' className='btn btn-success'>
                   Submit

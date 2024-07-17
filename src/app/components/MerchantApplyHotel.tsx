@@ -120,7 +120,7 @@ const MerchantApplyHotel: React.FC<Props> = ({ show, visaList, onApiDataReceived
             >
           <div style={{justifyContent:"center", alignItems:"center"}} className='d-flex flex-column mx-auto'>
             <h1 className='px-9 mt-25' style={{fontSize: 50 }}>
-              Get travel insurance
+              Get Dummy Hotel Tickets
             </h1>
 
             <h3
@@ -133,7 +133,7 @@ const MerchantApplyHotel: React.FC<Props> = ({ show, visaList, onApiDataReceived
                 width: 220,
               }}
             >
-              Travel Insurance
+              Hotel Tickets
               <GiCommercialAirplane style={{ marginLeft: '7px' }} />
             </h3>
           </div>

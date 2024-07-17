@@ -198,7 +198,7 @@ const FormHotel1: React.FC<VerticalProps> = ({
         const postData = {
           country_code: selectedEntry.country_code,
           nationality_code: selectedEntry.nationality_code,
-          full_name: travelerForm.fullName,
+          first_name: travelerForm.fullName,
           traveller: travelerForm.traveller,
           hotel_id: selectedEntry.id,
           hotel_amount: selectedEntry.totalAmount,
