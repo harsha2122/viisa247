@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 type Plan = {
   age_group: string;
   description: string;
-  benefits: { key: string; value: string }[];
+  benefits: string[];
   customer: {
     _id: string;
     base_price: string;
@@ -13,20 +13,17 @@ type Plan = {
   };
 };
 
-type Insurance = {
+type InsuranceData = {
+  plans: {
+    platinum: { plan_name: string, age_groups: Plan[] },
+    gold: { plan_name: string, age_groups: Plan[] },
+    silver: { plan_name: string, age_groups: Plan[] }
+  },
   _id: string;
-  insurance_description: string;
+  country_code: string[];
+  nationality_code: string;
   insurance_base_price: string;
   insurance_per_day_price: string;
-  nationality_code: string;
-  country_code: string;
-  plans: {
-    platinum: Plan[];
-    gold: Plan[];
-    silver: Plan[];
-  };
-  issue_date: string;
-  expiry_date: string;
 };
 
 type Props = {
@@ -38,7 +35,7 @@ type Props = {
   apiData: {
     issue_date: string;
     expiry_date: string;
-    insuranceData: Insurance[];
+    insuranceData: InsuranceData[];
   };
   manualValue: any;
   onSelectClick: (entryData: {
@@ -50,7 +47,7 @@ type Props = {
     nationality_code: string;
     insurance_original_amount: number;
     age_group: string;
-    benefits: { key: string; value: string }[];
+    benefits: string[];
     description: string;
     merchant_insurance_amount: number; // new property for amount with markup
   }) => void;
@@ -69,7 +66,6 @@ const InsuranceTablem: React.FC<Props> = ({
   const [activeTab, setActiveTab] = useState<string>('platinum');
   const [insurancePlans, setInsurancePlans] = useState<Plan[]>([]);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
-  const [proceedClicked, setProceedClicked] = useState<boolean>(false);
 
   const backgroundImages = [
     '/media/svg/shapes/abstract-1.svg',
@@ -83,19 +79,15 @@ const InsuranceTablem: React.FC<Props> = ({
   };
 
   const handleSelectInsurance = (planId: string) => {
-    if (!proceedClicked) {
-      setSelectedPlanId(planId);
-    }
+    setSelectedPlanId(planId);
   };
 
   const handleProceed = () => {
     if (selectedPlanId) {
-      setProceedClicked(true);
-
       const selectedPlan = insurancePlans.find(plan => plan.customer._id === selectedPlanId);
       if (selectedPlan) {
         const selectedInsurance = apiData.insuranceData.find(insurance =>
-          insurance.plans[activeTab as keyof typeof insurance.plans]?.some(plan => plan.customer._id === selectedPlanId)
+          insurance.plans[activeTab as keyof typeof insurance.plans]?.age_groups.some(plan => plan.customer._id === selectedPlanId)
         );
 
         if (selectedInsurance) {
@@ -106,14 +98,14 @@ const InsuranceTablem: React.FC<Props> = ({
             apiData.expiry_date
           );
 
-          const { totalInsurancePrice } = calculateInsurancePrice(
+          const { totalPrice1 } = calculatePrice1(
             parseFloat(selectedInsurance.insurance_base_price),
             parseFloat(selectedInsurance.insurance_per_day_price),
             apiData.issue_date,
             apiData.expiry_date
           );
 
-          const totalPriceWithMarkup = calculateMerchantPrice(totalPrice);
+          const totalPriceWithMarkup = calculateretailerPrice(totalPrice);
 
           onSelectClick({
             id: selectedPlanId,
@@ -121,11 +113,11 @@ const InsuranceTablem: React.FC<Props> = ({
             merchant_insurance_amount: totalPriceWithMarkup,
             issueDate: apiData.issue_date,
             expiryDate: apiData.expiry_date,
-            country_code: selectedInsurance.country_code,
+            country_code: selectedInsurance.country_code.join(', '),
             nationality_code: selectedInsurance.nationality_code,
             benefits: selectedPlan.benefits,
             description: selectedPlan.description,
-            insurance_original_amount: totalInsurancePrice,
+            insurance_original_amount: totalPrice1, // Modify if needed
             age_group: selectedPlan.age_group,
           });
         }
@@ -142,7 +134,7 @@ const InsuranceTablem: React.FC<Props> = ({
 
   useEffect(() => {
     if (apiData.insuranceData.length > 0) {
-      const plans = apiData.insuranceData.flatMap(insurance => insurance.plans[activeTab as keyof typeof insurance.plans]);
+      const plans = apiData.insuranceData.flatMap(insurance => insurance.plans[activeTab as keyof typeof insurance.plans]?.age_groups);
       setInsurancePlans(plans);
     }
   }, [apiData, activeTab]);
@@ -171,13 +163,13 @@ const InsuranceTablem: React.FC<Props> = ({
     }
   };
 
-  const calculateInsurancePrice = (basePrice: number, pricePerDay: number, issueDate: string, expiryDate: string) => {
+  const calculatePrice1 = (basePrice: number, pricePerDay: number, issueDate: string, expiryDate: string) => {
     const oneDay = 24 * 60 * 60 * 1000;
     const issueDateObj = new Date(issueDate);
     const expiryDateObj = new Date(expiryDate);
 
     if (isNaN(issueDateObj.getTime()) || isNaN(expiryDateObj.getTime())) {
-      return { totalInsurancePrice: basePrice, days: 0 };
+      return { totalPrice1: basePrice, days: 0 };
     }
 
     const diffDays = Math.round(Math.abs((expiryDateObj.getTime() - issueDateObj.getTime()) / oneDay)) + 1;
@@ -185,18 +177,17 @@ const InsuranceTablem: React.FC<Props> = ({
     const baseDays = 7;
     const additionalPricePerDay = pricePerDay;
 
-    let totalInsurancePrice = basePrice;
-
-    if (diffDays > baseDays) {
+    if (diffDays <= baseDays) {
+      return { totalPrice1: basePrice, days: diffDays };
+    } else {
       const extraDays = diffDays - baseDays;
       const additionalCost = extraDays * additionalPricePerDay;
-      totalInsurancePrice += additionalCost;
+      const totalPrice1 = basePrice + additionalCost;
+      return { totalPrice1, days: diffDays };
     }
-
-    return { totalInsurancePrice, days: diffDays };
   };
 
-  const calculateMerchantPrice = (price: number) => {
+  const calculateretailerPrice = (price: number) => {
     const markupPercentageString = localStorage.getItem('markup_percentage') ?? '1';
     const markupPercentage = parseFloat(markupPercentageString);
     return Math.round(price * (1 + markupPercentage / 100));
@@ -205,34 +196,32 @@ const InsuranceTablem: React.FC<Props> = ({
   return (
     <div className='pb-8'>
       <div className="container">
-        {apiData.insuranceData.map((insurance: Insurance) => (
-          <div key={insurance._id}>
+        {apiData.insuranceData.map((insurance: InsuranceData, index) => (
+          <div key={index}>
             <div className="age-group-tabs">
               <h1>
-                {insurance.insurance_description} from {insurance.nationality_code} to {insurance.country_code}
+                {`Insurance Plan: ${index + 1}`}
               </h1>
             </div>
             <div className="d-flex best-tab justify-content-center my-8 gap-4">
-              {Object.keys(insurance.plans).map((planType: string) =>
-                ['platinum', 'gold', 'silver'].includes(planType) ? (
-                  <button
-                    key={planType}
-                    className={`age-group-tab capitalize ${activeTab === planType ? 'active' : ''}`}
-                    onClick={() => handleTabChange(planType)}
-                  >
-                    {planType}
-                  </button>
-                ) : null
-              )}
+              {Object.keys(insurance.plans).map((planType: string) => {
+                  if (['platinum', 'gold', 'silver'].includes(planType)) {
+                    return (
+                      <button
+                        key={planType}
+                        className={`age-group-tab capitalize ${activeTab === planType ? 'active' : ''}`}
+                        onClick={() => handleTabChange(planType)}
+                      >
+                        {insurance.plans[planType as keyof typeof insurance.plans].plan_name}
+                      </button>
+                    );
+                  }
+                  return null;
+                })}
             </div>
             <div className="row">
-              {(insurance.plans[activeTab as keyof typeof insurance.plans] || []).map((plan: Plan, index: number) => (
-                <div
-                  key={`${insurance._id}-${plan.customer._id}`}
-                  className={`col-md-4`}
-                  onClick={() => handleSelectInsurance(plan.customer._id)}
-                  style={{ cursor: 'pointer' }}
-                >
+              {(insurance.plans[activeTab as keyof typeof insurance.plans]?.age_groups || []).map((plan: Plan, index: number) => (
+                <div key={`${insurance._id}-${activeTab}-${index}`} className="col-md-4">
                   <div
                     style={{
                       backgroundPosition: 'right top',
@@ -251,7 +240,7 @@ const InsuranceTablem: React.FC<Props> = ({
                           <>
                             <div className="feature">
                               Total Price: <span>₹{Cookies.get('user_type') === 'merchant'
-                            ? Math.round(calculateMerchantPrice(
+                            ? Math.round(calculateretailerPrice(
                               calculatePrice(
                                 parseFloat(plan.customer.base_price),
                                 parseFloat(plan.customer.price_per_day),
@@ -276,11 +265,11 @@ const InsuranceTablem: React.FC<Props> = ({
                             </div>
                             <hr className='aahr' />
                             <div className="feature">
-                              <h4>Benefits :</h4>
-                              <ul className='d-flex flex-column gap-2'>
+                              <h4>Benefits:</h4>
+                              <ul className='d-flex flex-column'>
                                 {plan.benefits.map((benefit, index) => (
                                   <li key={index}>
-                                    <strong>{benefit.key}:</strong> <span>{benefit.value}</span>
+                                    <h6>{benefit}</h6>
                                   </li>
                                 ))}
                               </ul>
@@ -291,15 +280,15 @@ const InsuranceTablem: React.FC<Props> = ({
                       <div className="price-tag">
                         <span className="symbol">₹</span>
                         <span className="amount">
-                        {Cookies.get('user_type') === 'merchant'
-                            ? Math.round(calculateMerchantPrice(
-                              calculatePrice(
-                                parseFloat(plan.customer.base_price),
-                                parseFloat(plan.customer.price_per_day),
-                                apiData.issue_date,
-                                apiData.expiry_date
-                              ).totalPrice
-                            ))
+                          {Cookies.get('user_type') === 'merchant'
+                            ? Math.round(calculateretailerPrice(
+                                calculatePrice(
+                                  parseFloat(plan.customer.base_price),
+                                  parseFloat(plan.customer.price_per_day),
+                                  apiData.issue_date,
+                                  apiData.expiry_date
+                                ).totalPrice
+                              ))
                             : calculatePrice(
                                 parseFloat(plan.customer.base_price),
                                 parseFloat(plan.customer.price_per_day),
@@ -309,28 +298,23 @@ const InsuranceTablem: React.FC<Props> = ({
                         </span>
                       </div>
                     </div>
+                    <div className="card-footer d-flex justify-content-center mt-4">
+                      <button
+                        className={`btn btn-primary btn-block`}
+                        onClick={() => {
+                          handleSelectInsurance(plan.customer._id); // Set selected plan ID
+                          handleProceed(); // Proceed to select the plan
+                        }}
+                      >
+                        Proceed
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
         ))}
-        {selectedPlanId && !proceedClicked && (
-          <div className="proceed-button">
-            <button onClick={handleProceed}
-              style={{
-                borderRadius: 5,
-                backgroundColor: '#327113',
-                border: "none",
-                color: "white",
-                height: "40px",
-                width: "100px",
-                fontSize: "16px",
-              }}>
-              Proceed
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
