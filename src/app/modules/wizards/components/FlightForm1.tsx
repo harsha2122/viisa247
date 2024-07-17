@@ -5,7 +5,7 @@ import ClearIcon from '@mui/icons-material/Delete';
 import axiosInstance from '../../../helpers/axiosInstance';
 import * as Yup from 'yup';
 
-function FlightForm1({ onDataChange, ind }) {
+function FlightForm1({ onDataChange, ind, onFieldChange, onFileDelete  }) {
   const passportFrontFileInputRef = useRef<HTMLInputElement | null>(null);
   const [passportFrontImageURL, setPassportFrontImageURL] = useState('');
   const maxSize = 1024 * 1024;
@@ -61,15 +61,21 @@ function FlightForm1({ onDataChange, ind }) {
         });
         return;
       }
-
+  
       const reader = new FileReader();
       reader.onload = async (e) => {
         if (e.target) {
           setPassportFrontImageURL(e.target.result as string);
+  
           try {
             const imageLink = await handleFileUpload(file);
-            setFormData({ ...formData, passport_front: imageLink });
-            onDataChange({ ...formData, passport_front: imageLink });
+  
+            setFormData((prevFormData) => {
+              const updatedFormData = { ...prevFormData, passFrontPhoto: imageLink };
+              onDataChange(updatedFormData);
+              onFieldChange(ind, 'passport_front', imageLink);
+              return updatedFormData;
+            });
           } catch (error) {
             console.error('Error uploading image:', error);
           }
@@ -77,6 +83,16 @@ function FlightForm1({ onDataChange, ind }) {
       };
       reader.readAsDataURL(file);
     }
+  };
+  
+  const handleFileDelete = (field: string) => {
+    setFormData((prevFormData) => {
+      const updatedFormData = { ...prevFormData, [field]: '' };
+      onDataChange(updatedFormData);
+      onFieldChange(ind, field, '');
+      onFileDelete(ind, field);
+      return updatedFormData;
+    });
   };
 
   const handleImageUpload = () => {
@@ -134,8 +150,11 @@ function FlightForm1({ onDataChange, ind }) {
                   marginTop: 20,
                 }}
               >
-                <div
-                  onClick={() => setPassportFrontImageURL('')}
+              <div
+                  onClick={() => {
+                    setPassportFrontImageURL('');
+                    handleFileDelete('passFrontPhoto');
+                  }}
                   style={{
                     justifyContent: 'flex-end',
                     position: 'relative',

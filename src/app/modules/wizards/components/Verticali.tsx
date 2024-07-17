@@ -46,8 +46,6 @@ const Verticali: React.FC<VerticalProps> = ({
   // const [travelerForms, setTravelerForms] = useState([<TravelerForm key={0} onDataChange={handleTravelerDataChange} />]);
   const navigate = useNavigate()
   const [confetti, setConfetti] = useState(false);
-
-  const [travelerForms, setTravelerForms] = useState<any[]>([{}])
   const [isFixed, setIsFixed] = useState(false)
 
   const handleScroll = () => {
@@ -80,6 +78,38 @@ const Verticali: React.FC<VerticalProps> = ({
     handleShowReviewModal();
   };
   
+
+  const [travelerForms, setTravelerForms] = useState<any[]>([{ passport_front: ''}]);
+  const [isFieldFilled, setIsFieldFilled] = useState({
+    passport_front: false,
+    passport_back: false,
+    photo: false,
+  });
+
+  const handleTravelFieldChange = (index: number, fieldName: string, value: string) => {
+    setTravelerForms((prevForms) => {
+      const updatedForms = [...prevForms];
+      updatedForms[index] = { ...updatedForms[index], [fieldName]: value };
+      return updatedForms;
+    });
+    setIsFieldFilled((prevState) => ({
+      ...prevState,
+      [`${index}_${fieldName}`]: value.trim() !== '',
+    }));
+  };
+
+
+  const handleFileDelete = (index: number, fieldName: string) => {
+    setTravelerForms((prevForms) => {
+      const updatedForms = [...prevForms];
+      updatedForms[index][fieldName] = '';
+      return updatedForms;
+    });
+    setIsFieldFilled((prevState) => ({
+      ...prevState,
+      [`${index}_${fieldName}`]: false,
+    }));
+  };
   
   const [insuranceFormData, setInsuranceFormData] = useState<any | null>(null);
   const [isReviewModal, setIsReviewModal] = useState<boolean>(false);  
@@ -346,44 +376,40 @@ const Verticali: React.FC<VerticalProps> = ({
         amount={insuranceResponse ? insuranceResponse.insurance_amount : ''} 
       />
       <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
-        <div
+      <div
           style={{
             width: '20%',
             padding: '16px',
             paddingLeft: '10px',
-            position: isFixed ? 'fixed' : 'static',
+            position: "sticky",
             height: '100%',
             overflowY: 'auto',
             paddingTop: 20,
-            top: isFixed ? 80 : 'auto',
+            top: '75px',
+            left: "10px",
           }}
         >
-          {travelerForms.map((_, index) => (
+           {travelerForms.map((form, index) => (
             <>
-              <div onClick={() => {}} style={{...tabTextStyle}}>
-                <CheckCircleOutline style={{color: '#327113', marginRight: 8}} />
-                Applicant {index + 1}
+              <div onClick={() => {}} style={{ ...tabTextStyle }}>
+                <CheckCircleOutline style={{ color: '#327113', marginRight: 8 }} />
+                Traveller {index + 1}
               </div>
-              <div style={{marginLeft: 20}}>
-                <div onClick={() => {}} style={{...tabTextStyle}}>
-                  <CheckCircleOutline style={{color: '#327113', marginRight: 10}} />
+              <div style={{ marginLeft: 20 }}>
+                <div onClick={() => {}} style={{ ...tabTextStyle }}>
+                  {form.passFrontPhoto ? (
+                    <CheckCircleOutline 
+                      style={{ color: '#327113', marginRight: 10 }} 
+                      onClick={() => handleFileDelete(index, 'passFrontPhoto')} 
+                    />
+                  ) : (
+                    <CircleOutlined style={{ color: '#327113', marginRight: 10 }} />
+                  )}
                   Passport Front
-                </div>
-                <div onClick={() => {}} style={{...tabTextStyle}}>
-                  <CheckCircleOutline style={{color: '#327113', marginRight: 10}} />
-                  Applicant Details
-                </div>
-                <div onClick={() => {}} style={{...tabTextStyle}}>
-                  <CheckCircleOutline style={{color: '#327113', marginRight: 10}} />
-                  Payment Reciept
                 </div>
               </div>
             </>
           ))}
-          <div onClick={() => {}} style={{...tabTextStyle}}>
-            <CheckCircleOutline style={{color: '#327113', marginRight: 10}} />
-            Review
-          </div>
           <div onClick={() => {}} style={{...tabTextStyle, color: '#696969'}}>
             <CircleOutlined style={{color: '#327113', marginRight: 10}} />
             Submit
@@ -395,6 +421,8 @@ const Verticali: React.FC<VerticalProps> = ({
               <InsuranceForm
                 ind={index}
                 onDataChange={(newData) => handleTravelerDataChange(newData, index)}
+                onFieldChange={handleTravelFieldChange}
+                onFileDelete={handleFileDelete}
               />
               {travelerForms.length > 1 && index !== 0 && (
                 <button

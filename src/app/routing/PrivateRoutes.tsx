@@ -65,6 +65,7 @@ import Fprocessed from '../pages/flight-wrapper/Fprocessed';
 import Freject from '../pages/flight-wrapper/Frejected';
 import RevenueHotel from '../pages/revenue/RevenueHotel';
 import RevenueFlight from '../pages/revenue/RevenueFlight';
+import UserWrapper from '../pages/users/UserWrapper';
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'));
@@ -108,7 +109,7 @@ const PrivateRoutes = () => {
           <>
             <Route path='/' element={<Navigate to='/superadmin/dashboard' />} />
             <Route path='/superadmin/dashboard' element={<DashboardWrapper />} />
-            <Route path='/superadmin/customers' element={<CustomersWrapper />} />
+            <Route path='/superadmin/users' element={<UserWrapper />} />
             <Route path='/superadmin/merchants' element={<MerchantWrapper />} />
             <Route path='/superadmin/add-new-merchant' element={<AddNewMerchant />} />
 

@@ -335,11 +335,12 @@ const FormHotel2: React.FC<VerticalProps> = ({
             width: '20%',
             padding: '16px',
             paddingLeft: '10px',
-            position: isFixed ? 'fixed' : 'static',
+            position: "sticky",
             height: '100%',
             overflowY: 'auto',
             paddingTop: 20,
-            top: isFixed ? 80 : 'auto',
+            top: '75px',
+            left: "10px",
           }}
         >
           {travelerForms.map((_, index) => (
@@ -350,20 +351,12 @@ const FormHotel2: React.FC<VerticalProps> = ({
             </div>
             <div style={{marginLeft: 20}}>
               <div onClick={() => {}} style={{...tabTextStyle}}>
-                <CheckCircleOutline style={{color: '#327113', marginRight: 10}} />
-                Passport Front
-              </div>
-              <div onClick={() => {}} style={{...tabTextStyle}}>
-                <CheckCircleOutline style={{color: '#327113', marginRight: 10}} />
+                <CircleOutlined style={{color: '#327113', marginRight: 10}} />
                 Applicant Details
               </div>
             </div>
           </>
           ))}
-          <div onClick={() => {}} style={{...tabTextStyle}}>
-            <CheckCircleOutline style={{color: '#327113', marginRight: 10}} />
-            Review
-          </div>
           <div onClick={() => {}} style={{...tabTextStyle, color: '#696969'}}>
             <CircleOutlined style={{color: '#327113', marginRight: 10}} />
             Submit

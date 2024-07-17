@@ -370,8 +370,6 @@ const Vertical5: React.FC<VerticalProps> = ({
     }
   }
 
-  console.log("c", selectedEntry)
-
   const handleDeleteForm = (index) => {
     setTravelerForms((prevForms) => {
       const updatedData = [...prevForms]
@@ -480,11 +478,12 @@ const Vertical5: React.FC<VerticalProps> = ({
             width: '20%',
             padding: '16px',
             paddingLeft: '10px',
-            position: isFixed ? 'fixed' : 'static',
+            position: "sticky",
             height: '100%',
             overflowY: 'auto',
             paddingTop: 20,
-            top: isFixed ? 80 : 'auto',
+            top: '10px',
+            left: "10px",
           }}
         >
            {travelerForms.map((form, index) => (
