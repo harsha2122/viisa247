@@ -173,6 +173,7 @@ const Home: React.FC<Props> = ({
           description: description,
           receipt: receipt,
           value: apiData.value,
+          original_visa_amount: apiData.visa_actual_price,
           country_code: values.toCountry,
           nationality_code: values.fromCountry,
           application_arrival_date: issueDate,

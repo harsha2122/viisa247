@@ -9,7 +9,7 @@ import axiosInstance from '../../../helpers/axiosInstance'
 import {DatePicker} from 'antd'
 import * as Yup from 'yup'
 import 'react-datepicker/dist/react-datepicker.css'
-function TravelerForm2({onDataChange, ind}) {
+function TravelerForm2({ onDataChange, ind, onFieldChange, onFileDelete }) {
   const [initValues] = useState<ICreateAccount>(inits)
   const passportFrontFileInputRef = useRef<HTMLInputElement | null>(null)
   const passportBackFileInputRef = useRef<HTMLInputElement | null>(null)
@@ -85,38 +85,49 @@ function TravelerForm2({onDataChange, ind}) {
     }
   }
 
-  // Function to handle file selection
   const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
     if (file) {
       if (file.size > maxSize) {
         toast.error('File size exceeds the limit of 1MB.', {
           position: 'top-center',
-        })
-        return
+        });
+        return;
       }
-
-      const reader = new FileReader()
+  
+      const reader = new FileReader();
       reader.onload = async (e) => {
         if (e.target) {
-          setPassportFrontImageURL(e.target.result as string)
-
+          setPassportFrontImageURL(e.target.result as string);
+  
           try {
-            // Assuming handleFileUpload is an asynchronous function that returns a promise
-            const imageLink = await handleFileUpload(file)
-
-            // Update the form data with the image link
-            setFormData({...formData, passFrontPhoto: imageLink})
-            onDataChange({...formData, passFrontPhoto: imageLink})
+            const imageLink = await handleFileUpload(file);
+  
+            setFormData((prevFormData) => {
+              const updatedFormData = { ...prevFormData, passFrontPhoto: imageLink };
+              onDataChange(updatedFormData);
+              onFieldChange(ind, 'passport_front', imageLink);
+              return updatedFormData;
+            });
           } catch (error) {
-            console.error('Error uploading image:', error)
+            console.error('Error uploading image:', error);
           }
         }
-      }
-      reader.readAsDataURL(file)
+      };
+      reader.readAsDataURL(file);
     }
-  }
-
+  };
+  
+  const handleFileDelete = (field: string) => {
+    setFormData((prevFormData) => {
+      const updatedFormData = { ...prevFormData, [field]: '' };
+      onDataChange(updatedFormData);
+      onFieldChange(ind, field, '');
+      onFileDelete(ind, field);
+      return updatedFormData;
+    });
+  };
+  
   const handleImageUpload = () => {
     // Trigger the hidden file input
     if (passportFrontFileInputRef.current) {
@@ -124,37 +135,38 @@ function TravelerForm2({onDataChange, ind}) {
     }
   }
   const handleFileSelectBack = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-
+    const file = event.target.files?.[0];
+  
     if (file) {
       if (file.size > maxSize) {
         toast.error('File size exceeds the limit of 1MB.', {
           position: 'top-center',
-        })
-        return
+        });
+        return;
       }
-      const reader = new FileReader()
-
+      const reader = new FileReader();
+  
       reader.onload = async (e) => {
-        // Update the state variable with the image data (base64-encoded)
         if (e.target) {
-          setPassportBackImageURL(e.target.result as string)
+          setPassportBackImageURL(e.target.result as string);
           try {
-            // Assuming handleFileUpload is an asynchronous function that returns a promise
-            const imageLink = await handleFileUpload(file)
-
-            // Update the form data with the image link
-            setFormData({...formData, passBackPhoto: imageLink})
-            onDataChange({...formData, passBackPhoto: imageLink})
+            const imageLink = await handleFileUpload(file);
+  
+            setFormData((prevFormData) => {
+              const updatedFormData = { ...prevFormData, passBackPhoto: imageLink };
+              onDataChange(updatedFormData);
+              onFieldChange(ind, 'passport_back', imageLink);
+              return updatedFormData;
+            });
           } catch (error) {
-            console.error('Error uploading image:', error)
+            console.error('Error uploading image:', error);
           }
         }
-      }
-
-      reader.readAsDataURL(file)
+      };
+  
+      reader.readAsDataURL(file);
     }
-  }
+  };
   const handleImageUploadBack = () => {
     // Trigger the hidden file input
     if (passportBackFileInputRef.current) {
@@ -163,37 +175,38 @@ function TravelerForm2({onDataChange, ind}) {
   }
 
   const handlePhotoSelect = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-
+    const file = event.target.files?.[0];
+  
     if (file) {
       if (file.size > maxSize) {
         toast.error('File size exceeds the limit of 1MB.', {
           position: 'top-center',
-        })
-        return
+        });
+        return;
       }
-      const reader = new FileReader()
-
+      const reader = new FileReader();
+  
       reader.onload = async (e) => {
-        // Update the state variable with the image data (base64-encoded)
         if (e.target) {
-          setPhoto(e.target.result as string)
+          setPhoto(e.target.result as string);
           try {
-            // Assuming handleFileUpload is an asynchronous function that returns a promise
-            const imageLink = await handleFileUpload(file)
-
-            // Update the form data with the image link
-            setFormData({...formData, travelerPhoto: imageLink})
-            onDataChange({...formData, travelerPhoto: imageLink})
+            const imageLink = await handleFileUpload(file);
+  
+            setFormData((prevFormData) => {
+              const updatedFormData = { ...prevFormData, travelerPhoto: imageLink };
+              onDataChange(updatedFormData);
+              onFieldChange(ind, 'photo', imageLink);
+              return updatedFormData;
+            });
           } catch (error) {
-            console.error('Error uploading image:', error)
+            console.error('Error uploading image:', error);
           }
         }
-      }
-
-      reader.readAsDataURL(file)
+      };
+  
+      reader.readAsDataURL(file);
     }
-  }
+  };
   const handlePhotoUpload = () => {
     // Trigger the hidden file input
     if (photoFileInputRef.current) {
@@ -306,7 +319,10 @@ function TravelerForm2({onDataChange, ind}) {
               }}
             >
               <div
-                onClick={() => setPassportFrontImageURL('')}
+                  onClick={() => {
+                    setPassportFrontImageURL('');
+                    handleFileDelete('passFrontPhoto');
+                  }}
                 style={{
                   justifyContent: 'flex-end',
                   position: 'relative',
@@ -594,7 +610,10 @@ function TravelerForm2({onDataChange, ind}) {
               }}
             >
               <div
-                onClick={() => setPassportBackImageURL('')}
+                onClick={() => {
+                  setPassportBackImageURL('');
+                  handleFileDelete('passBackPhoto');
+                }}
                 style={{
                   justifyContent: 'flex-end',
                   position: 'relative',
@@ -609,6 +628,7 @@ function TravelerForm2({onDataChange, ind}) {
               >
                 <ClearIcon style={{color: 'red'}} />
               </div>
+
               <img
                 src={passportBackImageURL}
                 alt='Uploaded Image'
@@ -844,7 +864,10 @@ function TravelerForm2({onDataChange, ind}) {
               }}
             >
               <div
-                onClick={() => setPhoto('')}
+                onClick={() => {
+                  setPhoto('');
+                  handleFileDelete('travelerPhoto');
+                }}
                 style={{
                   justifyContent: 'flex-end',
                   position: 'relative',
@@ -859,6 +882,7 @@ function TravelerForm2({onDataChange, ind}) {
               >
                 <ClearIcon style={{color: 'red'}} />
               </div>
+
               <img
                 src={photo}
                 alt='Uploaded Image'
