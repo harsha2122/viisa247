@@ -180,12 +180,6 @@ const SidebarMenuMain = () => {
         hasBullet={true}
       />
       <SidebarMenuItem
-        to='/superadmin/in-process'
-        title={'Pending'}
-        fontIcon='bi-app-indicator'
-        hasBullet={true}
-      />
-      <SidebarMenuItem
         to='/superadmin/waiting-for-approval'
         title={'In Process'}
         fontIcon='bi-app-indicator'
@@ -208,12 +202,6 @@ const SidebarMenuMain = () => {
       <SidebarMenuItem
         to='superadmin/visa247/processed'
         title={'Issued'}
-        fontIcon='bi-app-indicator'
-        hasBullet={true}
-      />
-      <SidebarMenuItem
-        to='superadmin/visa247/in-process'
-        title={'Pending'}
         fontIcon='bi-app-indicator'
         hasBullet={true}
       />

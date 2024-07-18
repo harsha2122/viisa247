@@ -207,36 +207,30 @@ const getCountryNameByCode = (countryCode) => {
 }
 
 const getStepStatuses = (visa_status) => {
-  // Define your default stepStatuses with 'done' set to false for all steps
   const defaultStepStatuses = [
     {label: 'Application Complete', done: false},
     {label: 'Visa Waiting', done: false},
     {label: 'Visa In-Process', done: false},
     {label: 'Visa Approved', done: false},
     {label: 'Visa Rejected', done: false},
-  ]
+  ];
 
-  // Use a switch statement or if/else to customize stepStatuses based on visa_status
   switch (visa_status) {
     case 'Applied':
-    case 'In process':
-      // Set 'done' to true for steps up to 'Application Submitted'
-      return defaultStepStatuses.map((step, index) => (index <= 1 ? {...step, done: true} : step))
+      case 'Not Issued':
+      return defaultStepStatuses.map((step, index) => (index <= 1 ? {...step, done: true} : step));
     case 'Processed':
     case 'Issue':
-      // Set 'done' to true for steps up to 'Visa Approved'
-      return defaultStepStatuses.map((step, index) => (index === 3 ? {...step, done: true} : step))
-    case 'Not Issued':
+      return defaultStepStatuses.map((step, index) => (index === 3 ? {...step, done: true} : step));
     case 'Reject':
-      // Set 'done' to true for steps up to 'Visa Rejected'
-      return defaultStepStatuses.map((step, index) => (index === 4 ? {...step, done: true} : step))
+      return defaultStepStatuses.map((step, index) => (index === 4 ? {...step, done: true} : step));
     case 'Waiting':
-      // Set 'done' to true for steps up to 'Visa In-Process'
-      return defaultStepStatuses.map((step, index) => (index <= 2 ? {...step, done: true} : step))
+      return defaultStepStatuses.map((step, index) => (index <= 2 ? {...step, done: true} : step));
     default:
-      return defaultStepStatuses
+      return defaultStepStatuses;
   }
-}
+};
+
 
 const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props) => {
   function generateDynamicInvoice(data) {
@@ -922,10 +916,8 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                     className='btn btn-success'
                     onClick={() => downloadVisa(entry)}
                     style={{
-                      backgroundColor: '#fff',
+                      backgroundColor: '#327113',
                       marginTop: 20,
-                      color: '#327113',
-                      border: '1px solid #327113',
                     }}
                   >
                     Download Visa
@@ -1167,10 +1159,8 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                     className='btn btn-success'
                     onClick={() => downloadFlightPDF(entry)}
                     style={{
-                      backgroundColor: '#fff',
+                      backgroundColor: '#327113',
                       marginTop: 20,
-                      color: '#327113',
-                      border: '1px solid #327113',
                     }}
                   >
                     Download Flight
@@ -1181,7 +1171,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                     here only
                   </p>
                 )}
-                                {(entry.flight_status === 'Reject' || entry.flight_status === 'Rejected') && (
+                {(entry.flight_status === 'Reject' || entry.flight_status === 'Rejected') && (
                   <button
                     type='submit'
                     id='kt_sign_in_submit'

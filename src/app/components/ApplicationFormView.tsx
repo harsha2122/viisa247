@@ -126,8 +126,6 @@ const handleDownload7 = () => {
       <br />
       <h3>Upload Traveler's Front Passport Page</h3>
       <p>
-      The destination country requires a scan of the traveler's passport. Upload a clear passport
-        image and Visa 247 will scan and enter all the details directly from the file.
       </p>
       
       <div className='d-flex ' style={{width: '100%'}}>
@@ -340,8 +338,6 @@ const handleDownload7 = () => {
 
       <h3>Upload Traveler's Back Passport Page</h3>
       <p>
-      The destination country requires a scan of the back page of the traveler's passport. Upload a
-        clear passport image and Visa 247 will scan and enter all the details directly from the file.
       </p>
       <div className='d-flex ' style={{width: '100%'}}>
         <div style={{width: '40%', marginTop: 50}}>
@@ -426,13 +422,9 @@ const handleDownload7 = () => {
         </div>
       </div>
 
+    {viewApplication.pan_card && (
+    <>
       <h3 className='mt-20'>Uploaded PAN Card Photo</h3>
-      <p>
-        The destination country requires a passport-sized photo of the traveler. The photo should
-        have a solid light-colored background, like a white wall or door, and be taken in a well lit
-        room. The traveler should have a neutral facial expression and not be wearing any headgear
-        or glasses.
-      </p>
       <div className='d-flex ' style={{width: '100%'}}>
         <div style={{width: '40%', marginTop: 50}}>
           <h6>Pan Card Photo</h6>
@@ -470,13 +462,10 @@ const handleDownload7 = () => {
       </button>
         </div>
       </div>
+      </>
+    )}
+
       <h3 className='mt-20'>Uploaded Traveler Photo</h3>
-      <p>
-        The destination country requires a passport-sized photo of the traveler. The photo should
-        have a solid light-colored background, like a white wall or door, and be taken in a well lit
-        room. The traveler should have a neutral facial expression and not be wearing any headgear
-        or glasses.
-      </p>
       <div className='d-flex ' style={{width: '100%'}}>
         <div style={{width: '40%', marginTop: 50}}>
           <h6>Photo</h6>
@@ -514,126 +503,141 @@ const handleDownload7 = () => {
       </button>
         </div>
       </div>
-      <h3 className='mt-20'>Income Tax Return</h3>
-      <p>
-      This destination mandates the submission of Income Tax Returns (ITR). It signifies that individuals traveling to this locale must provide documented proof of their income tax filings as part of the regulatory requirements or visa application process. Compliance with this regulation ensures adherence to the taxation laws of the respective destination and facilitates smooth entry or residency procedures for travelers.
-      </p>
-      <div className='d-flex ' style={{width: '100%'}}>
-        <div style={{width: '40%', marginTop: 50}}>
-          <h6>ITR</h6>
-          <div
+
+      {viewApplication.itr && (
+      <>
+        <h3 className='mt-20'>Income Tax Return</h3>
+        <p>
+        This destination mandates the submission of Income Tax Returns (ITR). It signifies that individuals traveling to this locale must provide documented proof of their income tax filings as part of the regulatory requirements or visa application process. Compliance with this regulation ensures adherence to the taxation laws of the respective destination and facilitates smooth entry or residency procedures for travelers.
+        </p>
+        <div className='d-flex ' style={{width: '100%'}}>
+          <div style={{width: '40%', marginTop: 50}}>
+            <h6>ITR</h6>
+            <div
+              style={{
+                border: '4px dotted gray',
+                width: '100%',
+                height: 300,
+                borderRadius: '10px',
+                justifyContent: 'center',
+                textAlign: 'center',
+                marginTop: 20,
+              }}
+            >
+              <img
+                src={viewApplication.itr}
+                alt='Uploaded Image'
+                style={{maxWidth: '100%', maxHeight: '100%', }}
+              />
+            </div>
+            <button
+            onClick={handleDownload2}
             style={{
-              border: '4px dotted gray',
-              width: '100%',
-              height: 300,
-              borderRadius: '10px',
-              justifyContent: 'center',
-              textAlign: 'center',
-              marginTop: 20,
+                position: 'relative',
+                color: '#fff',
+                border: 'none',
+                backgroundColor: '#327113',
+                padding: '10px 20px',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                marginTop:"20px"
             }}
-          >
-            <img
-              src={viewApplication.itr}
-              alt='Uploaded Image'
-              style={{maxWidth: '100%', maxHeight: '100%', }}
-            />
+        >
+            Download ITR
+        </button>
           </div>
-          <button
-          onClick={handleDownload2}
-          style={{
-              position: 'relative',
-              color: '#fff',
-              border: 'none',
-              backgroundColor: '#327113',
-              padding: '10px 20px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              marginTop:"20px"
-          }}
-      >
-          Download ITR
-      </button>
         </div>
+      </>
+      )}
+
+    {viewApplication.letter && (
+      <>
+        <h3 className='mt-20'>Letter</h3>
+        <div className='d-flex ' style={{width: '100%'}}>
+          <div style={{width: '40%', marginTop: 50}}>
+            <h6>Letter</h6>
+            <div
+              style={{
+                border: '4px dotted gray',
+                width: '100%',
+                height: 300,
+                borderRadius: '10px',
+                justifyContent: 'center',
+                textAlign: 'center',
+                marginTop: 20,
+              }}
+            >
+              <img
+                src={viewApplication.letter}
+                alt='Uploaded Image'
+                style={{maxWidth: '100%', maxHeight: '100%', }}
+              />
+            </div>
+            <button
+            onClick={handleDownload6}
+            style={{
+                position: 'relative',
+                color: '#fff',
+                border: 'none',
+                backgroundColor: '#327113',
+                padding: '10px 20px',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                marginTop:"20px"
+            }}
+        >
+            Download Letter
+        </button>
+          </div>
+        </div>
+      </>
+    )}
+
+
+    {viewApplication.tickets && (
+      <>
+        <h3 className='mt-20'>Tickets</h3>
+        <div className='d-flex ' style={{width: '100%'}}>
+          <div style={{width: '40%', marginTop: 50}}>
+            <h6>Tickets</h6>
+            <div
+              style={{
+                border: '4px dotted gray',
+                width: '100%',
+                height: 300,
+                borderRadius: '10px',
+                justifyContent: 'center',
+                textAlign: 'center',
+                marginTop: 20,
+              }}
+            >
+              <img
+                src={viewApplication.tickets}
+                alt='Uploaded Image'
+                style={{maxWidth: '100%', maxHeight: '100%', }}
+              />
+            </div>
+            <button
+            onClick={handleDownload7}
+            style={{
+                position: 'relative',
+                color: '#fff',
+                border: 'none',
+                backgroundColor: '#327113',
+                padding: '10px 20px',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                marginTop:"20px"
+            }}
+        >
+            Download Tickets
+        </button>
+          </div>
+        </div>
+        </>
+          )}
       </div>
 
-      <h3 className='mt-20'>Letter</h3>
-      <div className='d-flex ' style={{width: '100%'}}>
-        <div style={{width: '40%', marginTop: 50}}>
-          <h6>Letter</h6>
-          <div
-            style={{
-              border: '4px dotted gray',
-              width: '100%',
-              height: 300,
-              borderRadius: '10px',
-              justifyContent: 'center',
-              textAlign: 'center',
-              marginTop: 20,
-            }}
-          >
-            <img
-              src={viewApplication.letter}
-              alt='Uploaded Image'
-              style={{maxWidth: '100%', maxHeight: '100%', }}
-            />
-          </div>
-          <button
-          onClick={handleDownload6}
-          style={{
-              position: 'relative',
-              color: '#fff',
-              border: 'none',
-              backgroundColor: '#327113',
-              padding: '10px 20px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              marginTop:"20px"
-          }}
-      >
-          Download Letter
-      </button>
-        </div>
-      </div>
-
-      <h3 className='mt-20'>Tickets</h3>
-      <div className='d-flex ' style={{width: '100%'}}>
-        <div style={{width: '40%', marginTop: 50}}>
-          <h6>Tickets</h6>
-          <div
-            style={{
-              border: '4px dotted gray',
-              width: '100%',
-              height: 300,
-              borderRadius: '10px',
-              justifyContent: 'center',
-              textAlign: 'center',
-              marginTop: 20,
-            }}
-          >
-            <img
-              src={viewApplication.tickets}
-              alt='Uploaded Image'
-              style={{maxWidth: '100%', maxHeight: '100%', }}
-            />
-          </div>
-          <button
-          onClick={handleDownload7}
-          style={{
-              position: 'relative',
-              color: '#fff',
-              border: 'none',
-              backgroundColor: '#327113',
-              padding: '10px 20px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              marginTop:"20px"
-          }}
-      >
-          Download Tickets
-      </button>
-        </div>
-      </div>
-    </div>
   )
 }
 

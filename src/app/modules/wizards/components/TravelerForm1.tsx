@@ -419,10 +419,6 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
       }} />
       <h3 style={{color:"red", margin:"20px 0px 20px 0px"}}>Note - All fields are mandatory</h3>
       <h3>Upload Traveler's Front Passport Page</h3>
-      <p>
-      The destination country requires a scan of the traveler's passport. Upload a clear passport
-        image and Visa 247 will scan and enter all the details directly from the file.
-      </p>
       <div className='d-flex ' style={{ width: '100%' }}>
         <div style={{ width: '40%', marginTop: 70 }}>
           <h6>Passport Front Page Image</h6>
@@ -681,10 +677,6 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
       </div>
 
       <h3>Upload Traveler's Back Passport Page</h3>
-      <p>
-      The destination country requires a scan of the back page of the traveler's passport. Upload a
-        clear passport image and Visa 247 will scan and enter all the details directly from the file.
-      </p>
       <div className='d-flex ' style={{ width: '100%' }}>
         <div style={{ width: '40%', marginTop: 60 }}>
           <h6>Passport Back Page Image</h6>
@@ -810,12 +802,6 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
         <>
           <hr className='mt-20 w-100' />
           <h3 className='mt-20'>Upload PAN Card Photo</h3>
-          <p>
-            The destination country requires a passport-sized photo of the traveler. The photo should
-            have a solid light-colored background, like a white wall or door, and be taken in a well lit
-            room. The traveler should have a neutral facial expression and not be wearing any headgear
-            or glasses.
-          </p>
           <div className='d-flex ' style={{ width: '100%' }}>
             <div style={{ width: '40%', marginTop: 60 }}>
               <h6>Pan Card Photo</h6>
@@ -917,12 +903,6 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
         <>
           <hr className='mt-20 w-100' />
           <h3 className='mt-20'>Upload Letter Photo</h3>
-          <p>
-            The destination country requires a passport-sized photo of the traveler. The photo should
-            have a solid light-colored background, like a white wall or door, and be taken in a well lit
-            room. The traveler should have a neutral facial expression and not be wearing any headgear
-            or glasses.
-          </p>
           <div className='d-flex ' style={{ width: '100%' }}>
             <div style={{ width: '40%', marginTop: 60 }}>
               <h6>Letter Photo</h6>
@@ -1001,12 +981,6 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
         <>
           <hr className='mt-20 w-100' />
           <h3 className='mt-20'>Upload tickets Photo</h3>
-          <p>
-            The destination country requires a passport-sized photo of the traveler. The photo should
-            have a solid light-colored background, like a white wall or door, and be taken in a well lit
-            room. The traveler should have a neutral facial expression and not be wearing any headgear
-            or glasses.
-          </p>
           <div className='d-flex ' style={{ width: '100%' }}>
             <div style={{ width: '40%', marginTop: 60 }}>
               <h6> Tickets Photo</h6>
@@ -1083,12 +1057,6 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
       )}
       <hr className='mt-20 w-100' />
       <h3 className='mt-20'>Upload Traveler Photo</h3>
-      <p>
-        The destination country requires a passport-sized photo of the traveler. The photo should
-        have a solid light-colored background, like a white wall or door, and be taken in a well lit
-        room. The traveler should have a neutral facial expression and not be wearing any headgear
-        or glasses.
-      </p>
       <div className='d-flex ' style={{ width: '100%' }}>
         <div style={{ width: '40%', marginTop: 60 }}>
           <h6>Photo</h6>

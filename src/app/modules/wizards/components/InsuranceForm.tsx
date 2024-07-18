@@ -38,6 +38,7 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
     passportIssueDate: '',
     passPortExpiryDate: '',
     passport_front: '',
+    reciept_url: ''
   })
 
   const inputStyle = {
@@ -164,10 +165,6 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
       <br />
       <h3 style={{color:"red", margin:"20px 0px 20px 0px"}}>Note - All fields are mandatory.</h3>
       <h3>Upload Traveler's Front Passport Page</h3>
-      <p>
-      The destination country requires a scan of the traveler's passport. Upload a clear passport
-        image and Visa 247 will scan and enter all the details directly from the file.
-      </p>
       <div className='d-flex ' style={{ width: '100%' }}>
       <div style={{ width: '40%', marginTop: 70 }}>
         <h6>Passport Front Page Image</h6>

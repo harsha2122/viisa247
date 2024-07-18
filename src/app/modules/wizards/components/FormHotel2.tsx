@@ -370,6 +370,7 @@ const FormHotel2: React.FC<VerticalProps> = ({
                 onDataChange={(newData) => handleTravelerDataChange(newData, index)}
               />
               {travelerForms.length > 1 && index !== 0 && (
+                <div className='d-flex justify-content-end w-100'>
                 <button
                   onClick={() => handleDeleteForm(index)}
                   style={{
@@ -386,6 +387,7 @@ const FormHotel2: React.FC<VerticalProps> = ({
                 >
                   Delete
                 </button>
+                </div>
               )}
             </div>
           ))}

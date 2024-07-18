@@ -608,22 +608,24 @@ const Vertical5: React.FC<VerticalProps> = ({
               />
 
                 {travelerForms.length > 1 && index !== 0 && (
-                  <button
-                    onClick={() => handleDeleteForm(index)}
-                    style={{
-                      color: '#ffffff',
-                      padding: '7px 10px',
-                      border: 'none',
-                      backgroundColor: 'red',
-                      width: '100px',
-                      borderRadius: '5px',
-                      marginLeft: '20px',
-                      marginTop: '20px',
-                      fontSize: '16px',
-                    }}
-                  >
-                    Delete
-                  </button>
+                  <div className='d-flex justify-content-end w-100'>
+                <button
+                  onClick={() => handleDeleteForm(index)}
+                  style={{
+                    color: '#ffffff',
+                    padding: '7px 10px',
+                    border: 'none',
+                    backgroundColor: 'red',
+                    width: '100px',
+                    borderRadius: '5px',
+                    marginLeft: '20px',
+                    marginTop: '20px',
+                    fontSize: '16px',
+                  }}
+                >
+                  Delete
+                </button>
+                </div>
                 )}
               </div>
             </>
@@ -737,11 +739,11 @@ const Vertical5: React.FC<VerticalProps> = ({
                 alignItems: 'center',
                 display: 'flex',
                 justifyContent: 'center',
-                backgroundColor: '#fff',
+                backgroundColor: '#327113',
                 cursor: 'pointer',
               }}
             >
-              <h6 className='fs-4' style={{color: '#327113', paddingTop: 5, fontSize: 10}}>
+              <h6 className='fs-4' style={{color: '#fff', paddingTop: 5, fontSize: 10}}>
                 + Add Another Traveller
               </h6>
             </div>

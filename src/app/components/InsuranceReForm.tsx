@@ -1,15 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Button, Row, Col, Container } from 'react-bootstrap';
+import React, { useState, useEffect, CSSProperties } from 'react';
+import { Form, Button } from 'react-bootstrap';
 import axiosInstance from '../../app/helpers/axiosInstance';
 import toast, { Toaster } from 'react-hot-toast';
+import Cookies from 'js-cookie';
+
+const inputStyle: CSSProperties = {
+  border: '1.5px solid #d3d3d3',
+  borderRadius: '10px',
+  padding: '10px',
+  paddingLeft: '20px',
+  width: '90%',
+  boxSizing: 'border-box',
+};
 
 const InsuranceReForm = ({ ind, onDataChange, selectedEntry }) => {
   const [formData, setFormData] = useState({ ...selectedEntry });
   const [loading, setLoading] = useState(false);
+  const [userType, setUserType] = useState('');
 
   useEffect(() => {
     setFormData({ ...selectedEntry });
   }, [selectedEntry]);
+
+  useEffect(() => {
+    const userTypeFromCookies = Cookies.get('userType');
+    setUserType(userTypeFromCookies || '');
+  }, []);
 
   const handleFileUpload = async (file) => {
     try {
@@ -34,7 +50,6 @@ const InsuranceReForm = ({ ind, onDataChange, selectedEntry }) => {
     const { name, files } = e.target;
     if (files && files[0]) {
       const uploadedFileUrl = await handleFileUpload(files[0]);
-      console.log('Uploaded File URL:', uploadedFileUrl);
       setFormData((prevData) => ({
         ...prevData,
         [name]: uploadedFileUrl,
@@ -60,7 +75,7 @@ const InsuranceReForm = ({ ind, onDataChange, selectedEntry }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const updatedData = {
       _id: selectedEntry._id,
       first_name: formData.first_name,
@@ -76,10 +91,10 @@ const InsuranceReForm = ({ ind, onDataChange, selectedEntry }) => {
       passport_front: formData.passport_front,
       receipt_url: formData.receipt_url,
     };
-  
+
     try {
       const response = await axiosInstance.post('/backend/update_insurance_application', updatedData);
-      
+
       if (response.data.success === 1) {
         toast.success('Data updated successfully!');
         setTimeout(() => {
@@ -93,172 +108,160 @@ const InsuranceReForm = ({ ind, onDataChange, selectedEntry }) => {
       toast.error('Error updating data: ');
     }
   };
-  
-
-  console.log("asd", selectedEntry)
-  
 
   return (
-    <Container>
-    <Toaster />
-      <Form onSubmit={handleSubmit}>
-        <Row>
-        {formData.passport_front && (
-            <Col md={6}>
-              <Form.Group controlId="passport_front" className="mb-3">
-                <Form.Label>Passport Front</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="passport_front"
-                  onChange={handleFileChange}
-                />
-                {formData.passport_front && (
-                  <img src={formData.passport_front} alt="Passport Front Preview" style={{ width: '100px', height: '100px' }} />
-                )}
-              </Form.Group>
-            </Col>
-          )}
-          {formData.receipt_url && (
-            <Col md={6}>
-              <Form.Group controlId="receipt_url" className="mb-3">
-                <Form.Label>Receipt</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="receipt_url"
-                  onChange={handleFileChange}
-                />
-                {formData.receipt_url && (
-                  <img src={formData.receipt_url} alt="Receipt Preview" style={{ width: '100px', height: '100px' }} />
-                )}
-              </Form.Group>
-            </Col>
-          )}
-        </Row>
+    <div className=' px-20'>
+      <Toaster />
+      <div className='d-flex ' style={{ width: '100%' }}>
+        <div style={{ width: '40%', marginTop: 10 }}>
+          <h6>Passport Front Page Image</h6>
+          <div
+            style={{
+              border: '4px dotted gray',
+              width: '100%',
+              height: 300,
+              borderRadius: '10px',
+              justifyContent: 'center',
+              textAlign: 'center',
+              marginTop: 20,
+            }}
+          >
+            <img
+              src={selectedEntry.passport_front}
+              alt='Uploaded Image'
+              style={{ maxWidth: '100%', maxHeight: '100%', }}
+            />
+          </div>
+          <Form.Group controlId="passport_front" className="mt-3">
+            <Form.Control
+              type="file"
+              name="passport_front"
+              onChange={handleFileChange}
+            />
+          </Form.Group>
+        </div>
 
-        <Row>
-          {formData.birth_place && (
-            <Col md={6}>
-              <Form.Group controlId="birth_place" className="mb-3">
-                <Form.Label>Birth Place</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="birth_place"
-                  value={formData.birth_place || ''}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-            </Col>
-          )}
-          {formData.country_code && (
-            <Col md={6}>
-              <Form.Group controlId="country_code" className="mb-3">
-                <Form.Label>To Country</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="country_code"
-                  value={formData.country_code || ''}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-            </Col>
-          )}
-        </Row>
+        <div
+          className='d-flex flex-row-fluid flex-center bg-body rounded'
+          style={{ width: '70%', backgroundColor: 'blue' }}
+        >
+          <Form onSubmit={handleSubmit} className='py-4 px-9'>
+            <div>
+              <div className='fv-row mb-5'>
+                <label style={{ marginLeft: "5px" }} className='d-flex align-items-center form-label'>
+                  <span className='required'>Passport Number</span>
+                </label>
 
-        <Row>
-          {formData.fathers_name && (
-            <Col md={6}>
-              <Form.Group controlId="fathers_name" className="mb-3">
-                <Form.Label>Father's Name</Form.Label>
                 <Form.Control
-                  type="text"
-                  name="fathers_name"
-                  value={formData.fathers_name || ''}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-            </Col>
-          )}
-          {formData.first_name && (
-            <Col md={6}>
-              <Form.Group controlId="first_name" className="mb-3">
-                <Form.Label>First Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="first_name"
-                  value={formData.first_name || ''}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-            </Col>
-          )}
-        </Row>
-
-        <Row>
-          {formData.gender && (
-            <Col md={6}>
-              <Form.Group controlId="gender" className="mb-3">
-                <Form.Label>Gender</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="gender"
-                  value={formData.gender || ''}
-                  onChange={handleChange}
-                >
-                  <option value="">Select</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </Form.Control>
-              </Form.Group>
-            </Col>
-          )}
-          {formData.last_name && (
-            <Col md={6}>
-              <Form.Group controlId="last_name" className="mb-3">
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="last_name"
-                  value={formData.last_name || ''}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-            </Col>
-          )}
-        </Row>
-
-        <Row>
-          {formData.passport_number && (
-            <Col md={6}>
-              <Form.Group controlId="passport_number" className="mb-3">
-                <Form.Label>Passport Number</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="passport_number"
+                  style={{ ...inputStyle, width: '95%' }}
+                  name='passport_number'
                   value={formData.passport_number || ''}
                   onChange={handleChange}
+                  className='form-control form-control-lg form-control-solid'
                 />
-              </Form.Group>
-            </Col>
-          )}
-        {formData.visa_description && (
-            <Col md={6}>
-              <Form.Group controlId="visa_description" className="mb-3">
-                <Form.Label>Visa Description</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="visa_description"
-                  value={formData.visa_description || ''}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-            </Col>
-          )}
-        </Row>
+              </div>
 
-        <Button variant="primary" type="submit" className="mt-3">Submit</Button>
-      </Form>
-    </Container>
+              <div className='d-flex' style={{ justifyContent: 'space-between' }}>
+                <div className='fv-row mb-5'>
+                  <label style={{ marginLeft: "5px" }} className='form-label required'>First Name</label>
+
+                  <Form.Control
+                    name='first_name'
+                    value={formData.first_name || ''}
+                    onChange={handleChange}
+                    style={inputStyle}
+
+                    className='form-control form-control-lg form-control-solid'
+                  />
+                </div>
+                <div className='fv-row mb-5'>
+                  <label style={{ marginLeft: "5px" }} className='d-flex align-items-center form-label'>
+                    <span className='required'>Last Name</span>
+                  </label>
+
+                  <Form.Control
+                    style={inputStyle}
+                    name='last_name'
+                    value={formData.last_name || ''}
+                    onChange={handleChange}
+
+                    className='form-control form-control-lg form-control-solid'
+                  />
+                </div>
+              </div>
+
+              <div className='d-flex' style={{ justifyContent: 'space-between' }}>
+                <div className='fv-row mb-5'>
+                  <label style={{ marginLeft: "5px" }} className='d-flex align-items-center form-label'>
+                    <span className='required'>Birth Place</span>
+                  </label>
+
+                  <Form.Control
+                    style={inputStyle}
+                    name='birth_place'
+                    value={formData.birth_place || ''}
+                    onChange={handleChange}
+
+                    className='form-control form-control-lg form-control-solid'
+                  />
+                </div>
+              </div>
+
+              {userType === 'customer' && (
+                <div className='d-flex' style={{ justifyContent: 'space-between' }}>
+                  <div className='fv-row mb-10'>
+                    <label style={{ marginLeft: "-10px" }} className='form-label required'>Receipt</label>
+                    <div className='form-group'>
+                      <Form.Control
+                        type="file"
+                        name="receipt_url"
+                        onChange={handleFileChange}
+                      />
+                      {formData.receipt_url && (
+                        <img src={formData.receipt_url} alt="Receipt Preview" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <Button variant="primary" type="submit" className="mt-3">Submit</Button>
+          </Form>
+        </div>
+      </div>
+
+      {userType === 'customer' && formData.receipt_url && (
+        <div className='d-flex ' style={{ width: '100%' }}>
+          <div style={{ width: '40%', marginTop: 70 }}>
+            <h6>Receipt Image</h6>
+            <div
+              style={{
+                border: '4px dotted gray',
+                width: '100%',
+                height: 300,
+                borderRadius: '10px',
+                justifyContent: 'center',
+                textAlign: 'center',
+                marginTop: 20,
+              }}
+            >
+              <img
+                src={formData.receipt_url}
+                alt='Uploaded Image'
+                style={{ maxWidth: '100%', maxHeight: '100%', }}
+              />
+            </div>
+            <Form.Group controlId="receipt_url" className="mt-3">
+              <Form.Control
+                type="file"
+                name="receipt_url"
+                onChange={handleFileChange}
+              />
+            </Form.Group>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

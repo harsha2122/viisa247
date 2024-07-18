@@ -409,6 +409,7 @@ const FormFlight2: React.FC<VerticalProps> = ({
                 onFileDelete={handleFileDelete}
               />
               {travelerForms.length > 1 && index !== 0 && (
+                <div className='d-flex justify-content-end w-100'>
                 <button
                   onClick={() => handleDeleteForm(index)}
                   style={{
@@ -425,6 +426,7 @@ const FormFlight2: React.FC<VerticalProps> = ({
                 >
                   Delete
                 </button>
+                </div>
               )}
             </div>
           ))}
@@ -441,11 +443,11 @@ const FormFlight2: React.FC<VerticalProps> = ({
                 alignItems: 'center',
                 display: 'flex',
                 justifyContent: 'center',
-                backgroundColor: '#fff',
+                backgroundColor: '#327113',
                 cursor: 'pointer',
               }}
             >
-              <h6 className='fs-4' style={{color: '#327113', paddingTop: 5, fontSize: 10}}>
+              <h6 className='fs-4' style={{color: '#fff', paddingTop: 5, fontSize: 10}}>
                 + Add Another Applicant
               </h6>
             </div>

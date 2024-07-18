@@ -51,58 +51,9 @@ function InsuranceFormView({viewApplication}) {
     link.click();
     document.body.removeChild(link);
 };
+
 const handleDownload2 = () => {
-  const imageUrl = viewApplication.itr || '';
-  const link = document.createElement('a');
-  link.href = imageUrl;
-  const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-const handleDownload3 = () => {
-  const imageUrl = viewApplication.photo || '';
-  const link = document.createElement('a');
-  link.href = imageUrl;
-  const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-const handleDownload4 = () => {
-  const imageUrl = viewApplication.pan_card || '';
-  const link = document.createElement('a');
-  link.href = imageUrl;
-  const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-const handleDownload5 = () => {
-  const imageUrl = viewApplication.passport_back || '';
-  const link = document.createElement('a');
-  link.href = imageUrl;
-  const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-const handleDownload6 = () => {
-  const imageUrl = viewApplication.letter || '';
-  const link = document.createElement('a');
-  link.href = imageUrl;
-  const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-const handleDownload7 = () => {
-  const imageUrl = viewApplication.tickets || '';
+  const imageUrl = viewApplication.receipt_url || '';
   const link = document.createElement('a');
   link.href = imageUrl;
   const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
@@ -343,6 +294,43 @@ const handleDownload7 = () => {
               </Form>
             )}
           </Formik>
+        </div>
+      </div>
+      <div className='d-flex ' style={{width: '100%'}}>
+        <div style={{width: '40%', marginTop: 70}}>
+          <h6>Passport Front Page Image</h6>
+          <div
+            style={{
+              border: '4px dotted gray',
+              width: '100%',
+              height: 300,
+              borderRadius: '10px',
+              justifyContent: 'center',
+              textAlign: 'center',
+              marginTop: 20,
+            }}
+          >
+            <img
+              src={viewApplication.receipt_url}
+              alt='Uploaded Image'
+              style={{maxWidth: '100%', maxHeight: '100%',}}
+            />
+          </div>
+          <button
+          onClick={handleDownload2}
+          style={{
+              position: 'relative',
+              color: '#fff',
+              border: 'none',
+              backgroundColor: '#327113',
+              padding: '10px 20px',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              marginTop:"20px"
+          }}
+      >
+          Download Reciept
+      </button>
         </div>
       </div>
     </div>

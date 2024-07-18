@@ -81,26 +81,6 @@ const Verticalii: React.FC<VerticalProps> = ({
     setIsFixed(scrollY >= 180)
   }
 
-  const handleFileUpload = async (file) => {
-    try {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append('file', file);
-      const response = await axiosInstance.post('/backend/upload_image/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      const fileUrl = response.data.data;
-      setLoading(false);
-      return fileUrl;
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      setLoading(false);
-      return '';
-    }
-  }
-
   const [travelerForms, setTravelerForms] = useState<any[]>([{ passport_front: ''}]);
   const [isFieldFilled, setIsFieldFilled] = useState({
     passport_front: false,
@@ -208,27 +188,31 @@ const Verticalii: React.FC<VerticalProps> = ({
         })
       } else {
         setLoading(true)
+        let allFieldsFilled = true;
   
         for (const travelerForm of travelerForms) {
-          if (
-            !travelerForm.firstName ||
-            !travelerForm.lastName ||
-            !travelerForm.birthPlace ||
-            !travelerForm.birthDetail ||
-            !travelerForm.passportNumber ||
-            !travelerForm.passportIssueDate ||
-            !travelerForm.passPortExpiryDate ||
-            !travelerForm.gender ||
-            !travelerForm.maritalStatus ||
-            !travelerForm.passport_front
-          ) {
-            toast.error('All fields are required!', {
-              position: 'top-center',
-            })
-            setLoading(false)
-            return
-          }
+          const missingFields: string[] = [];
   
+          if (!travelerForm.firstName) missingFields.push('First Name');
+          if (!travelerForm.lastName) missingFields.push('Last Name');
+          if (!travelerForm.birthPlace) missingFields.push('Birth Place');
+          if (!travelerForm.birthDetail) missingFields.push('Birth Detail');
+          if (!travelerForm.passportNumber) missingFields.push('Passport Number');
+          if (!travelerForm.passportIssueDate) missingFields.push('Passport Issue Date');
+          if (!travelerForm.passPortExpiryDate) missingFields.push('Passport Expiry Date');
+          if (!travelerForm.gender) missingFields.push('Gender');
+          if (!travelerForm.maritalStatus) missingFields.push('Marital Status');
+          if (!reciept) missingFields.push('Receipt');
+          if (!travelerForm.passport_front) missingFields.push('Passport Front');
+    
+          if (missingFields.length > 0) {
+            toast.error(`Missing fields: ${missingFields.join(', ')}`, {
+              position: 'top-center',
+            });
+            setLoading(false);
+            allFieldsFilled = false;
+            break;
+          }
           const postData = {
             country_code: selectedEntry.country_code,
             nationality_code: selectedEntry.nationality_code,
@@ -402,6 +386,7 @@ console.log("sadf", selectedEntry)
                 onFileDelete={handleFileDelete}
               />
               {travelerForms.length > 1 && index !== 0 && (
+                <div className='d-flex justify-content-end w-100'>
                 <button
                   onClick={() => handleDeleteForm(index)}
                   style={{
@@ -418,6 +403,8 @@ console.log("sadf", selectedEntry)
                 >
                   Delete
                 </button>
+                </div>
+
               )}
             </div>
           ))}
@@ -435,11 +422,11 @@ console.log("sadf", selectedEntry)
                 alignItems: 'center',
                 display: 'flex',
                 justifyContent: 'center',
-                backgroundColor: '#fff',
+                backgroundColor: '#327113',
                 cursor: 'pointer',
               }}
             >
-              <h6 className='fs-4' style={{color: '#327113', paddingTop: 5, fontSize: 10}}>
+              <h6 className='fs-4' style={{color: '#fff', paddingTop: 5, fontSize: 10}}>
                 + Add Another Applicant
               </h6>
             </div>
@@ -588,6 +575,7 @@ console.log("sadf", selectedEntry)
               <p><strong>Passport Expiry Date:</strong> {data.passPortExpiryDate}</p>
               <p><strong>Gender:</strong> {data.gender}</p>
               <p><strong>Marital Status:</strong> {data.maritalStatus}</p>
+              <p><strong>Passport Front:</strong> {data.passportFront}</p>
             </div>
           ))}
         </Modal.Body>

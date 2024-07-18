@@ -277,7 +277,6 @@ const IrejectTable: React.FC<Props> = ({ className, title, data,loading }) => {
                       <th className='fs-5 min-w-100px'>Email</th>
                       <th className='fs-5 min-w-100px'>Contact</th>
                       <th className='fs-5 min-w-40px'>From</th>
-                      <th className='fs-5 min-w-40px'>To</th>
                       <th className='fs-5 min-w-40px'>Channel</th>
                       <th className='fs-5 text-center min-w-70px'>Status</th>
                       <th className='fs-5 text-center min-w-70px'>Amount</th>
@@ -304,11 +303,6 @@ const IrejectTable: React.FC<Props> = ({ className, title, data,loading }) => {
                       <td>
                         <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
                           {row.nationality_code}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.country_code}
                         </a>
                       </td>
                       <td>

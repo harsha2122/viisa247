@@ -10,6 +10,7 @@ import {Box, Step, StepLabel, Stepper, Theme, Typography} from '@mui/material'
 import InsuranceForm from './InsuranceForm'
 import Confetti from 'react-confetti';
 import ClearIcon from '@mui/icons-material/Delete';
+import { ICreateAccount, inits } from './CreateAccountWizardHelper'
 import { Modal, Button } from 'react-bootstrap';
 import qr from '../../../../_metronic/assets/card/qr.png' 
 import OrderSuccess from '../../../components/OrderSuccess'
@@ -36,12 +37,14 @@ const Verticali: React.FC<VerticalProps> = ({
       return updatedData
     })
   }
+  const [initValues] = useState<ICreateAccount>(inits)
   const [applicantForms, setApplicantForms] = useState<any[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [loadingg, setLoadingg] = useState(false)
   const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null);
   const recieptFileInputRef = useRef<HTMLInputElement | null>(null);
-  const [reciept, setReciept] = useState('');
+  const [recieptUrl, setRecieptUrl] = useState('');
   const maxSize = 1024 * 1024;
   // const [travelerForms, setTravelerForms] = useState([<TravelerForm key={0} onDataChange={handleTravelerDataChange} />]);
   const navigate = useNavigate()
@@ -118,7 +121,7 @@ const Verticali: React.FC<VerticalProps> = ({
 
   const handleFileUpload = async (file) => {
     try {
-      setLoading(true);
+      setLoadingg(true);
       const formData = new FormData();
       formData.append('file', file);
       const response = await axiosInstance.post('/backend/upload_image/upload', formData, {
@@ -127,11 +130,11 @@ const Verticali: React.FC<VerticalProps> = ({
         },
       });
       const fileUrl = response.data.data;
-      setLoading(false);
+      setLoadingg(false);
       return fileUrl;
     } catch (error) {
       console.error('Error uploading file:', error);
-      setLoading(false);
+      setLoadingg(false);
       return '';
     }
   }
@@ -150,7 +153,7 @@ const Verticali: React.FC<VerticalProps> = ({
         if (e.target) {
           try {
             const imageLink = await handleFileUpload(file);
-            setReciept(imageLink);
+            setRecieptUrl(imageLink);
           } catch (error) {
             console.error('Error uploading image:', error);
           }
@@ -179,7 +182,6 @@ const Verticali: React.FC<VerticalProps> = ({
     setTravelerForms((prevForms) => [...prevForms, {}])
   }
 
-  const [currentWallet, setCurrentWallet] = useState('')
   function formatDateWithTimezoneToYMD(dateString) {
     const date = new Date(dateString)
     if (!isNaN(date.getTime())) {
@@ -214,104 +216,89 @@ const Verticali: React.FC<VerticalProps> = ({
 
   const handleReviewAndSave = async () => {
     try {
-      const totalPrice = parseFloat(totalAmount.toFixed(0))
-      const walletBalance = parseFloat(currentWallet)
-      if (totalPrice > walletBalance) {
-        toast.error('Insufficient Balance!', {
-          position: 'top-center',
-        })
-      } else {
-        setLoading(true)
-        for (const travelerForm of travelerForms) {
-          if (
-            !travelerForm.firstName ||
-            !travelerForm.lastName ||
-            !travelerForm.birthPlace ||
-            !travelerForm.birthDetail ||
-            !travelerForm.passportNumber ||
-            !travelerForm.passportIssueDate ||
-            !travelerForm.passPortExpiryDate ||
-            !travelerForm.gender ||
-            !travelerForm.maritalStatus ||
-            !travelerForm.passport_front
-          ) {
-            toast.error('All fields are required!', {
+      setLoading(true);
+      let allFieldsFilled = true;
+  
+      for (const travelerForm of travelerForms) {
+        const missingFields: string[] = [];
+  
+        if (!travelerForm.firstName) missingFields.push('First Name');
+        if (!travelerForm.lastName) missingFields.push('Last Name');
+        if (!travelerForm.birthPlace) missingFields.push('Birth Place');
+        if (!travelerForm.birthDetail) missingFields.push('Birth Detail');
+        if (!travelerForm.passportNumber) missingFields.push('Passport Number');
+        if (!travelerForm.passportIssueDate) missingFields.push('Passport Issue Date');
+        if (!travelerForm.passPortExpiryDate) missingFields.push('Passport Expiry Date');
+        if (!travelerForm.gender) missingFields.push('Gender');
+        if (!travelerForm.maritalStatus) missingFields.push('Marital Status');
+        if (!travelerForm.passport_front) missingFields.push('Passport Front');
+        if (!recieptUrl) missingFields.push('Receipt');
+  
+        if (missingFields.length > 0) {
+          toast.error(`Missing fields: ${missingFields.join(', ')}`, {
+            position: 'top-center',
+          });
+          setLoading(false);
+          allFieldsFilled = false;
+          break;
+        }
+        const postData = {
+          country_code: selectedEntry.country_code,
+          nationality_code: selectedEntry.nationality_code,
+          first_name: travelerForm.firstName,
+          last_name: travelerForm.lastName,
+          birth_place: travelerForm.birthPlace,
+          birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
+          nationality: selectedEntry.nationality_code,
+          passport_number: travelerForm.passportNumber,
+          passport_issue_date: formatDateWithTimezoneToYMD(travelerForm.passportIssueDate),
+          passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
+          gender: travelerForm.gender,
+          marital_status: travelerForm.maritalStatus,
+          passport_front: travelerForm.passport_front,
+          receipt_url: recieptUrl,
+          insurance_id: selectedEntry.id,
+          insurance_amount: selectedEntry.totalAmount,
+          insurance_original_amount: selectedEntry.insurance_original_amount,
+          insurance_benefit: selectedEntry.benefits,
+          insurance_plan_type: selectedEntry.description,
+          insurance_age_group: selectedEntry.age_group
+        };
+  
+        try {
+          const response = await axiosInstance.post('/backend/create_insurance_application', postData);
+          setInsuranceResponse(response.data.data);
+          const user_id = Cookies.get('user_id');
+          const data = {
+            user_id: user_id,
+            insurance_application_id: response.data.data._id,
+          };
+          const userInsuranceResponse = await axiosInstance.post('/backend/add_user_insurance_applicant', data);
+  
+          if (userInsuranceResponse.status === 200) {
+            setIsReviewModal(false);
+            setConfetti(true);
+            setModalShow(true);
+          } else {
+            toast.error(userInsuranceResponse.data.msg, {
               position: 'top-center',
-            })
-            setLoading(false)
-            return
+            });
           }
-          const postData = {
-            country_code: selectedEntry.country_code,
-            nationality_code: selectedEntry.nationality_code,
-            first_name: travelerForm.firstName,
-            last_name: travelerForm.lastName,
-            birth_place: travelerForm.birthPlace,
-            birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
-            nationality: selectedEntry.nationality_code,
-            passport_number: travelerForm.passportNumber,
-            passport_issue_date: formatDateWithTimezoneToYMD(travelerForm.passportIssueDate),
-            passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
-            gender: travelerForm.gender,
-            marital_status: travelerForm.maritalStatus,
-            passport_front: travelerForm.passport_front,
-            receipt_url: reciept,
-            insurance_id: selectedEntry.id,
-            insurance_amount: selectedEntry.totalAmount,
-            insurance_original_amount: selectedEntry.insurance_original_amount,
-            insurance_benefit: selectedEntry.benefits,
-            insurance_plan_type: selectedEntry.description,
-            insurance_age_group: selectedEntry.age_group
-          }
-
-
-          axiosInstance
-            .post('/backend/create_insurance_application', postData)
-            .then((response) => {
-              setInsuranceResponse(response.data.data);
-              const user_id = Cookies.get('user_id')
-              const data = {
-                user_id: user_id,
-                insurance_application_id: response.data.data._id,
-              }
-              axiosInstance
-                .post('/backend/add_user_insurance_applicant', data)
-
-                    .then((response) => {
-                      if (response.status === 200) {
-                        setIsReviewModal(false)
-                        setConfetti(true);
-                        setModalShow(true); 
-                      } else {
-                        toast.error(response.data.msg, {
-                          position: 'top-center',
-                        })
-                      }
-                      setLoading(false)
-                    })
-                    .catch((error) => {
-                      console.error('Error applying for visa:', error)
-                      setLoading(false)
-                      toast.error('Error applying for visa', {
-                        position: 'top-center',
-                      })
-                    })
-                })
-
-
-            .catch((error) => {
-              console.error('Error creating user application:', error)
-              setLoading(false)
-              toast.error('Error creating user application', {
-                position: 'top-center',
-              })
-            })
+          setLoading(false);
+        } catch (error) {
+          console.error('Error applying for visa:', error);
+          setLoading(false);
+          toast.error('Error applying for visa', {
+            position: 'top-center',
+          });
         }
       }
     } catch (error) {
-      console.error('Error while making API calls:', error)
+      console.error('Error while making API calls:', error);
     }
-  }
+  };
+  
+
 
   const handleDeleteForm = (index) => {
     setTravelerForms((prevForms) => {
@@ -425,6 +412,7 @@ const Verticali: React.FC<VerticalProps> = ({
                 onFileDelete={handleFileDelete}
               />
               {travelerForms.length > 1 && index !== 0 && (
+                <div className='d-flex justify-content-end w-100'>
                 <button
                   onClick={() => handleDeleteForm(index)}
                   style={{
@@ -441,6 +429,7 @@ const Verticali: React.FC<VerticalProps> = ({
                 >
                   Delete
                 </button>
+                </div>
               )}
             </div>
           ))}
@@ -458,9 +447,9 @@ const Verticali: React.FC<VerticalProps> = ({
             <div className='d-flex ' style={{width: '100%'}}>
               <div style={{width: '40%', marginLeft: '25px', marginTop: '30px'}}>
                 <h6>Receipt</h6>
-                {loading ? (
+                {loadingg ? (
                   <div style={{color: '#000'}}>Loading...</div>
-                ) : reciept ? (
+                ) : recieptUrl ? (
                   <div
                     style={{
                       border: '4px dotted gray',
@@ -474,7 +463,7 @@ const Verticali: React.FC<VerticalProps> = ({
                     }}
                   >
                     <div
-                      onClick={() => setReciept('')}
+                      onClick={() => setRecieptUrl('')}
                       style={{
                         justifyContent: 'flex-end',
                         position: 'absolute',
@@ -489,7 +478,7 @@ const Verticali: React.FC<VerticalProps> = ({
                       <ClearIcon style={{color: 'red'}} />
                     </div>
                     <img
-                      src={reciept}
+                      src={recieptUrl}
                       alt='Uploaded Image'
                       style={{
                         maxWidth: '100%',
@@ -553,11 +542,11 @@ const Verticali: React.FC<VerticalProps> = ({
                 alignItems: 'center',
                 display: 'flex',
                 justifyContent: 'center',
-                backgroundColor: '#fff',
+                backgroundColor: '#327113',
                 cursor: 'pointer',
               }}
             >
-              <h6 className='fs-4' style={{color: '#327113', paddingTop: 5, fontSize: 10}}>
+              <h6 className='fs-4' style={{color: '#fff', paddingTop: 5, fontSize: 10}}>
                 + Add Another Applicant
               </h6>
             </div>
@@ -660,7 +649,7 @@ const Verticali: React.FC<VerticalProps> = ({
                 </div>
               </div>
               <div
-                onClick={handleReviewAndSave}
+                onClick={handleReviewModal}
                 className='mt-10'
                 style={{
                   height: 40,
@@ -697,6 +686,7 @@ const Verticali: React.FC<VerticalProps> = ({
         <Modal.Body>
           {insuranceFormData && insuranceFormData.map((data, index) => (
             <div key={index}>
+              <hr className='ahr' />
               <p><strong>First Name:</strong> {data.firstName}</p>
               <p><strong>Last Name:</strong> {data.lastName}</p>
               <p><strong>Birth Place:</strong> {data.birthPlace}</p>
@@ -706,6 +696,7 @@ const Verticali: React.FC<VerticalProps> = ({
               <p><strong>Passport Expiry Date:</strong> {data.passPortExpiryDate}</p>
               <p><strong>Gender:</strong> {data.gender}</p>
               <p><strong>Marital Status:</strong> {data.maritalStatus}</p>
+              <p><strong>Passport Front:</strong> {data.passportFront}</p>
             </div>
           ))}
         </Modal.Body>

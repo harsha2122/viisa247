@@ -532,9 +532,9 @@ const Home: React.FC<Props> = ({
                         </ul>  
                     </div>
                     <div className="card-price">
-                        <del className="del">₹10,000</del>
+                        <del className="del">₹700</del>
                         <div className="amount">
-                            ₹7,161 <span className="per">Per Person</span>
+                            ₹300 <span className="per">Per Person</span>
                         </div>
                     </div>
                 </a>
@@ -558,9 +558,9 @@ const Home: React.FC<Props> = ({
                         </ul>  
                     </div>
                     <div className="card-price">
-                        <del className="del">₹3,500</del>
+                        <del className="del">₹4,500</del>
                         <div className="amount">
-                            ₹2,767 <span className="per">Per Person</span>
+                            ₹3,999 <span className="per">Per Person</span>
                         </div>
                     </div>
                 </a>
@@ -584,9 +584,9 @@ const Home: React.FC<Props> = ({
                         </ul>  
                     </div>
                     <div className="card-price">
-                        <del className="del">₹15,000</del>
+                        <del className="del">₹700</del>
                         <div className="amount">
-                            ₹12,598 <span className="per">Per Person</span>
+                            ₹500<span className="per">Per Person</span>
                         </div>
                     </div>
                 </a>
@@ -610,9 +610,9 @@ const Home: React.FC<Props> = ({
                         </ul>  
                     </div>
                     <div className="card-price">
-                        <del className="del">₹16,500</del>
+                        <del className="del">₹4,100</del>
                         <div className="amount">
-                            ₹14,444 <span className="per">Per Person</span>
+                            ₹3,500 <span className="per">Per Person</span>
                         </div>
                     </div>
                 </a>
@@ -636,9 +636,9 @@ const Home: React.FC<Props> = ({
                         </ul>  
                     </div>
                     <div className="card-price">
-                        <del className="del">₹8,275</del>
+                        <del className="del">₹2,499</del>
                         <div className="amount">
-                            ₹7,258 <span className="per">Per Person</span>
+                            ₹1,999 <span className="per">Per Person</span>
                         </div>
                     </div>
                 </a>
@@ -665,110 +665,6 @@ const Home: React.FC<Props> = ({
                         <del className="del">₹4,500</del>
                         <div className="amount">
                             ₹2,238 <span className="per">Per Person</span>
-                        </div>
-                    </div>
-                </a>
-                <a onClick={() => onSelect({ fromCountry: selectedFromCountry, toCountry: 'TR' })} className="cursor-pointer cards-single">
-                    <div className="img-conti">
-                        <img className="imgr" src="./media/assets/turkey.jpg" alt="" />
-                    </div>
-                    <div className="title">
-                        <h1 className="heading">Turkey</h1>
-                        <span className="rating">
-                            
-                        </span>
-
-                    </div>
-                    <div className="title-2">Tourist Visa</div>
-                    <div className="card-info">
-                        <ul>
-                            <li>Approval Chances 90%</li>
-                            <li>Visa within 6 Days</li>
-                            <li>Visit</li>
-                        </ul>  
-                    </div>
-                    <div className="card-price">
-                        <del className="del">₹5,300</del>
-                        <div className="amount">
-                            ₹4,352 <span className="per">Per Person</span>
-                        </div>
-                    </div>
-                </a>
-                <a onClick={() => onSelect({ fromCountry: selectedFromCountry, toCountry: 'GE' })} className="cursor-pointer cards-single">
-                    <div className="img-conti">
-                        <img className="imgr" src="./media/assets/georgia.jpg" alt="" />
-                    </div>
-                    <div className="title">
-                        <h1 className="heading">Georgia</h1>
-                        <span className="rating">
-                            
-                        </span>
-
-                    </div>
-                    <div className="title-2">Tourist Visa</div>
-                    <div className="card-info">
-                        <ul>
-                            <li>Approval Chances 90%</li>
-                            <li>Visa within 6 Days</li>
-                            <li>Visit</li>
-                        </ul>  
-                    </div>
-                    <div className="card-price">
-                        <del className="del">₹5,500</del>
-                        <div className="amount">
-                            ₹4,166 <span className="per">Per Person</span>
-                        </div>
-                    </div>
-                </a>
-                <a onClick={() => onSelect({ fromCountry: selectedFromCountry, toCountry: 'EG' })} className="cursor-pointer cards-single">
-                    <div className="img-conti">
-                        <img className="imgr" src="./media/assets/egypt.jpg" alt="" />
-                    </div>
-                    <div className="title">
-                        <h1 className="heading">Egypt</h1>
-                        <span className="rating">
-                            
-                        </span>
-
-                    </div>
-                    <div className="title-2">Tourist Visa</div>
-                    <div className="card-info">
-                        <ul>
-                            <li>Approval Chances 90%</li>
-                            <li>Visa within 6 Days</li>
-                            <li>Visit</li>
-                        </ul>  
-                    </div>
-                    <div className="card-price">
-                        <del className="del">₹2,800</del>
-                        <div className="amount">
-                            ₹1,556 <span className="per">Per Person</span>
-                        </div>
-                    </div>
-                </a>
-                <a onClick={() => onSelect({ fromCountry: selectedFromCountry, toCountry: 'KE' })} className="cursor-pointer cards-single">
-                    <div className="img-conti">
-                        <img className="imgr" src="./media/assets/kenya.jpg" alt="" />
-                    </div>
-                    <div className="title">
-                        <h1 className="heading">Kenya</h1>
-                        <span className="rating">
-                            
-                        </span>
-
-                    </div>
-                    <div className="title-2">Tourist Visa</div>
-                    <div className="card-info">
-                        <ul>
-                            <li>Approval Chances 90%</li>
-                            <li>Visa within 6 Days</li>
-                            <li>Visit</li>
-                        </ul>  
-                    </div>
-                    <div className="card-price">
-                        <del className="del">₹4,200</del>
-                        <div className="amount">
-                            ₹3,620 <span className="per">Per Person</span>
                         </div>
                     </div>
                 </a>

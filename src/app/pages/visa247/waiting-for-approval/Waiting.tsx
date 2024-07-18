@@ -32,7 +32,7 @@ function Waiting() {
 
   return (
     <div style={{ marginTop: "-50px" }}>
-      <WaitingTable className='' title={'Visa247 Waiting for Approval'} data={visasStatsData} loading={loading} />
+      <WaitingTable className='' title={'Visa247 In-Process'} data={visasStatsData} loading={loading} />
     </div>
   );
 }
