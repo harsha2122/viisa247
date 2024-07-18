@@ -202,7 +202,6 @@ const Verticalii: React.FC<VerticalProps> = ({
           if (!travelerForm.passPortExpiryDate) missingFields.push('Passport Expiry Date');
           if (!travelerForm.gender) missingFields.push('Gender');
           if (!travelerForm.maritalStatus) missingFields.push('Marital Status');
-          if (!reciept) missingFields.push('Receipt');
           if (!travelerForm.passport_front) missingFields.push('Passport Front');
     
           if (missingFields.length > 0) {

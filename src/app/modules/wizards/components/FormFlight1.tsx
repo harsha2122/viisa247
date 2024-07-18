@@ -517,7 +517,7 @@ const FormFlight1: React.FC<VerticalProps> = ({
                 cursor: 'pointer',
               }}
             >
-              <h6 className='fs-4' style={{color: '#327113', paddingTop: 5, fontSize: 10}}>
+              <h6 className='fs-4' style={{color: '#fff', paddingTop: 5, fontSize: 10}}>
                 + Add Another Applicant
               </h6>
             </div>
