@@ -33,9 +33,15 @@ const Vertical: React.FC<VerticalProps> = ({
       return updatedData
     })
   }
+    
+  const generateGroupId = () => {
+    return Math.random().toString(36).substring(2, 12);
+  };
+
   const [applicantForms, setApplicantForms] = useState<any[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [groupId, setGroupId] = useState<string>('');
   const [confetti, setConfetti] = useState(false)
   // const [travelerForms, setTravelerForms] = useState([<TravelerForm key={0} onDataChange={handleTravelerDataChange} />]);
   const navigate = useNavigate()
@@ -53,6 +59,11 @@ const Vertical: React.FC<VerticalProps> = ({
       window.removeEventListener('scroll', handleScroll)
     }
   }, [])
+
+  useEffect(() => {
+    const newGroupId = generateGroupId();
+    setGroupId(newGroupId);
+  }, []);
 
   const handleReviewModal = () => {
     const formData = travelerForms.map((form) => ({
@@ -121,7 +132,6 @@ const Vertical: React.FC<VerticalProps> = ({
       [`${index}_${fieldName}`]: false,
     }));
   };
-  
 
   const fetchwallet = async () => {
     try {
@@ -223,6 +233,7 @@ const Vertical: React.FC<VerticalProps> = ({
             nationality_code: selectedEntry.nationality_code,
             first_name: travelerForm.firstName,
             last_name: travelerForm.lastName,
+            group_id: groupId,
             birth_place: travelerForm.birthPlace,
             birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
             nationality: selectedEntry.nationality_code,
@@ -445,6 +456,32 @@ const Vertical: React.FC<VerticalProps> = ({
           </div>
         </div>
         <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
+        <div style={{margin:"0 auto", width:"80%"}} className="visa-card mb-12">
+            <div className="entry-info">
+                <h2>{selectedEntry?.day || '--'} Days</h2>
+                <p>Single Entry</p>
+            </div>
+            <div className="left-section">
+                <div className="visa-details">
+                    <p>Visa Type: Tourist Visa</p>
+                    <p>Price is inclusive of taxes.</p>
+                    <p>{selectedEntry?.description}</p>
+                </div>
+                <div className="stay-validity">
+                    <p><span>✔</span> Stay Period: <strong>{selectedEntry?.day || '--'} Days</strong></p>
+                    <p><span>✔</span> Validity: <strong>58 Days</strong></p>
+                </div>
+            </div>
+            <div className="right-section">
+                <div className="amount">
+                    <p>Amount</p>
+                    <h2>₹{' '}
+                    {  Math.ceil(selectedEntry?.receipt?.['Visa Fees'] ?? 0) +
+                      (selectedEntry?.receipt?.['Service Fees'] ?? 0)}
+                    </h2>
+                </div>
+            </div>
+          </div>
           {travelerForms.map((_, index) => (
             <div key={index}>
               <TravelerForm
@@ -644,7 +681,7 @@ const Vertical: React.FC<VerticalProps> = ({
                   width: 190,
                   marginBottom: 20,
                   border: '1px solid',
-                  marginLeft: 20,
+                  margin: "0 auto",
                   borderColor: '#696969',
                   borderRadius: 10,
                   alignItems: 'center',

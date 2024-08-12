@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast';
 import ClearIcon from '@mui/icons-material/Delete'
 import axiosInstance from '../../../helpers/axiosInstance'
+import moment from 'moment';
 import { DatePicker } from 'antd'
 import * as Yup from 'yup';
 import 'react-datepicker/dist/react-datepicker.css'
@@ -272,6 +273,11 @@ function TravelerForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
   const [expiryDate, setExpiryDate] =useState<string | undefined>('');
   const [dob, setDob] = useState<string | undefined>('');
 
+  const disabledDate = (current) => {
+    return current && current > moment().endOf('day');
+  };
+
+
   return (
     <div
       className='py-10 px-20'
@@ -452,6 +458,7 @@ function TravelerForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
 
                       <DatePicker
                         style={{ backgroundClip: '#fff', width: 230, marginTop: 2, border: '1.5px solid #d3d3d3', borderRadius: 15, padding: 10 }}
+                        disabledDate={disabledDate}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('birthDetail', value.format('YYYY-MM-DD'))

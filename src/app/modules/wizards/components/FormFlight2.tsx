@@ -8,11 +8,7 @@ import {CheckCircleOutline, CircleOutlined} from '@mui/icons-material'
 import Loader from '../../../components/Loader'
 import {Box, Step, StepLabel, Stepper, Theme, Typography} from '@mui/material'
 import Confetti from 'react-confetti';
-import { Modal, Button } from 'react-bootstrap';
 import OrderSuccess from '../../../components/OrderSuccess'
-import ClearIcon from '@mui/icons-material/Delete';
-import qr from '../../../../_metronic/assets/card/qr.png' 
-import HotelForm1 from './HotelForm1'
 import FlightForm1 from './FlightForm1'
 
 interface VerticalProps {
@@ -37,38 +33,25 @@ const FormFlight2: React.FC<VerticalProps> = ({
       return updatedForms;
     });
   };
+
+  const generateGroupId = () => {
+    return Math.random().toString(36).substring(2, 12);
+  };
   
   const [applicantForms, setApplicantForms] = useState<any[]>([])
   const [currentStep, setCurrentStep] = useState(0)
+  const [groupId, setGroupId] = useState<string>('');
   const [loading, setLoading] = useState(false)
   const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null);
   const recieptFileInputRef = useRef<HTMLInputElement | null>(null);
   const [reciept, setReciept] = useState('');
   const maxSize = 1024 * 1024;
-  // const [travelerForms, setTravelerForms] = useState([<TravelerForm key={0} onDataChange={handleTravelerDataChange} />]);
   const navigate = useNavigate()
   const [confetti, setConfetti] = useState(false);
   const [modalShow, setModalShow] = useState(false);
-  const handleShow = () => setModalShow(true);
   const handleClose = () => {
     setModalShow(false);
     navigate('/merchant/dashboard');
-  };
-  const handleReviewModal = () => {
-    const formData = travelerForms.map((form) => ({
-      firstName: form.firstName,
-      lastName: form.lastName,
-      birthPlace: form.birthPlace,
-      birthDetail: form.birthDetail,
-      passportNumber: form.passportNumber,
-      passportIssueDate: form.passportIssueDate,
-      passPortExpiryDate: form.passPortExpiryDate,
-      gender: form.gender,
-      maritalStatus: form.maritalStatus,
-      passportFront: form.passport_front,
-    }));
-    setInsuranceFormData(formData);
-    handleShowReviewModal();
   };
 
   const [travelerForms, setTravelerForms] = useState<any[]>([{ passport_front: ''}]);
@@ -135,45 +118,18 @@ const FormFlight2: React.FC<VerticalProps> = ({
     }
   }
 
-  
-
-  const handleRecieptSelect = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (file.size > maxSize) {
-        toast.error('File size exceeds the limit of 1MB.', {
-          position: 'top-center',
-        });
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        if (e.target) {
-          try {
-            const imageLink = await handleFileUpload(file);
-            setReciept(imageLink);
-          } catch (error) {
-            console.error('Error uploading image:', error);
-          }
-        }
-      }
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleRecieptUpload = () => {
-    if (recieptFileInputRef.current) {
-      recieptFileInputRef.current.click();
-    }
-  }
-
   useEffect(() => {
     window.addEventListener('scroll', handleScroll)
     fetchwallet();
     return () => {
       window.removeEventListener('scroll', handleScroll)
-    }
+    } 
   }, [])
+
+  useEffect(() => {
+    const newGroupId = generateGroupId();
+    setGroupId(newGroupId);
+  }, []);
 
   const totalAmount = travelerForms.length * selectedEntry.merchant_flight_amount
   const totalAmounta = selectedEntry.merchant_flight_amount
@@ -252,11 +208,12 @@ const FormFlight2: React.FC<VerticalProps> = ({
           first_name: travelerForm.fullName,
           gender: travelerForm.gender,
           age: travelerForm.age,
+          group_id: groupId,
           passport_front: travelerForm.passport_front,
           flight_id: selectedEntry.id,
-          flight_amount: selectedEntry.totalAmount,
-          flight_original_amount: selectedEntry.flight_original_amount,
-          merchant_flight_amount: selectedEntry.merchant_flight_amount,
+          flight_amount: travelerForms.length * selectedEntry.totalAmount,
+          flight_original_amount: travelerForms.length * selectedEntry.flight_original_amount,
+          merchant_flight_amount: travelerForms.length * selectedEntry.merchant_flight_amount,
         };
   
         try {
@@ -303,7 +260,6 @@ const FormFlight2: React.FC<VerticalProps> = ({
     })
   }
 
-  console.log("asc", selectedEntry)
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -362,19 +318,26 @@ const FormFlight2: React.FC<VerticalProps> = ({
       <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
       <div
           style={{
-            width: '20%',
+            width: '25%',
             padding: '16px',
             paddingLeft: '10px',
-            position: "sticky",
+            position: 'sticky',
             height: '100%',
             overflowY: 'auto',
-            paddingTop: 20,
-            top: '75px',
-            left: "10px",
+            paddingTop: 10,
+            top: '0px',
           }}
         >
            {travelerForms.map((form, index) => (
-            <>
+            <div style={{
+              borderRadius: 15,
+              borderColor: '#696969',
+              padding: '10px',
+              boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
+              backgroundColor: 'white',
+              marginBottom: '15px',
+              marginTop: '5px',
+            }}>
               <div onClick={() => {}} style={{ ...tabTextStyle }}>
                 <CheckCircleOutline style={{ color: '#327113', marginRight: 8 }} />
                 Traveller {index + 1}
@@ -392,12 +355,8 @@ const FormFlight2: React.FC<VerticalProps> = ({
                   Passport Front
                 </div>
               </div>
-            </>
+            </div>
           ))}
-          <div onClick={() => {}} style={{...tabTextStyle, color: '#696969'}}>
-            <CircleOutlined style={{color: '#327113', marginRight: 10}} />
-            Submit
-          </div>
         </div>
         <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
           {travelerForms.map((_, index) => (
@@ -499,11 +458,11 @@ const FormFlight2: React.FC<VerticalProps> = ({
                 borderRadius: 10,
                 borderColor: '#f5f5f5',
                 boxShadow: '4px 4px 15px rgba(0, 0, 0, 0.1)',
-                marginLeft: '10%',
+                marginLeft: '5%',
                 backgroundColor: 'white',
                 height: 'max-content',
                 marginBottom: 20,
-                width: '30%',
+                width: '35%',
               }}
             >
               <h2 style={{fontSize: 20, marginBottom: 20}}>Price Details</h2>

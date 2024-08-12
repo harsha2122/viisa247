@@ -1,16 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { CSSProperties, useState, useRef, ChangeEvent } from 'react'
-import { KTIcon, toAbsoluteUrl } from '../../_metronic/helpers'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { CloseOutlined, DeleteOutline } from '@mui/icons-material'
-import ApplicationFormView from './ApplicationFormView'
+import { Accordion, Button, Table } from 'react-bootstrap';
 import toast, { Toaster } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom'
 import Loader from './Loader'
-import Cookies from 'js-cookie'
-import { FcCancel, FcInfo } from "react-icons/fc";
 import axiosInstance from '../helpers/axiosInstance'
-import Pagination from 'react-bootstrap/Pagination';
 import FlightFormView from './FlightFormView'
 
 interface InsurancePayload {
@@ -27,6 +22,7 @@ type TableRow = InsurancePayload & {
   nationality: string;
   flight_amount: string;
   _id: string;
+  group_id: string;
 };
 
 type Props = {
@@ -83,7 +79,7 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
   const [deleteSelectedItem, setDeleteSelectedItem] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false)
-  const [selectedRow, setSelectedRow] = useState<TableRow | null>(null);
+  const [selectedRows, setSelectedRows] = useState<TableRow[]>([]);
   const [file, setFile] = useState(null);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
@@ -111,9 +107,9 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
     }
   }
 
-  const handleStatusChange = async (row: any, selectedStatus: string) => {
-    setSelectedRow(row);
-    if (selectedStatus === 'Reject') {
+  const handleStatusChange = async (applications: TableRow[], selectedStatus: string) => {
+    setSelectedRows(applications); // Multiple rows select karenge
+    if (selectedStatus === 'Reject' || selectedStatus === 'Re-Sumit') {
         setShowRejectModal(true);
     } else if (selectedStatus === 'Issue') {
         setShowIssueModal(true);
@@ -121,49 +117,59 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
   };
 
   const handleRejectSubmit = async () => {
-      if (selectedRow) {
-          try {
-              const payload: InsurancePayload = {
-                  id: selectedRow._id,
-                  flight_status: 'Rejected',
-                  flight_remark: rejectRemark,
-              };
+    try {
+      const payloads = selectedRows.map(row => ({
+        id: row._id,
+        flight_status: 'Rejected',
+        flight_remark: rejectRemark,
+      }));
 
-              const response = await axiosInstance.post('/backend/upload_flight_file', payload);
-              if (response.data.success === 1) {
-                  toast.success('Application rejected successfully');
-                  handleCloseRejectModal();
-                  setTimeout(() => {
-                    window.location.reload();
-                  }, 2500);
-              } else {
-                  toast.error('Error rejecting application');
-              }
-          } catch (error) {
-              console.error('Error submitting rejection:', error);
-              toast.error('Error submitting rejection');
-          }
+      const promises = payloads.map(payload => 
+        axiosInstance.post('/backend/upload_flight_file', payload)
+      );
+
+      const responses = await Promise.all(promises);
+      const allSuccess = responses.every(response => response.data.success === 1);
+
+      if (allSuccess) {
+        toast.success('Applications rejected successfully');
+        handleCloseRejectModal();
+        setTimeout(() => {
+            window.location.reload();
+        }, 2500);
+      } else {
+        toast.error('Error rejecting some applications');
       }
+    } catch (error) {
+      console.error('Error submitting rejection:', error);
+      toast.error('Error submitting rejection');
+    }
   };
 
   const handleIssueSubmit = async () => {
-    if (selectedRow && selectedRow.flight_pdf) {
+    if (selectedRows.length > 0 && file) {
       try {
-        const payload: InsurancePayload = {
-          id: selectedRow._id,
+        const payloads = selectedRows.map(row => ({
+          id: row._id,
           flight_status: 'Issued',
-          flight_pdf: selectedRow.flight_pdf,
-        };
-  
-        const response = await axiosInstance.post('/backend/upload_flight_file', payload);
-        if (response.data.success === 1) {
-          toast.success('Issued successfully');
+          flight_pdf: file, // Upload the same file for all rows
+        }));
+
+        const promises = payloads.map(payload => 
+          axiosInstance.post('/backend/upload_flight_file', payload)
+        );
+
+        const responses = await Promise.all(promises);
+        const allSuccess = responses.every(response => response.data.success === 1);
+
+        if (allSuccess) {
+          toast.success('Applications issued successfully');
           handleCloseIssueModal();
           setTimeout(() => {
-            window.location.reload();
+              window.location.reload();
           }, 2500);
         } else {
-          toast.error('Error issuing');
+          toast.error('Error issuing some applications');
         }
       } catch (error) {
         console.error('Error submitting flight:', error);
@@ -186,12 +192,7 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
   
       try {
         const imageLink = await handleFileUpload(file);
-        if (selectedRow) {
-          setSelectedRow({
-            ...selectedRow,
-            flight_pdf: imageLink,
-          });
-        }
+        setFile(imageLink);
         toast.success('File uploaded successfully', { position: 'top-center' });
       } catch (error) {
         console.error('Error uploading image:', error);
@@ -199,53 +200,6 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
       }
     }
   };
-  
-
-
-  const [activePage, setActivePage] = useState(1);
-  const itemsPerPage = 10;
-  const MAX_VISIBLE_PAGES = 7; 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-
-  const handlePageChange = (page: number) => {
-    setActivePage(page);
-  };
-
-  const startIndex = (activePage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-
-  const visiblePages: (number | string)[] = [];
-
-  const addVisiblePage = (page: number | string) => {
-    visiblePages.push(page);
-  };
-
-  const addRangeOfPages = (start: number, end: number) => {
-    for (let i = start; i <= end; i++) {
-      addVisiblePage(i);
-    }
-  };
-
-  if (totalPages <= MAX_VISIBLE_PAGES) {
-    addRangeOfPages(1, totalPages);
-  } else {
-    if (activePage <= MAX_VISIBLE_PAGES - 3) {
-      addRangeOfPages(1, MAX_VISIBLE_PAGES - 2);
-      addVisiblePage('...');
-      addVisiblePage(totalPages - 1);
-      addVisiblePage(totalPages);
-    } else if (activePage >= totalPages - (MAX_VISIBLE_PAGES - 4)) {
-      addVisiblePage(1);
-      addVisiblePage('...');
-      addRangeOfPages(totalPages - (MAX_VISIBLE_PAGES - 3), totalPages);
-    } else {
-      addVisiblePage(1);
-      addVisiblePage('...');
-      addRangeOfPages(activePage - 1, activePage + 1);
-      addVisiblePage('...');
-      addVisiblePage(totalPages);
-    }
-  }
 
 
   const handleClickOpen = (item) => {
@@ -279,6 +233,29 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
     setShowIssueModal(false);
     setFile(null);
   };
+
+  const [expandedGroups, setExpandedGroups] = useState<{ [key: string]: boolean }>({});
+
+  const groupData = (data: TableRow[]) => {
+    const groupedData: { [key: string]: TableRow[] } = {};
+    data.forEach((item) => {
+      const groupId = item.group_id; // Use group_id here
+      if (!groupedData[groupId]) {
+        groupedData[groupId] = [];
+      }
+      groupedData[groupId].push(item);
+    });
+    return groupedData;
+  };
+
+  const handleGroupToggle = (groupId: string) => {
+    setExpandedGroups((prev) => ({
+      ...prev,
+      [groupId]: !prev[groupId],
+    }));
+  };
+
+  const groupedData = groupData(data);
   
   return (
     <div style={{boxShadow:"none"}} className={`card ${className}`}>
@@ -311,125 +288,112 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
       {/* end::Header */}
       {/* begin::Body */}
       <div className='card-body py-3'>
-        {/* begin::Table container */}
-        <div className='table-responsive'>
-          {/* begin::Table */}
-          {loading ?
-            <div style={{ height: 300, overflowX: 'hidden', justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
-              <span className='indicator-progress' style={{ display: 'block' }}>
-                Please wait...
-                <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
-              </span>
-            </div>
-            :
-            <section style={{border:"1px solid #adc6a0"}} className='w-100 card my-5 '>
-            <div style={{borderBottom:"1.5px solid #327113"}} className='card-header'>
+      {/* begin::Table container */}
+      <div className='table-responsive'>
+        {/* begin::Table */}
+        {loading ? (
+          <div style={{ height: 300, overflowX: 'hidden', justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
+            <span className='indicator-progress' style={{ display: 'block' }}>
+              Please wait...
+              <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+            </span>
+          </div>
+        ) : (
+          <section style={{ border: '1px solid #adc6a0' }} className='w-100 card my-5'>
+            <div style={{ borderBottom: '1.5px solid #327113' }} className='card-header'>
               <h3 className='card-title align-content-start flex-row'>
                 <span className='card-label text-gray-600 fw-bold fs-3'>Recent Applications</span>
               </h3>
             </div>
             <div className='card-body py-3'>
               <div className='table-responsive'>
-                <table className='table table-row-bordered table-row-gray-300 align-middle gs-0 gy-3'>
-                  <thead>
-                    <tr className='fw-bold '>
-                      <th className='fs-5 min-w-160px'>Name</th>
-                      <th className='fs-5 min-w-100px'>Email</th>
-                      <th className='fs-5 min-w-100px'>Contact</th>
-                      <th className='fs-5 min-w-40px'>To</th>
-                      <th className='fs-5 min-w-40px'>From</th>
-                      <th className='fs-5 min-w-40px'>Channel</th>
-                      <th className='fs-5 text-center min-w-70px'>Status</th>
-                      <th className='fs-5 text-center min-w-70px'>Amount</th>
-                      <th className='fs-5 min-w-150px text-center'>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  {data.slice(startIndex, endIndex).map((row, index) => (
-                    <tr key={index}>
-                      <td>
-                        <a href='#' className='text-gray-600 fw-bold text-hover-primary fs-7'>
-                          {row.first_name}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                            {row.merchant_email_id || row.customer_email_id}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.merchant_phone_number || row.customer_phone_number}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.nationality_code}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.country_code}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.customer_email_id ? 'Customer' : 'Merchant'}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.flight_status}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-center text-hover-primary d-block mb-1 fs-7'>
-                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.flight_original_amount))}
-                        </a>
-                      </td>
-                      <td className='text-end d-flex'>
-                          <button
-                              title='Edit'
-                              onClick={() => handleVisibilityClick(row)}
-                              className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                          >
-                              <KTIcon iconName='eye' className='fs-3' />
-                          </button>
-                          <select
-                              className='form-select form-select-sm form-select-white w-75'
-                              onChange={(e) => handleStatusChange(row, e.target.value)}
-                          >
-                              <option value='Not Issued'>Update</option>
-                              <option value='Issue'>Issue</option>
-                              <option value='Reject'>Reject</option>
-                          </select>
-                      </td>
-
-                    </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {loading ? (
+                  <div style={{ height: 300, overflowX: 'hidden', justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
+                    <span className='indicator-progress' style={{ display: 'block' }}>
+                      Please wait...
+                      <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                    </span>
+                  </div>
+                ) : (
+                  <Accordion defaultActiveKey="0">
+                    {data.map(({ group_id, applications }) => {
+                      const firstApp = applications[0] || {};
+                      const totalApps = applications.length;
+                      return (
+                        <Accordion.Item style={{border:"1px solid #327113", borderRadius:"5px"}}  eventKey={group_id} key={group_id}>
+                          <Accordion.Header>
+                            <Table bordered size="sm" style={{ marginBottom: 0, tableLayout: 'fixed', width: '90%' }}>
+                              <thead>
+                                <tr>
+                                  <th style={{ width: '20%' }}>Group ID</th>
+                                  <th style={{ width: '20%' }}>Name</th>
+                                  <th style={{ width: '20%' }}>Email</th>
+                                  <th style={{ width: '20%' }}>Total Applications</th>
+                                  <th style={{ width: '20%' }}>Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>{group_id}</td>
+                                  <td>{firstApp.first_name || 'N/A'}</td>
+                                  <td>{firstApp.merchant_email_id || 'N/A'}</td>
+                                  <td>{totalApps}</td>
+                                  <td>
+                                    <select
+                                        className='form-select form-select-sm form-select-white w-75'
+                                        onChange={(e) => handleStatusChange(applications, e.target.value)} 
+                                    >
+                                        <option value='Not Issued'>Update</option>
+                                        <option value='Issue'>Issue</option>
+                                        <option value='Reject'>Reject</option>
+                                        <option value='Re-Sumit'>Re-Sumit</option>
+                                    </select>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </Table>
+                          </Accordion.Header>
+                          <Accordion.Body>
+                            <Table striped bordered hover responsive>
+                              <thead>
+                                <tr>
+                                  <th>Name</th>
+                                  <th>Email</th>
+                                  <th>Contact</th>
+                                  <th>Amount</th>
+                                  <th className='text-center'>Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {applications.map((app) => (
+                                  <tr key={app._id}>
+                                    <td>{app.first_name}</td>
+                                    <td>{app.merchant_email_id}</td>
+                                    <td>{app.merchant_phone_number}</td>
+                                    <td>{app.flight_amount}</td>
+                                    <td className='text-center'>
+                                      <Button variant="link">
+                                        <VisibilityIcon />
+                                      </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </Table>
+                          </Accordion.Body>
+                        </Accordion.Item>
+                      );
+                    })}
+                  </Accordion>
+                )}
               </div>
             </div>
           </section>
-          }
-          <div className="d-flex justify-content-center">
-          <Pagination>
-                {visiblePages.map((page, index) => (
-                  <Pagination.Item
-                    key={index}
-                    active={page === activePage}
-                    onClick={() => handlePageChange(typeof page === 'number' ? page : activePage)}
-                  >
-                    {page}
-                  </Pagination.Item>
-                ))}
-              </Pagination>
-              </div>
-          {/* end::Table */}
-        </div>
-        {/* end::Table container */}
+        )}
+        {/* end::Table */}
       </div>
+      {/* end::Table container */}
+    </div>
       {/* begin::Body */}
       {issueVisaLoader &&
         <Loader loading={issueVisaLoader} />
@@ -451,7 +415,7 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
                       <CloseOutlined />
                   </div>
                   <div style={{ justifyContent: "center", alignItems: "center", marginTop: "50px" }} className='d-flex flex-column gap-5'>
-                      <h2>Reject Application</h2>
+                      <h2>Remarks</h2>
                       <textarea style={{ ...inputStyle, boxSizing: 'border-box' }} value={rejectRemark} onChange={(e) => setRejectRemark(e.target.value)} placeholder="Enter your remark"></textarea>
                       <button className='btn' style={{ background: "#327113", width: "100px", color: "#fff" }} onClick={handleRejectSubmit}>Reject</button>
                   </div>
@@ -460,34 +424,24 @@ const Wfwaiting: React.FC<Props> = ({ className, title, data}) => {
       )}
 
       {showIssueModal && (
-          <div className='loader-overlay' style={{ ...overlayStyle, ...(showIssueModal && activeOverlayStyle) }}>
-              <div style={contentStyle}>
-                  <div onClick={handleCloseIssueModal} style={{ backgroundColor: '#d3d3d3', padding: 10, position: 'absolute', right: "193px", borderRadius: 20, cursor: 'pointer', top: '83px' }}>
-                      <CloseOutlined />
-                  </div>
-                  <div className='mb-5'>
-                    <label className='form-label fw-bolder text-dark required fs-6'>Upload</label>
-                    <input
-                      type='file'
-                      ref={flightFileInputRef}
-                      className='form-control'
-                      id='flight_pdf'
-                      name='flight_pdf'
-                      accept='.pdf'
-                      onChange={handleFileSelect}
-                    />
-                  </div>
-                  <div>
-                      <button 
-                          className='btn btn-primary' 
-                          onClick={handleIssueSubmit}
-                          disabled={!selectedRow || !selectedRow.flight_pdf}
-                      >
-                          Upload
-                      </button>
-                  </div>
-              </div>
+        <div style={{ ...overlayStyle, ...activeOverlayStyle }}>
+          <div style={contentStyle}>
+            <h4>Upload Flight Document</h4>
+            <input
+              type='file'
+              ref={flightFileInputRef}
+              className='form-control'
+              id='flight_pdf'
+              name='flight_pdf'
+              accept='.pdf'
+              onChange={handleFileSelect}
+            />
+            <div style={{ marginTop: '10px' }}>
+              <Button variant="primary" onClick={handleIssueSubmit}>Submit</Button>
+              <Button variant="secondary" onClick={handleCloseIssueModal} style={{ marginLeft: '10px' }}>Cancel</Button>
+            </div>
           </div>
+        </div>
       )}
 
 

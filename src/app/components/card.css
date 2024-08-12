@@ -48,7 +48,7 @@
 }
 
 .choice .ticket-container{
-    width: 60%;
+    width: 80%;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -66,7 +66,6 @@
 
 .choice .days{
     width: 25%;
-    border-radius: 20px;
     height: 100%;
     border: 1px solid black;
     display: flex;
@@ -204,11 +203,7 @@
     position: relative;
     width: 10%;
     height: 100%;
-    border: 1px solid black;
-    border-right: 2px dashed #fff;
-    border-left: 1px solid rgba(50, 113, 19, 1);
     background: rgba(50, 113, 19, 1);
-    border-radius: 0px 20px 20px 0px;
     writing-mode: vertical-lr;
     text-orientation: mixed;
     rotate: 180deg;
@@ -290,15 +285,6 @@
 }
 
 
-
-.choice h2{
-    font-size: 14px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
 .choice .apply-card p{
     font-size: 15px;
     font-weight: 550;
@@ -326,12 +312,6 @@
     gap: 5px;
 }
 
-.choice .amount{
-    font-size: 15px;
-    display: flex;
-    justify-content: flex-end;
-}
-
 .choice .tax-des{
     font-size: 10px;
     margin-left: 28px;
@@ -350,21 +330,6 @@
     align-items: center;
 }
 
-.choice button{
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    color: #fff;
-    background-color: #000;
-    width: 90%;
-    border-radius: 10px;
-    cursor: pointer;
-    border: none;
-}
 
 @media (max-width: 768px) {
     

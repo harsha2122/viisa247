@@ -1,12 +1,12 @@
 import { HomeMainCard } from "./HomeMainCard";
 import icon1 from '../../_metronic/assets/card/1.png'
-import customer from '../../_metronic/assets/card/3dcustom.webp'
-import merchant from '../../_metronic/assets/card/3dvisa.webp'
-import process from '../../_metronic/assets/card/3dprocess.webp'
-import waiting from '../../_metronic/assets/card/3dwaiting.webp'
-import transaction from '../../_metronic/assets/card/3dtransaction.webp'
-import reject from '../../_metronic/assets/card/3drej.webp'
-import revenue from '../../_metronic/assets/card/3drevenue.webp'
+import customer from '../../_metronic/assets/card/av.svg'
+import merchant from '../../_metronic/assets/card/va.svg'
+import process from '../../_metronic/assets/card/vip.svg'
+import waiting from '../../_metronic/assets/card/vw.svg'
+import transaction from '../../_metronic/assets/card/tt.svg'
+import reject from '../../_metronic/assets/card/vr.svg'
+import revenue from '../../_metronic/assets/card/rg.svg'
 import React, { FC } from 'react';
 
 type Props = {
@@ -133,7 +133,7 @@ export function MerchantAnaltytics({dashboardData}) {
           description='Visa processed'
           color='#fff'
           too="/merchant/dashboard"
-          icon={merchant}
+          icon={process}
           textColor='#071437'
           count={dashboardData?.visa_processed_today || 0}
         />

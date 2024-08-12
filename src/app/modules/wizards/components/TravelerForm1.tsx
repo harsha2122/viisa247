@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import ClearIcon from '@mui/icons-material/Delete'
 import axiosInstance from '../../../helpers/axiosInstance'
 import { DatePicker } from 'antd'
+import moment from 'moment';
 import * as Yup from 'yup';
 import 'react-datepicker/dist/react-datepicker.css'
 import toast, { Toaster } from 'react-hot-toast'
@@ -398,36 +399,45 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
   const [expiryDate, setExpiryDate] =useState<string | undefined>('');
   const [dob, setDob] = useState<string | undefined>('');
 
+  const disabledDate = (current) => {
+    return current && current > moment().endOf('day');
+  };
+
+
   return (
     <div
       className='py-10 px-20'
       style={{
         borderRadius: 20,
         borderColor: '#f2f2f2',
-        boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-        marginLeft: 10,
-        marginTop: 10,
+        width: "100%",
+        boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
+        margin: "0 auto",
+        marginTop: 50,
         backgroundColor: 'white',
       }}
-    ><Toaster />
-      <h5 style={{ fontSize: 30, letterSpacing: 0.3 }}>Traveller {ind + 1} </h5>
-      <hr style={{
-        width:"100%",
-        border: 0,
-        height: "1px",
-        backgroundImage: "linear-gradient(to right, rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0))"
-      }} />
-      <h3 style={{color:"red", margin:"20px 0px 20px 0px"}}>Note - All fields are mandatory</h3>
-      <h3>Upload Traveler's Front Passport Page</h3>
-      <div className='d-flex ' style={{ width: '100%' }}>
-        <div style={{ width: '40%', marginTop: 70 }}>
+    >
+      <Toaster />
+      <h5 style={{fontSize: 30, letterSpacing: 0.3}}>Traveller {ind + 1} </h5>
+      <hr
+        style={{
+          width: '100%',
+          border: 0,
+          height: '1px',
+          backgroundImage:
+            'linear-gradient(to right, rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0))',
+        }}
+      />
+      <br />
+      <div className='d-flex w-100 flex-column'>
+        <div style={{width: '100%'}}>
           <h6>Passport Front Page Image</h6>
           {loading ? (
-          <div style={{color:"#000"}}>Loading...</div>
-          ) : (passportFrontImageURL ? (
+            <div style={{color: '#000'}}>Loading...</div>
+          ) : passportFrontImageURL ? (
             <div
               style={{
-                border: '4px dotted gray',
+                border: '2px dashed gray',
                 width: '100%',
                 height: 300,
                 borderRadius: '10px',
@@ -437,34 +447,39 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
               }}
             >
               <div
-                onClick={() => {
-                  setPassportFrontImageURL('');
-                  handleFileDelete('passFrontPhoto');
-                }}
+                  onClick={() => {
+                    setPassportFrontImageURL('');
+                    handleFileDelete('passFrontPhoto');
+                  }}
                 style={{
                   justifyContent: 'flex-end',
                   position: 'relative',
                   backgroundColor: 'white',
                   padding: 7,
                   borderRadius: 50,
-                  left: "10px",
-                  width:"35px",
-                  zIndex:"1",
+                  left: '10px',
+                  width: '35px',
+                  zIndex: '1',
                   cursor: 'pointer',
                 }}
               >
-                <ClearIcon style={{ color: 'red' }} />
+                <ClearIcon style={{color: 'red'}} />
               </div>
               <img
                 src={passportFrontImageURL}
                 alt='Uploaded Image'
-                style={{ maxWidth: '100%', maxHeight: '100%', position:"relative", marginTop:"-35px" }}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  position: 'relative',
+                  marginTop: '-35px',
+                }}
               />
             </div>
           ) : (
             <div
               style={{
-                border: '4px dotted gray',
+                border: '2px dashed gray',
                 width: '100%',
                 height: 300,
                 borderRadius: '10px',
@@ -479,40 +494,43 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                 type='button'
                 onClick={handleImageUpload}
                 className='btn btn-lg btn-success me-3 mt-7'
-                style={{ justifyContent: 'flex-end', backgroundColor: '#327113' }}
+                style={{justifyContent: 'flex-end', backgroundColor: '#327113'}}
               >
                 <span className='indicator-label'>Select Files</span>
               </button>
-              <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
-                Supports Image Only.
+              <p className='text-bold pt-5 fs-9' style={{color: '#555555'}}>
+                Supports Image only.
               </p>
               <input
                 type='file'
                 ref={passportFrontFileInputRef}
-                style={{ display: 'none' }}
-                accept="image/*"
+                style={{display: 'none'}}
+                accept='image/*'
                 onChange={handleFileSelect}
               />
             </div>
-          )
           )}
         </div>
 
         <div
           className='d-flex flex-row-fluid flex-center bg-body rounded'
-          style={{ width: '70%', backgroundColor: 'blue' }}
+          style={{width: '100%', backgroundColor: 'blue'}}
         >
-          <Formik initialValues={initValues} onSubmit={() => { }} validationSchema={validationSchema}>
+          <Formik
+            initialValues={initValues}
+            onSubmit={() => {}}
+            validationSchema={validationSchema}
+          >
             {() => (
-              <Form className='py-20 px-9' noValidate id='kt_create_account_form'>
+              <Form className='py-20 px-9 w-100' noValidate id='kt_create_account_form'>
                 <div>
-                  <div className='fv-row mb-5'>
+                  <div className='fv-row gap-8 w-100 mb-5'>
                     <label className='d-flex align-items-center form-label'>
                       <span className='required'>Passport Number</span>
                     </label>
 
                     <Field
-                      style={{ ...inputStyle, width: '500px' }}
+                      style={{...inputStyle}}
                       name='passportNumber'
                       className='form-control form-control-lg form-control-solid'
                       onChange={(e) => handleFieldChange('passportNumber', e.target.value)}
@@ -521,8 +539,8 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                       <ErrorMessage name='passportNumber' />
                     </div>
                   </div>
-                  <div className='d-flex' style={{ justifyContent: 'space-between' }}>
-                    <div className='fv-row mb-5'>
+                  <div className='d-flex gap-8'>
+                    <div className='fv-row gap-8 w-100 mb-5'>
                       <label className='form-label required'>First Name</label>
 
                       <Field
@@ -535,7 +553,7 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                         <ErrorMessage name='businessName' />
                       </div>
                     </div>
-                    <div className='fv-row mb-5'>
+                    <div className='fv-row gap-8 w-100 mb-5'>
                       <label className='d-flex align-items-center form-label'>
                         <span className='required'>Last Name</span>
                       </label>
@@ -552,8 +570,8 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                     </div>
                   </div>
 
-                  <div className='d-flex' style={{ justifyContent: 'space-between' }}>
-                    <div className='fv-row mb-5'>
+                  <div className='d-flex gap-8'>
+                    <div className='fv-row gap-8 w-100 mb-5'>
                       <label className='d-flex align-items-center form-label'>
                         <span className='required'>Birth Place</span>
                       </label>
@@ -568,19 +586,25 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                         <ErrorMessage name='birthPlace' />
                       </div>
                     </div>
-                    <div className='fv-row mb-5'>
+                    <div className='fv-row gap-8 w-100 mb-5'>
                       <label className='d-flex align-items-center form-label'>
                         <span className='required'>Date of Birth</span>
                       </label>
 
                       <DatePicker
-                        style={{ backgroundClip: '#fff', width: 230, marginTop: 2, border: '1.5px solid #d3d3d3', borderRadius: 15, padding: 10 }}
+                        style={{
+                          backgroundClip: '#fff',
+                          width: "100%",
+                          marginTop: 2,
+                          border: '1.5px solid #d3d3d3',
+                          borderRadius: 10,
+                          padding: 10,
+                        }}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('birthDetail', value.format('YYYY-MM-DD'))
                           }
-                        }
-                        }
+                        }}
                       />
 
                       <div className='text-danger mt-2'>
@@ -589,19 +613,25 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                     </div>
                   </div>
 
-                  <div className='d-flex' style={{ justifyContent: 'space-between' }}>
-                    <div className='fv-row mb-5'>
+                  <div className='d-flex gap-8'>
+                    <div className='fv-row gap-8 w-100 mb-5'>
                       <label className='d-flex align-items-center form-label'>
                         <span className='required'>Passport Issue Date</span>
                       </label>
                       <DatePicker
-                        style={{ backgroundClip: '#fff', width: 230, marginTop: 2, border: '1.5px solid #d3d3d3', borderRadius: 15, padding: 10 }}
+                        style={{
+                          backgroundClip: '#fff',
+                          width: "100%",
+                          marginTop: 2,
+                          border: '1.5px solid #d3d3d3',
+                          borderRadius: 10,
+                          padding: 10,
+                        }}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('passportIssueDate', value.format('YYYY-MM-DD'))
                           }
-                        }
-                        }
+                        }}
                       />
 
                       <div className='text-danger mt-2'>
@@ -609,32 +639,39 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                       </div>
                     </div>
 
-                    <div className='fv-row mb-5'>
+                    <div className='fv-row gap-8 w-100 mb-5'>
                       <label className='d-flex align-items-center form-label'>
                         <span className='required'>Passport Expiry Date</span>
                       </label>
                       <DatePicker
-                        style={{ backgroundClip: '#fff', width: 230, marginTop: 2, border: '1.5px solid #d3d3d3', borderRadius: 15, padding: 10 }}
+                        style={{
+                          backgroundClip: '#fff',
+                          width: "100%",
+                          marginTop: 2,
+                          border: '1.5px solid #d3d3d3',
+                          borderRadius: 10,
+                          padding: 10,
+                        }}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('passPortExpiryDate', value.format('YYYY-MM-DD'))
                           }
-                        }
-                        }
+                        }}
                       />
+
                       <div className='text-danger mt-2'>
                         <ErrorMessage name='passPortExpiryDate' />
                       </div>
                     </div>
                   </div>
-                  <div className='d-flex' style={{ justifyContent: 'space-between' }}>
-                    <div className='fv-row mb-10'>
+                  <div className='d-flex gap-8'>
+                    <div className='fv-row gap-8 w-100 mb-10'>
                       <label className='form-label required'>Gender</label>
 
                       <Field
                         as='select'
                         name='gender'
-                        style={{ ...inputStyle, width: '230px', backgroundColor: 'white' }}
+                        style={{...inputStyle, width: '100%', backgroundColor: 'white'}}
                         className='form-select form-select-lg form-select-solid'
                         onChange={(e) => handleFieldChange('gender', e.target.value)}
                       >
@@ -646,12 +683,12 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                         <ErrorMessage name='businessType' />
                       </div>
                     </div>
-                    <div className='fv-row mb-10'>
+                    <div className='fv-row gap-8 w-100 mb-10'>
                       <label className='form-label required'>Marital Status</label>
 
                       <Field
                         as='select'
-                        style={{ ...inputStyle, width: '230px', backgroundColor: 'white' }}
+                        style={{...inputStyle, width: '100%', backgroundColor: 'white'}}
                         name='maritalStatus'
                         className='form-select form-select-lg form-select-solid'
                         onChange={(e) => handleFieldChange('maritalStatus', e.target.value)}
@@ -676,16 +713,17 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
         </div>
       </div>
 
-      <h3>Upload Traveler's Back Passport Page</h3>
-      <div className='d-flex ' style={{ width: '100%' }}>
-        <div style={{ width: '40%', marginTop: 60 }}>
+
+      <div className='d-flex flex-column w-100'>
+        <div style={{width: '100%', marginTop: 20}}>
           <h6>Passport Back Page Image</h6>
+
           {loading ? (
-          <div style={{color:"#000"}}>Loading...</div>
-        ) : (passportBackImageURL ? (
+            <div style={{color: '000'}}>Loading...</div>
+          ) : passportBackImageURL ? (
             <div
               style={{
-                border: '4px dotted gray',
+                border: '2px dashed gray',
                 width: '100%',
                 height: 300,
                 borderRadius: '10px',
@@ -695,7 +733,7 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
               }}
             >
               <div
-                  onClick={() => {
+                onClick={() => {
                   setPassportBackImageURL('');
                   handleFileDelete('passBackPhoto');
                 }}
@@ -705,24 +743,30 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                   backgroundColor: 'white',
                   padding: 7,
                   borderRadius: 50,
-                  left: "10px",
-                  width:"35px",
-                  zIndex:"1",
+                  left: '10px',
+                  width: '35px',
+                  zIndex: '1',
                   cursor: 'pointer',
                 }}
               >
-                <ClearIcon style={{ color: 'red' }} />
+                <ClearIcon style={{color: 'red'}} />
               </div>
+
               <img
                 src={passportBackImageURL}
                 alt='Uploaded Image'
-                style={{ maxWidth: '100%', maxHeight: '100%', position:"relative", marginTop:"-35px" }}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  position: 'relative',
+                  marginTop: '-35px',
+                }}
               />
             </div>
           ) : (
             <div
               style={{
-                border: '4px dotted gray',
+                border: '2px dashed gray',
                 width: '100%',
                 height: 300,
                 borderRadius: '10px',
@@ -737,38 +781,42 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                 type='button'
                 onClick={handleImageUploadBack}
                 className='btn btn-lg btn-success me-3 mt-7'
-                style={{ justifyContent: 'flex-end', backgroundColor: '#327113' }}
+                style={{justifyContent: 'flex-end', backgroundColor: '#327113'}}
               >
                 <span className='indicator-label'>Select Files</span>
               </button>
-              <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
+              <p className='text-bold pt-5 fs-9' style={{color: '#555555'}}>
                 Supports Image Only.
               </p>
               <input
                 type='file'
                 ref={passportBackFileInputRef}
-                style={{ display: 'none' }}
-                accept="image/*"
+                style={{display: 'none'}}
+                accept='image/*'
                 onChange={handleFileSelectBack}
               />
             </div>
-          )
           )}
         </div>
+
         <div
           className='d-flex flex-row-fluid flex-center bg-body rounded'
-          style={{ width: '70%', backgroundColor: 'blue' }}
+          style={{width: '100%', backgroundColor: 'blue'}}
         >
-          <Formik initialValues={initValues} onSubmit={() => { }} validationSchema={validationSchema}>
+          <Formik
+            initialValues={initValues}
+            onSubmit={() => {}}
+            validationSchema={validationSchema}
+          >
             {() => (
-              <Form className='py-20 px-9' noValidate id='kt_create_account_form'>
-                <div className='fv-row mb-10'>
+              <Form className='py-20 px-9 w-100' noValidate id='kt_create_account_form'>
+                <div className='fv-row gap-8 w-100 mb-10'>
                   <label className='d-flex align-items-center form-label'>
                     <span className='required'>Father's Name</span>
                   </label>
 
                   <Field
-                    style={{ ...inputStyle, width: '450px' }}
+                    style={{...inputStyle}}
                     name='fatherName'
                     className='form-control form-control-lg form-control-solid'
                     onChange={(e) => handleFieldChange('fatherName', e.target.value)}
@@ -778,13 +826,13 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                   </div>
                 </div>
 
-                <div className='fv-row mb-10'>
+                <div className='fv-row gap-8 w-100 mb-10'>
                   <label className='d-flex align-items-center form-label'>
                     <span className='required'>Mother's Name</span>
                   </label>
 
                   <Field
-                    style={{ ...inputStyle, width: '450px' }}
+                    style={{...inputStyle}}
                     name='motherName'
                     className='form-control form-control-lg form-control-solid'
                     onChange={(e) => handleFieldChange('motherName', e.target.value)}
@@ -798,274 +846,124 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
           </Formik>
         </div>
       </div>
-      {selectedEntry.pan_doc && (
-        <>
-          <hr className='mt-20 w-100' />
-          <h3 className='mt-20'>Upload PAN Card Photo</h3>
-          <div className='d-flex ' style={{ width: '100%' }}>
-            <div style={{ width: '40%', marginTop: 60 }}>
-              <h6>Pan Card Photo</h6>
-              {loading ? (
-          <div style={{color:"#000"}}>Loading...</div>
-        ) : (pan ? (
-                <div
-                  style={{
-                    border: '4px dotted gray',
-                    width: '100%',
-                    height: 300,
-                    borderRadius: '10px',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    marginTop: 20,
-                  }}
-                >
-                  <div
-                    onClick={() => setPan('')}
-                    style={{
-                      justifyContent: 'flex-end',
-                      position: 'relative',
-                      backgroundColor: 'white',
-                      padding: 7,
-                      borderRadius: 50,
-                      left: "10px",
-                      width:"35px",
-                      zIndex:"1",
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <ClearIcon style={{ color: 'red' }} />
-                  </div>
-                  <img src={pan} alt='Uploaded Image' style={{ maxWidth: '100%', maxHeight: '100%', position:"relative", marginTop:"-35px" }} />
-                </div>
-              ) : (
-                <div
-                  style={{
-                    border: '4px dotted gray',
-                    width: '100%',
-                    height: 300,
-                    borderRadius: '10px',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    paddingTop: 40,
-                    marginTop: 20,
-                  }}
-                >
-                  <h4 className='mx-10 mt-10'>PAN Card Photo</h4>
-                  <button
-                    type='button'
-                    onClick={handlePanUpload}
-                    className='btn btn-lg btn-success me-3 mt-7'
-                    style={{ justifyContent: 'flex-end', backgroundColor: '#327113' }}
-                  >
-                    <span className='indicator-label'>Select Files</span>
-                  </button>
-                  <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
-                    Supports Image Only.
-                  </p>
-                  <input
-                    type='file'
-                    ref={panFileInputRef}
-                    style={{ display: 'none' }}
-                    accept="image/*"
-                    onChange={handlePanSelect}
-                  />
-                </div>
-              )
-              )}
-            </div>
-            <div style={{ marginLeft: 50 }}>
-              <Formik initialValues={initValues} onSubmit={() => { }} validationSchema={validationSchema}>
-                {() => (
-                  <Form className='py-20 px-9' noValidate id='kt_create_account_form'>
-                    <div className='fv-row mb-10'>
-                      <label className='d-flex align-items-center form-label'>
-                        <span className='required'>PAN Number</span>
-                      </label>
 
-                      <Field
-                        style={{ ...inputStyle, width: '450px' }}
-                        name='panNo'
-                        className='form-control form-control-lg form-control-solid'
-                        onChange={(e) => handleFieldChange('panNo', e.target.value)}
-                      />
-                      <div className='text-danger mt-2'>
-                        <ErrorMessage name='businessDescriptor' />
-                      </div>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </>
-      )}
-      {selectedEntry.letter_doc && (
-        <>
-          <hr className='mt-20 w-100' />
-          <h3 className='mt-20'>Upload Letter Photo</h3>
-          <div className='d-flex ' style={{ width: '100%' }}>
-            <div style={{ width: '40%', marginTop: 60 }}>
-              <h6>Letter Photo</h6>
-              {loading ? (
-          <div style={{color:"#000"}}>Loading...</div>
-        ) : (letter ? (
-                <div
-                  style={{
-                    border: '4px dotted gray',
-                    width: '100%',
-                    height: 300,
-                    borderRadius: '10px',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    marginTop: 20,
-                  }}
-                >
-                  <div
-                    onClick={() => setLetter('')}
-                    style={{
-                      justifyContent: 'flex-end',
-                      position: 'relative',
-                      backgroundColor: 'white',
-                      padding: 7,
-                      borderRadius: 50,
-                      left: "10px",
-                      width:"35px",
-                      zIndex:"1",
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <ClearIcon style={{ color: 'red' }} />
-                  </div>
-                  <img src={letter} alt='Uploaded Image' style={{ maxWidth: '100%', maxHeight: '100%', position:"relative", marginTop:"-35px" }} />
-                </div>
-              ) : (
-                <div
-                  style={{
-                    border: '4px dotted gray',
-                    width: '100%',
-                    height: 300,
-                    borderRadius: '10px',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    paddingTop: 40,
-                    marginTop: 20,
-                  }}
-                >
-                  <h4 className='mx-10 mt-10'>Letter Photo</h4>
-                  <button
-                    type='button'
-                    onClick={handleLetterUpload}
-                    className='btn btn-lg btn-success me-3 mt-7'
-                    style={{ justifyContent: 'flex-end', backgroundColor: '#327113' }}
-                  >
-                    <span className='indicator-label'>Select Files</span>
-                  </button>
-                  <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
-                    Supports Image Only.
-                  </p>
-                  <input
-                    type='file'
-                    ref={letterFileInputRef}
-                    style={{ display: 'none' }}
-                    accept="image/*"
-                    onChange={handleLetterSelect}
-                  />
-                </div>
-              )
-              )}
-            </div>
-          </div>
-        </>
-      )}
-      {selectedEntry.ticket_doc && (
-        <>
-          <hr className='mt-20 w-100' />
-          <h3 className='mt-20'>Upload tickets Photo</h3>
-          <div className='d-flex ' style={{ width: '100%' }}>
-            <div style={{ width: '40%', marginTop: 60 }}>
-              <h6> Tickets Photo</h6>
-              {loading ? (
-          <div style={{color:"#000"}}>Loading...</div>
-        ) : (tickets ? (
-                <div
-                  style={{
-                    border: '4px dotted gray',
-                    width: '100%',
-                    height: 300,
-                    borderRadius: '10px',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    marginTop: 20,
-                  }}
-                >
-                  <div
-                    onClick={() => setTickets('')}
-                    style={{
-                      justifyContent: 'flex-end',
-                      position: 'relative',
-                      backgroundColor: 'white',
-                      padding: 7,
-                      borderRadius: 50,
-                      left: "10px",
-                      width:"35px",
-                      zIndex:"1",
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <ClearIcon style={{ color: 'red' }} />
-                  </div>
-                  <img src={tickets} alt='Uploaded Image' style={{ maxWidth: '100%', maxHeight: '100%', position:"relative", marginTop:"-35px" }} />
-                </div>
-              ) : (
-                <div
-                  style={{
-                    border: '4px dotted gray',
-                    width: '100%',
-                    height: 300,
-                    borderRadius: '10px',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    paddingTop: 40,
-                    marginTop: 20,
-                  }}
-                >
-                  <h4 className='mx-10 mt-10'>Tickets Photo</h4>
-                  <button
-                    type='button'
-                    onClick={handleTicketsUpload}
-                    className='btn btn-lg btn-success me-3 mt-7'
-                    style={{ justifyContent: 'flex-end', backgroundColor: '#327113' }}
-                  >
-                    <span className='indicator-label'>Select Files</span>
-                  </button>
-                  <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
-                    Supports Image Only.
-                  </p>
-                  <input
-                    type='file'
-                    ref={ticketsFileInputRef}
-                    style={{ display: 'none' }}
-                    accept="image/*"
-                    onChange={handleTicketsSelect}
-                  />
-                </div>
-              )
-              )}
-            </div>
-          </div>
-        </>
-      )}
-      <hr className='mt-20 w-100' />
-      <h3 className='mt-20'>Upload Traveler Photo</h3>
-      <div className='d-flex ' style={{ width: '100%' }}>
-        <div style={{ width: '40%', marginTop: 60 }}>
-          <h6>Photo</h6>
+      <div className='d-flex w-100 flex-column'>
+        <div style={{width: '100%', marginTop: 20}}>
+          <h6>Pan Card Photo</h6>
           {loading ? (
-          <div style={{color:"#000"}}>Loading...</div>
-        ) : (photo ? (
+            <div style={{color: '000'}}>Loading...</div>
+          ) : pan ? (
             <div
               style={{
-                border: '4px dotted gray',
+                border: '2px dashed gray',
+                width: '100%',
+                height: 300,
+                borderRadius: '10px',
+                justifyContent: 'center',
+                textAlign: 'center',
+                marginTop: 20,
+              }}
+            >
+              <div
+                onClick={() => setPan('')}
+                style={{
+                  justifyContent: 'flex-end',
+                  position: 'relative',
+                  backgroundColor: 'white',
+                  padding: 7,
+                  borderRadius: 50,
+                  left: '10px',
+                  width: '35px',
+                  zIndex: '1',
+                  cursor: 'pointer',
+                }}
+              >
+                <ClearIcon style={{color: 'red'}} />
+              </div>
+              <img
+                src={pan}
+                alt='Uploaded Image'
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  position: 'relative',
+                  marginTop: '-35px',
+                }}
+              />
+            </div>
+          ) : (
+            <div
+              style={{
+                border: '2px dashed gray',
+                width: '100%',
+                height: 300,
+                borderRadius: '10px',
+                justifyContent: 'center',
+                textAlign: 'center',
+                paddingTop: 40,
+                marginTop: 20,
+              }}
+            >
+              <h4 className='mx-10 mt-10'>PAN Card Photo</h4>
+              <button
+                type='button'
+                onClick={handlePanUpload}
+                className='btn btn-lg btn-success me-3 mt-7'
+                style={{justifyContent: 'flex-end', backgroundColor: '#327113'}}
+              >
+                <span className='indicator-label'>Select Files</span>
+              </button>
+              <p className='text-bold pt-5 fs-9' style={{color: '#555555'}}>
+                Supports Image Only.
+              </p>
+              <input
+                type='file'
+                ref={panFileInputRef}
+                style={{display: 'none'}}
+                accept='image/*'
+                onChange={handlePanSelect}
+              />
+            </div>
+          )}
+        </div>
+        <div>
+          <Formik
+            initialValues={initValues}
+            onSubmit={() => {}}
+            validationSchema={validationSchema}
+          >
+            {() => (
+              <Form className='py-20 px-9 w-100' noValidate id='kt_create_account_form'>
+                <div className='fv-row gap-8 w-100 mb-10'>
+                  <label className='d-flex align-items-center form-label'>
+                    <span className='required'>PAN Number</span>
+                  </label>
+
+                  <Field
+                    style={{...inputStyle}}
+                    name='panNo'
+                    className='form-control form-control-lg form-control-solid'
+                    onChange={(e) => handleFieldChange('panNo', e.target.value)}
+                  />
+                  <div className='text-danger mt-2'>
+                    <ErrorMessage name='businessDescriptor' />
+                  </div>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </div>
+      </div>
+
+      <div className='d-flex w-100 mb-10 flex-column'>
+        <div style={{width: '100%', marginTop: 20}}>
+          <h6>Photo</h6>
+          {loading ? (
+            <div style={{color: '000'}}>Loading...</div>
+          ) : photo ? (
+            <div
+              style={{
+                border: '2px dashed gray',
                 width: '100%',
                 height: 300,
                 borderRadius: '10px',
@@ -1085,20 +983,30 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                   backgroundColor: 'white',
                   padding: 7,
                   borderRadius: 50,
-                  left: "10px",
-                  width:"35px",
-                  zIndex:"1",
+                  left: '10px',
+                  width: '35px',
+                  zIndex: '1',
                   cursor: 'pointer',
                 }}
               >
-                <ClearIcon style={{ color: 'red' }} />
+                <ClearIcon style={{color: 'red'}} />
               </div>
-              <img src={photo} alt='Uploaded Image' style={{ maxWidth: '100%', maxHeight: '100%', position:"relative", marginTop:"-35px" }} />
+
+              <img
+                src={photo}
+                alt='Uploaded Image'
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  position: 'relative',
+                  marginTop: '-35px',
+                }}
+              />
             </div>
           ) : (
             <div
               style={{
-                border: '4px dotted gray',
+                border: '2px dashed gray',
                 width: '100%',
                 height: 300,
                 borderRadius: '10px',
@@ -1113,82 +1021,90 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                 type='button'
                 onClick={handlePhotoUpload}
                 className='btn btn-lg btn-success me-3 mt-7'
-                style={{ justifyContent: 'flex-end', backgroundColor: '#327113' }}
+                style={{justifyContent: 'flex-end', backgroundColor: '#327113'}}
               >
                 <span className='indicator-label'>Select Files</span>
               </button>
-              <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
-                Supports Image only.
+              <p className='text-bold pt-5 fs-9' style={{color: '#555555'}}>
+                Supports Image Only.
               </p>
               <input
                 type='file'
                 ref={photoFileInputRef}
-                style={{ display: 'none' }}
-                accept="image/*"
+                style={{display: 'none'}}
+                accept='image/*'
                 onChange={handlePhotoSelect}
               />
             </div>
-          )
           )}
         </div>
       </div>
+
       {selectedEntry.itr_doc && (
         <>
-        <hr className='mt-20 w-100' />
-        <h3 className='mt-20'>Upload Income Tax Return</h3>
-        <p>
-        This destination mandates the submission of Income Tax Returns (ITR). It signifies that individuals traveling to this locale must provide documented proof of their income tax filings as part of the regulatory requirements or visa application process. Compliance with this regulation ensures adherence to the taxation laws of the respective destination and facilitates smooth entry or residency procedures for travelers.
-        </p>
-        <div className='d-flex ' style={{ width: '100%' }}>
-          <div style={{ width: '40%', marginTop: 60 }}>
-            <h6>Income Tax Return</h6>
-            {loading ? (
-          <div style={{color:"#000"}}>Loading...</div>
-        ) : (itr ? (
+        <div className='d-flex w-100 mb-10 flex-column'>
+        <div style={{width: '100%', marginTop: 20}}>
+          <h6>ITR Document</h6>
+          {loading ? (
+            <div style={{color: '000'}}>Loading...</div>
+          ) : itr ? (
+            <div
+              style={{
+                border: '2px dashed gray',
+                width: '100%',
+                height: 300,
+                borderRadius: '10px',
+                justifyContent: 'center',
+                textAlign: 'center',
+                marginTop: 20,
+              }}
+            >
               <div
+                onClick={() => {
+                  setItr('');
+                  handleFileDelete('itr');
+                }}
                 style={{
-                  border: '4px dotted gray',
-                  width: '100%',
-                  height: 300,
-                  borderRadius: '10px',
-                  justifyContent: 'center',
-                  textAlign: 'center',
-                  marginTop: 20,
+                  justifyContent: 'flex-end',
+                  position: 'relative',
+                  backgroundColor: 'white',
+                  padding: 7,
+                  borderRadius: 50,
+                  left: '10px',
+                  width: '35px',
+                  zIndex: '1',
+                  cursor: 'pointer',
                 }}
               >
-                <div
-                  onClick={() => setItr('')}
-                  style={{
-                    justifyContent: 'flex-end',
-                    position: 'relative',
-                    backgroundColor: 'white',
-                    padding: 7,
-                    borderRadius: 50,
-                    left: "10px",
-                    width:"35px",
-                    zIndex:"1",
-                    cursor: 'pointer',
-                  }}
-                >
-                  <ClearIcon style={{ color: 'red' }} />
-                </div>
-                <img src={itr} alt='Uploaded Image' style={{ maxWidth: '100%', maxHeight: '100%', position:"relative", marginTop:"-35px" }} />
+                <ClearIcon style={{color: 'red'}} />
               </div>
-            ) : (
-              <div
+
+              <img
+                src={itr}
+                alt='Uploaded Image'
                 style={{
-                  border: '4px dotted gray',
-                  width: '100%',
-                  height: 300,
-                  borderRadius: '10px',
-                  justifyContent: 'center',
-                  textAlign: 'center',
-                  paddingTop: 40,
-                  marginTop: 20,
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  position: 'relative',
+                  marginTop: '-35px',
                 }}
-              >
-                <h4 className='mx-10 mt-10'>ITR</h4>
-                <button
+              />
+            </div>
+          ) : (
+            <div
+              style={{
+                border: '2px dashed gray',
+                width: '100%',
+                height: 300,
+                borderRadius: '10px',
+                justifyContent: 'center',
+                textAlign: 'center',
+                paddingTop: 40,
+                marginTop: 20,
+              }}
+            >
+              <h4 className='mx-10 mt-10'>Traveller Photo</h4>
+              <button
                   type='button'
                   onClick={handleItrUpload}
                   className='btn btn-lg btn-success me-3 mt-7'
@@ -1206,11 +1122,188 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                   accept="image/*"
                   onChange={handleItrSelect}
                 />
-              </div>
-            )
-            )}
-          </div>
+            </div>
+          )}
         </div>
+      </div>
+        </>
+      )} 
+
+    {selectedEntry.letter_doc && (
+        <>
+        <div className='d-flex w-100 mb-10 flex-column'>
+        <div style={{width: '100%', marginTop: 20}}>
+          <h6>Letter Document</h6>
+          {loading ? (
+            <div style={{color: '000'}}>Loading...</div>
+          ) : letter ? (
+            <div
+              style={{
+                border: '2px dashed gray',
+                width: '100%',
+                height: 300,
+                borderRadius: '10px',
+                justifyContent: 'center',
+                textAlign: 'center',
+                marginTop: 20,
+              }}
+            >
+              <div
+                onClick={() => {
+                  setLetter('');
+                  handleFileDelete('letter');
+                }}
+                style={{
+                  justifyContent: 'flex-end',
+                  position: 'relative',
+                  backgroundColor: 'white',
+                  padding: 7,
+                  borderRadius: 50,
+                  left: '10px',
+                  width: '35px',
+                  zIndex: '1',
+                  cursor: 'pointer',
+                }}
+              >
+                <ClearIcon style={{color: 'red'}} />
+              </div>
+
+              <img
+                src={itr}
+                alt='Uploaded Image'
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  position: 'relative',
+                  marginTop: '-35px',
+                }}
+              />
+            </div>
+          ) : (
+            <div
+              style={{
+                border: '2px dashed gray',
+                width: '100%',
+                height: 300,
+                borderRadius: '10px',
+                justifyContent: 'center',
+                textAlign: 'center',
+                paddingTop: 40,
+                marginTop: 20,
+              }}
+            >
+              <h4 className='mx-10 mt-10'>Traveller Photo</h4>
+              <button
+                  type='button'
+                  onClick={handleLetterUpload}
+                  className='btn btn-lg btn-success me-3 mt-7'
+                  style={{ justifyContent: 'flex-end', backgroundColor: '#327113' }}
+                >
+                  <span className='indicator-label'>Select Files</span>
+                </button>
+                <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
+                  Supports Image only.
+                </p>
+                <input
+                  type='file'
+                  ref={letterFileInputRef}
+                  style={{ display: 'none' }}
+                  accept="image/*"
+                  onChange={handleLetterSelect}
+                />
+            </div>
+          )}
+        </div>
+      </div>
+        </>
+      )} 
+
+      {selectedEntry.ticket_doc && (
+        <>
+        <div className='d-flex w-100 mb-10 flex-column'>
+        <div style={{width: '100%', marginTop: 20}}>
+          <h6>Ticket Document</h6>
+          {loading ? (
+            <div style={{color: '000'}}>Loading...</div>
+          ) : tickets ? (
+            <div
+              style={{
+                border: '2px dashed gray',
+                width: '100%',
+                height: 300,
+                borderRadius: '10px',
+                justifyContent: 'center',
+                textAlign: 'center',
+                marginTop: 20,
+              }}
+            >
+              <div
+                onClick={() => {
+                  setTickets('');
+                  handleFileDelete('ticket');
+                }}
+                style={{
+                  justifyContent: 'flex-end',
+                  position: 'relative',
+                  backgroundColor: 'white',
+                  padding: 7,
+                  borderRadius: 50,
+                  left: '10px',
+                  width: '35px',
+                  zIndex: '1',
+                  cursor: 'pointer',
+                }}
+              >
+                <ClearIcon style={{color: 'red'}} />
+              </div>
+
+              <img
+                src={tickets}
+                alt='Uploaded Image'
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  position: 'relative',
+                  marginTop: '-35px',
+                }}
+              />
+            </div>
+          ) : (
+            <div
+              style={{
+                border: '2px dashed gray',
+                width: '100%',
+                height: 300,
+                borderRadius: '10px',
+                justifyContent: 'center',
+                textAlign: 'center',
+                paddingTop: 40,
+                marginTop: 20,
+              }}
+            >
+              <h4 className='mx-10 mt-10'>Tickets</h4>
+              <button
+                  type='button'
+                  onClick={handleItrUpload}
+                  className='btn btn-lg btn-success me-3 mt-7'
+                  style={{ justifyContent: 'flex-end', backgroundColor: '#327113' }}
+                >
+                  <span className='indicator-label'>Select Files</span>
+                </button>
+                <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
+                  Supports Image only.
+                </p>
+                <input
+                  type='file'
+                  ref={ticketsFileInputRef}
+                  style={{ display: 'none' }}
+                  accept="image/*"
+                  onChange={handleTicketsSelect}
+                />
+            </div>
+          )}
+        </div>
+      </div>
         </>
       )} 
     </div>

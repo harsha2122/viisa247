@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../helpers/axiosInstance';
-import { IwaitingTable } from '../../components/IwaitingTable';
-import { Whwaiting } from '../../components/Whwaiting';
 import { Wfwaiting } from '../../components/Wfwaiting';
 
 function Fwaiting() {
@@ -13,10 +11,7 @@ function Fwaiting() {
       setLoading(true);
       try {
         const response = await axiosInstance.get('/backend/super_admin/fetch_all_flight');
-        const data = [...(response.data.data || []), ...(response.data.data1 || [])];
-        const filteredData = data.filter(item => ['Applied', 'Not Issued'].includes(item.flight_status));
-        const sortedData = filteredData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-        setInsuranceData(sortedData);
+        setInsuranceData(response.data.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {

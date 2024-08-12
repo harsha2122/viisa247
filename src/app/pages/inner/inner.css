@@ -4,13 +4,15 @@
 #nav1{
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  width: 90%;
   height: 80px;
-  position: relative;
-  background: #3a821649;
-  top: 0;
-  left: 0;
-  padding: 30px 50px 30px 50px;
+  position: sticky;
+  top: 30px;
+  background: #234114;
+  margin: 0 auto;
+  margin-top: 30px;
+  padding: 40px 50px;
+  border-radius: 20px;
   z-index: 102;
 }
 
@@ -24,7 +26,6 @@
   width: 11vw;
   position: relative;
   left: 0vw;
-  
 }
 
 #nav1 .part21{
@@ -45,21 +46,18 @@
   transition: 0.5s all;
 }
 
-
-
 #nav1 .part21 .button2{
-letter-spacing: 0.5px;
-padding: 10px 20px;
-background: transparent;
-color: rgba(50, 113, 19, 1);
-border: 1px solid rgba(50, 113, 19, 1);
-border-radius: 7px;
-cursor: pointer;
-display: flex;
-align-items: center;
-height: 40px;
-font-size: 16px;
-font-family: 'Gilroy', sans-serif;
+  padding: 10px 30px;
+  background: #fff;
+  color: rgba(50, 113, 19, 1);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Gilroy', sans-serif;
 }
 
 #nav1 .part21 button:hover{
@@ -203,8 +201,127 @@ margin-bottom: 10px;
   padding: 1.5vw 5vw 0vw 5vw;
 }
 
-.choice-maini h1{
-  font-size: 30px;
+.titile{
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.tket{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+  background-color: #234114;
+  justify-content: center;
+}
+
+.visa-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 800px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.left-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 70%;
+}
+
+.left-sectiona {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+}
+
+.entry-info h2 {
+  font-size: 24px;
+  color: #333;
+}
+
+.entry-info {
+  background: #F0FFE9;
+  height: 150px;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  margin-right: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.entry-info p {
+  font-size: 18px;
+  color: #666;
+}
+
+.stay-validity{
+  display: flex;
+  gap: 20px;
+}
+
+.visa-details p {
+  font-size: 14px;
+  color: #888;
+  margin-top: 10px;
+}
+
+.hotel-details {
+ display: flex;
+ gap: 10px;
+ width: 90%;
+ justify-content: space-between;
+}
+
+.stay-validity p {
+  font-size: 14px;
+  color: #333;
+  margin-top: 10px;
+}
+
+.stay-validity span {
+  color: green;
+}
+
+.right-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+  gap: 10px;
+}
+
+.amount p {
+  font-size: 14px;
+  color: #888;
+}
+
+.amount h2 {
+  font-size: 24px;
+  color: #333;
+}
+
+.choose-button {
+  background-color: #234114;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 10px 50px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.choose-button:hover {
+  scale: 1.1;
+  transition: all 0.5s ease;
 }
 
 .choice{
@@ -249,14 +366,11 @@ margin-bottom: 10px;
 
 .choice .days{
   width: 25%;
-  border-radius: 20px;
   height: 100%;
-  border: 1px solid black;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-right: none;
 }
 
 .choice .days-size{
@@ -289,7 +403,6 @@ position: relative;
   height: 100%;
   background: white;
   border: 1px solid black;
-  border-radius: 0px 20px 20px 0px;
 }
 
 .ticket.selected .days{
@@ -387,11 +500,6 @@ align-items: flex-end;
   position: relative;
   width: 10%;
   height: 100%;
-  border: 1px solid black;
-  border-right: 2px dashed #fff;
-  border-left: 1px solid rgba(50, 113, 19, 1);
-  background: rgba(50, 113, 19, 1);
-  border-radius: 0px 20px 20px 0px;
   writing-mode: vertical-lr;
   text-orientation: mixed;
   rotate: 180deg;
@@ -472,16 +580,6 @@ transform: rotate(90deg);
   background: transparent;
 }
 
-
-
-.choice h2{
-  font-size: 14px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .choice .apply-card p{
   font-size: 15px;
   font-weight: 550;
@@ -508,12 +606,6 @@ transform: rotate(90deg);
   gap: 5px;
 }
 
-.choice .amount{
-  font-size: 15px;
-  display: flex;
-  justify-content: flex-end;
-}
-
 .choice .tax-des{
   font-size: 10px;
   margin-left: 28px;
@@ -530,22 +622,6 @@ transform: rotate(90deg);
   display: flex;
   justify-content: start;
   align-items: center;
-}
-
-.choice button{
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  color: #fff;
-  background-color: #000;
-  width: 90%;
-  border-radius: 10px;
-  cursor: pointer;
-  border: none;
 }
 
 /*---------------------------------------------Choice Section Ends-------------------------------------------*/

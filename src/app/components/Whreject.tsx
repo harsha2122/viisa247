@@ -323,7 +323,7 @@ const Whreject: React.FC<Props> = ({ className, title, data,loading }) => {
                       </td>
                       <td>
                         <a href='#' className='text-muted text-center text-hover-primary d-block mb-1 fs-7'>
-                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.hotel_original_amount))}
+                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.hotel_amount))}
                         </a>
                       </td>
                     </tr>

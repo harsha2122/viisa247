@@ -94,22 +94,18 @@ function HotelForm1({ onDataChange, ind }) {
         backgroundColor: 'white',
       }}
     >
-      <Toaster />
-      <h5 style={{ fontSize: 30, letterSpacing: 0.3 }}>Traveller {ind + 1}</h5>
+    <Toaster />
+      <h5 style={{fontSize: 30, letterSpacing: 0.3}}>Traveller {ind + 1} </h5>
       <hr
         style={{
           width: '100%',
           border: 0,
-          height: '0.5px',
-          backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0))',
+          height: '1px',
+          backgroundImage:
+            'linear-gradient(to right, rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0))',
         }}
       />
       <br />
-      <h3 style={{ color: 'red', margin: '20px 0px 20px 0px' }}>Note - All fields are mandatory.</h3>
-      <h3>Upload Traveler's Details</h3>
-      <p>
-        Please fill out the travaller name and count
-      </p>
       <div className='d-flex flex-column flex-md-row'>
         <div className='flex-grow-1 bg-body rounded p-3'>
           <Formik initialValues={initValues} onSubmit={() => { }} validationSchema={validationSchema}>

@@ -19,7 +19,7 @@ const AuthLayout = () => {
     <div className='d-flex flex-column flex-lg-row-reverse flex-column-fluid h-100'>
       <div
         className='d-flex justify-content-center align-items-center flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2'
-        style={{ backgroundImage: `url(${toAbsoluteUrl('/media/misc/bg.jpg')}`, 
+        style={{ backgroundImage: `url(${toAbsoluteUrl('/media/misc/bg.png')}`, 
                  height:"90%",
                  position:"relative",
                  top:"5%",

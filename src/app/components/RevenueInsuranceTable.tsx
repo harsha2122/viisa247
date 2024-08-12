@@ -183,12 +183,12 @@ const RevenueInsuranceTable: React.FC<Props> = ({ className, title, data, loadin
                   <thead>
                     <tr className='fw-bold '>
                       <th className='fs-5 min-w-160px'>Date</th>
+                      <th className='fs-5 min-w-100px'>App. ID</th>
                       <th className='fs-5 min-w-100px'>Name</th>
                       <th className='fs-5 min-w-40px'>Channel</th>
-                      <th className='fs-5 text-center min-w-40px'>Provider</th>
-                      <th className='fs-5 text-center min-w-70px'>Paid</th>
-                      <th className='fs-5 text-center min-w-70px'>Recieved</th>
-                      <th className='fs-5 text-center min-w-70px'>Margin</th>
+                      <th className='fs-5 text-center min-w-70px'>Cost Price</th>
+                      <th className='fs-5 text-center min-w-70px'>Selling Price</th>
+                      <th className='fs-5 text-center min-w-70px'>Revenue</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -197,6 +197,11 @@ const RevenueInsuranceTable: React.FC<Props> = ({ className, title, data, loadin
                       <td>
                         <a href='#' className='text-gray-600 fw-bold text-hover-primary fs-7'>
                           {`${formatDate1(row.transaction_time)}`}
+                        </a>
+                      </td>
+                      <td>
+                        <a href='#' className='text-gray-600 fw-bold text-hover-primary fs-7'>
+                          {row.id}
                         </a>
                       </td>
                       <td>
@@ -226,11 +231,6 @@ const RevenueInsuranceTable: React.FC<Props> = ({ className, title, data, loadin
                       <td>
                         <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
                           {row.customer_type}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.insurance_provider || row.hotel_provider || row.flight_provider}
                         </a>
                       </td>
                       <td>

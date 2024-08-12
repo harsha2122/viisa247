@@ -1,21 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Vertical } from '../../../modules/wizards/components/Vertical';
-import { Vertical1 } from '../../../modules/wizards/components/Vertical1';
 import 'react-datepicker/dist/react-datepicker.css';
-import SelectCountry from '../../../components/VisaCountrySelect';
-import { VisaTable } from '../../../components/VisaTable';
-import ApplyVisa from '../../../components/ApplyVisa';
 import Loader from '../../../components/Loader';
-import MerchantApplyVisa from '../../../components/MerchantApplyVisa';
-import HomeApply from '../../../components/HomeApply';
-import MerchantApplyInsurance from '../../../components/MerchantApplyInsurance';
-import { InsuranceTablec } from '../../../components/InsuranceTablec';
-import CustomerApplyInsurance from '../../../components/CustomerApplyInsurance';
-import { Verticali } from '../../../modules/wizards/components/Verticali';
-import { Verticalii } from '../../../modules/wizards/components/Verticalii';
 import MerchantApplyFlight from '../../../components/MerchantApplyFlight';
 import { FlightTable } from '../../../components/FlightTable';
-import { FormFlight1 } from '../../../modules/wizards/components/FormFlight1';
 import { FormFlight2 } from '../../../modules/wizards/components/FormFlight2';
 
 function MerchantNewFlight() {

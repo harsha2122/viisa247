@@ -246,7 +246,7 @@ const FormFlight1: React.FC<VerticalProps> = ({
           const applicantResponse = await axiosInstance.post('/backend/add_user_flight_applicant', data);
   
           if (applicantResponse.status === 200) {
-            toast.success('Insurance Applied successfully!');
+            toast.success('Flight Applied successfully!');
             setConfetti(true);
             setModalShow(true);
           } else {

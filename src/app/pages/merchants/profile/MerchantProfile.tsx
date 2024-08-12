@@ -23,6 +23,9 @@ import { BsClipboardDataFill } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
 import { FaWallet } from "react-icons/fa6";
 import qr from '../../../../_metronic/assets/card/qr.png'
+import bank from '../../../../_metronic/assets/card/bank.svg'
+import upi from '../../../../_metronic/assets/card/upi.svg'
+import rec from '../../../../_metronic/assets/card/reciept.svg'
 
 interface Transaction {
   created_at: string;
@@ -885,12 +888,11 @@ const renderPageNumbersHotel = () => {
   )
 
   const bankContent = (
-    <div>
       <Formik initialValues={initValues} onSubmit={() => { }}>
         {() => (
           <Form
             className='py-10'
-            style={{ justifyContent: 'center', marginLeft: 150, width: '75%' }}
+            style={{ justifyContent: 'center', marginLeft: 100, width: '75%', display:"flex", flexDirection:"column", height:"100%" }}
             noValidate
             id='kt_create_account_form'
           >
@@ -946,16 +948,9 @@ const renderPageNumbersHotel = () => {
                 </div>
               </div>
             </div>
-            <div>
-              <p style={{ fontSize: 18 }}>
-                Add Visa 247 as a beneficiary and pay via NEFT/RTGS/IMPS online or at a bank branch. We
-                will process the payment and add the amount to your wallet.
-              </p>
-            </div>
           </Form>
         )}
       </Formik>
-    </div>
   )
 
   const upiContent = (
@@ -988,7 +983,7 @@ const renderPageNumbersHotel = () => {
               </div>
             </div>
             <div>
-              <p style={{ fontSize: 18 }}>
+              <p style={{ fontSize: 14 }}>
               Scan the UPI QR code with any payment app and make a payment, upload your transaction screenshot along with your UTR reference no.
               </p>
             </div>
@@ -1114,7 +1109,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
   };
   const uploadReciept = (
     <div className='d-flex ' style={{ width: '100%' }}>
-      <div style={{ width: '40%', marginTop: 50, marginBottom: 30 }}>
+      <div style={{ width: '30%', marginTop: 50, marginBottom: 30 }}>
         <h6>Receipt</h6>
         {recieptImage ? (
           <div
@@ -1429,12 +1424,12 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
     {
       label: 'Bank Transfer (0% Fee)',
       content: bankContent,
-      icon: <BankIcon style={{ width: 25, height: 25 }} />,
+      icon: <img src={bank} style={{ width: 25, height: 25 }} />,
     },
-    { label: 'UPI (0% Fee)', icon: <UpiIcon style={{ width: 25, height: 25 }} />, content: upiContent },
+    { label: 'UPI (0% Fee)', icon: <img src={upi} style={{ width: 25, height: 25 }} />, content: upiContent },
     {
       label: 'Upload Receipt',
-      icon: <Uploadicon style={{ width: 25, height: 25 }} />,
+      icon: <img src={rec} style={{ width: 25, height: 25 }} />,
       content: uploadReciept,
     },
   ]
@@ -1462,35 +1457,40 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
         height: "1px",
         backgroundImage: "linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0))"
       }} />
-      <div className='d-flex' style={{ justifyContent: 'space-around' }}>
-        {walletTabs.map((tab) => (
-          <div
-            key={tab.label}
-            style={{
-              padding: '10px 0',
-              marginTop: 20,
-              display: 'flex',
-              cursor: 'pointer',
-              alignItems: 'center',
-              borderBottom: activeWalletTab === tab.label ? '2px solid #327113' : ' 1px solid #333',
-              fontWeight: activeWalletTab === tab.label ? 'bold' : 'normal',
-              color: activeWalletTab === tab.label ? '#327113' : '#333',
-            }}
-            onClick={() => handleWalletTabClick(tab.label)}
-          >
-            <div style={{ marginRight: 15 }}>{tab.icon}</div>
-            <h3
+      <div className='d-flex justify-content-content'>
+        <div className='d-flex flex-column py-10' style={{ justifyContent: 'center' }}>
+          {walletTabs.map((tab) => (
+            <div
+              key={tab.label}
               style={{
+                padding: '20px 30px',
+                marginTop: 20,
+                width:"330px",
+                display: 'flex',
+                borderRadius:"20px",
+                boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
+                cursor: 'pointer',
+                alignItems: 'center',
+                border: activeWalletTab === tab.label ? '2px solid #327113' : ' 0.5px solid #dadada',
+                fontWeight: activeWalletTab === tab.label ? 'bold' : 'normal',
                 color: activeWalletTab === tab.label ? '#327113' : '#333',
               }}
+              onClick={() => handleWalletTabClick(tab.label)}
             >
-              {tab.label}
-            </h3>
-          </div>
-        ))}
+              <div style={{ marginRight: 15 }}>{tab.icon}</div>
+              <h3
+                style={{
+                  color: activeWalletTab === tab.label ? '#327113' : '#333',
+                }}
+              >
+                {tab.label}
+              </h3>
+            </div>
+          ))}
+        </div>
+        <div>{activeWalletTabContent}</div>
       </div>
-
-      <div>{activeWalletTabContent}</div>
+      
     </div>
   )
 

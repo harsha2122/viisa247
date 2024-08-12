@@ -25,7 +25,6 @@ function HotelFormView({ viewApplication }) {
     }
   };
 
-  console.log("asdc", viewApplication)
 
   return (
     <div className='py-10 px-20'>

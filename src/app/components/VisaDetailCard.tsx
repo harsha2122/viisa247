@@ -619,14 +619,14 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                     alignItems: 'center',
                     display: 'flex',
                     justifyContent: 'center',
-                    backgroundColor: '#fff',
+                    backgroundColor: '#327113',
                   }}
                 >
-                  <h6 className='fs-4' style={{color: '#327113', paddingTop: 7}}>
+                  <h6 className='fs-4' style={{color: '#fff', paddingTop: 7}}>
                     View Application
                   </h6>
                 </div>
-                {selectedVisa.visa_status === 'Proccesed' && (
+                {/* {selectedVisa.visa_status === 'Proccesed' && (
                   <button
                     className='mb-10 mx-10 px-20 py-5'
                     style={{
@@ -684,7 +684,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                     >
                       Check Status
                     </button>
-                  ))}
+                  ))} */}
               </div>
             </div>
           </div>

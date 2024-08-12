@@ -43,11 +43,13 @@ const MerchantApplyFlight: React.FC<Props> = ({ show, visaList, onApiDataReceive
     setSelectedToCountry(values.toCountry);
   
     const postData = {
-      country_code: values.toCountry,
+      country_code: 'IN',
       nationality_code: values.fromCountry,
       issue_date: issueDate, 
       expiry_date: expiryDate,
     };
+
+    console.log('asd', postData)
   
     // Check if all fields in postData are present
     if (!validatePostData(postData)) {
@@ -74,7 +76,7 @@ const MerchantApplyFlight: React.FC<Props> = ({ show, visaList, onApiDataReceive
           issue_date: issueDate,
           expiry_date: expiryDate,
           selectedFromCountry: values.fromCountry,
-          selectedToCountry: values.toCountry,
+          selectedToCountry: 'IN',
           flightData: response.data.data,
         };
         onApiDataReceived(responseData);
@@ -94,7 +96,7 @@ const MerchantApplyFlight: React.FC<Props> = ({ show, visaList, onApiDataReceive
   };
 
   const [selectedFromCountry, setSelectedFromCountry] = useState('');
-  const [selectedToCountry, setSelectedToCountry] = useState('');
+  const [selectedToCountry, setSelectedToCountry] = useState('IN');
   const currentDate = new Date();
 
   const disabledDate = (current) => {
@@ -146,24 +148,6 @@ const MerchantApplyFlight: React.FC<Props> = ({ show, visaList, onApiDataReceive
                     name='fromCountry'
                     defaultValue={selectedFromCountry}
                     // onChange={handleFromCountryChange}
-                    className='form-select form-select-lg form-select-solid border border-2  border-secondary rounded-4 mt-2'
-                    style={{ background: '#fff' }}
-                  >
-                    <option value=''>Select a Country...</option>
-                    <option value='IN'>India</option>
-                  </Field>
-                  <div className='text-danger mt-2'>
-                    <ErrorMessage name='businessType' />
-                  </div>
-                </div>
-                <div className='fv-row mb-10 w-100' style={{ marginLeft: '5%' }}>
-                  <FlightIcon style={{ marginRight: '3px' }} />
-                  <label className='form-label fs-4'>To</label>
-
-                  <Field
-                    as='select'
-                    name='toCountry'
-                    defaultValue={selectedToCountry}
                     className='form-select form-select-lg form-select-solid border border-2  border-secondary rounded-4 mt-2'
                     style={{ background: '#fff' }}
                   >
@@ -270,7 +254,6 @@ const MerchantApplyFlight: React.FC<Props> = ({ show, visaList, onApiDataReceive
                     <option value='HK'>Hong Kong</option>
                     <option value='HU'>Hungary</option>
                     <option value='IS'>Iceland</option>
-                    <option value='IN'>India</option>
                     <option value='ID'>Indonesia</option>
                     <option value='IR'>Iran, Islamic Republic of</option>
                     <option value='IQ'>Iraq</option>
@@ -415,6 +398,24 @@ const MerchantApplyFlight: React.FC<Props> = ({ show, visaList, onApiDataReceive
                     <option value='YE'>Yemen</option>
                     <option value='ZM'>Zambia</option>
                     <option value='ZW'>Zimbabwe</option>
+                  </Field>
+                  <div className='text-danger mt-2'>
+                    <ErrorMessage name='businessType' />
+                  </div>
+                </div>
+                <div className='fv-row mb-10 w-100' style={{ marginLeft: '5%' }}>
+                  <FlightIcon style={{ marginRight: '3px' }} />
+                  <label className='form-label fs-4'>To</label>
+
+                  <Field
+                    as='select'
+                    name='toCountry'
+                    defaultValue={selectedToCountry}
+                    className='form-select form-select-lg form-select-solid border border-2  border-secondary rounded-4 mt-2'
+                    style={{ background: '#fff' }}
+                  >
+                    <option value=''>Select a Country...</option>
+                    <option value='IN'>India</option>
                   </Field>
                   <div className='text-danger mt-2'>
                     <ErrorMessage name='businessType' />

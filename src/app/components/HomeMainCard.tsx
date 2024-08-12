@@ -17,34 +17,25 @@ const user_type = Cookies.get('user_type');
 const HomeMainCard = ({className, description, color, icon, too, textColor, count}: Props) => (
   
   <div
-    className={`card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end ${className}`}
+    className={`card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end d-flex flex-row ${className}`}
     style={{
-      backgroundColor: "#e7fddd",
+      backgroundColor: "#F4FFEE",
       height: '140px',
-      width:"100%",
-      marginTop:"-10px"
+      width:"90%",
+      border:"1px solid #E4E6E8",
+      borderRadius:"30px"
     }}
   >
-    <Link to={too ? too : '/dashboard'} title="See More" >
-      <RxDotsHorizontal style={{
-        position:'absolute',
-        top:0,
-        right:10,
-        fontSize:30,
-        color:"#327113"
-      }}/>
-    </Link>
-    <img src={icon} style={{ width: 50, position: 'relative', left: "7%", top: "6%", filter: "contrast(130%) drop-shadow(5px 5px 5px #c1d4b8)" }} />
-    <div className='card-header pt-5 d-flex align-items-center justify-content-center' style={{position: 'relative', bottom: 5}}>
+    <img src={icon} style={{ width: 30, position: 'relative', left: "7%", top: "0%" }} />
+    <div className='card-header pt-5 d-flex align-items-center justify-content-center' style={{position: 'relative', bottom: 5, left: 10}}>
       <div className='card-title d-flex flex-column align-items-baseline'>
-        
-        <span className='fw-bold  me-2 lh-1' style={{fontSize: '22px', color: textColor, marginTop:"0px"}}>
-          {' '}
-          <img style={{ width: 30, marginLeft:-25, marginRight:5}} src={analytics}/>{description === 'Total transactions' || description === 'Revenue generated' ? <>₹{' '}</> : null}
-          {count}
-        </span>
         <span className=' opacity-75 pt-1 fw-semibold fs-6' style={{color: textColor, justifyContent:"center", alignItems:"center !important", marginTop:"0px"}}>
           {description}{' '}
+        </span>
+        <span className='fw-bold  me-2 lh-1' style={{fontSize: '22px', color: textColor, marginTop:"10px"}}>
+          {' '}
+          {description === 'Total transactions' || description === 'Revenue generated' ? <>₹{' '}</> : null}
+          {count}
         </span>
       </div>
     </div>

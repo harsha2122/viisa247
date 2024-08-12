@@ -33,10 +33,16 @@ const Vertical1 = ({
       return updatedData
     })
   }
+
+  const generateGroupId = () => {
+    return Math.random().toString(36).substring(2, 12)
+  }
+
   const [applicantForms, setApplicantForms] = useState<any[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [confetti, setConfetti] = useState(false)
-  const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null);
+  const [groupId, setGroupId] = useState<string>('')
+  const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null)
   const [loading, setLoading] = useState(false)
   // const [travelerForms, setTravelerForms] = useState([<TravelerForm key={0} onDataChange={handleTravelerDataChange} />]);
   const navigate = useNavigate()
@@ -47,38 +53,38 @@ const Vertical1 = ({
     setIsFixed(scrollY >= 180)
   }
 
-  const [travelerForms, setTravelerForms] = useState<any[]>([{ passport_front: '', passport_back: '', photo: '' }]);
+  const [travelerForms, setTravelerForms] = useState<any[]>([
+    {passport_front: '', passport_back: '', photo: ''},
+  ])
   const [isFieldFilled, setIsFieldFilled] = useState({
     passport_front: false,
     passport_back: false,
     photo: false,
-  });
+  })
 
   const handleTravelFieldChange = (index: number, fieldName: string, value: string) => {
     setTravelerForms((prevForms) => {
-      const updatedForms = [...prevForms];
-      updatedForms[index] = { ...updatedForms[index], [fieldName]: value };
-      return updatedForms;
-    });
+      const updatedForms = [...prevForms]
+      updatedForms[index] = {...updatedForms[index], [fieldName]: value}
+      return updatedForms
+    })
     setIsFieldFilled((prevState) => ({
       ...prevState,
       [`${index}_${fieldName}`]: value.trim() !== '',
-    }));
-  };
-
+    }))
+  }
 
   const handleFileDelete = (index: number, fieldName: string) => {
     setTravelerForms((prevForms) => {
-      const updatedForms = [...prevForms];
-      updatedForms[index][fieldName] = '';
-      return updatedForms;
-    });
+      const updatedForms = [...prevForms]
+      updatedForms[index][fieldName] = ''
+      return updatedForms
+    })
     setIsFieldFilled((prevState) => ({
       ...prevState,
       [`${index}_${fieldName}`]: false,
-    }));
-  };
-  
+    }))
+  }
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll)
@@ -88,12 +94,17 @@ const Vertical1 = ({
     }
   }, [])
 
-  const [modalShow, setModalShow] = useState(false);
-  const handleShow = () => setModalShow(true);
+  useEffect(() => {
+    const newGroupId = generateGroupId()
+    setGroupId(newGroupId)
+  }, [])
+
+  const [modalShow, setModalShow] = useState(false)
+  const handleShow = () => setModalShow(true)
   const handleClose = () => {
-    setModalShow(false);
-    navigate('/merchant/dashboard');
-  };
+    setModalShow(false)
+    navigate('/merchant/dashboard')
+  }
 
   const handleReviewModal = () => {
     const formData = travelerForms.map((form) => ({
@@ -144,7 +155,7 @@ const Vertical1 = ({
 
   const additionalFees =
     (selectedEntry.receipt['Visa Fees'] ? selectedEntry.receipt['Visa Fees'] : 0) *
-      (parseFloat(markup_percentage) ? 1 + parseFloat(markup_percentage) / 100 : 1) +
+      (parseInt(markup_percentage) ? 1 + parseInt(markup_percentage) / 100 : 1) +
     (selectedEntry.receipt['Service Fees'] ? selectedEntry.receipt['Service Fees'] : 0)
   const totalAmount = travelerForms.length * additionalFees
 
@@ -185,75 +196,88 @@ const Vertical1 = ({
     return `${month} ${day}, ${year}`
   }
   const handleReviewAndSave = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-        for (const travelerForm of travelerForms) {
-            const postData = {
-                country_code: selectedEntry.country_code,
-                entry_process: selectedEntry.value,
-                original_visa_amount: selectedEntry.visa_actual_price,
-                nationality_code: selectedEntry.nationality_code,
-                first_name: travelerForm.firstName,
-                last_name: travelerForm.lastName,
-                birth_place: travelerForm.birthPlace,
-                birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
-                nationality: selectedEntry.nationality_code,
-                passport_number: travelerForm.passportNumber,
-                passport_issue_date: formatDateWithTimezoneToYMD(travelerForm.passportIssueDate),
-                passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
-                gender: travelerForm.gender,
-                marital_status: travelerForm.maritalStatus,
-                application_arrival_date: formatDateWithTimezoneToYMD(selectedEntry.application_arrival_date),
-                application_departure_date: formatDateWithTimezoneToYMD(selectedEntry.application_departure_date),
-                application_destination: selectedEntry.country_code,
-                fathers_name: travelerForm.fatherName,
-                passport_front: travelerForm.passFrontPhoto,
-                passport_back: travelerForm.passBackPhoto,
-                pan_card: travelerForm.panPhoto,
-                photo: travelerForm.travelerPhoto,
-                itr: travelerForm.itr,
-                letter: travelerForm.letter,
-                tickets: travelerForm.tickets,
-                visa_provider: travelerForm.visaProvider,
-                visa_amount: Math.ceil(selectedEntry.receipt['Visa Fees'] || 0) + (selectedEntry.receipt['Service Fees'] || 0),
-                markup_visa_amount: Math.ceil((selectedEntry.receipt['Visa Fees'] || 0) * (parseFloat(markup_percentage) ? 1 + parseFloat(markup_percentage) / 100 : 1)) + (selectedEntry.receipt['Service Fees'] || 0),
-                visa_description: selectedEntry.description,
-            };
-
-            try {
-                const response = await axiosInstance.post('/backend/create_manual_user_application', postData);
-                const user_id = Cookies.get('user_id');
-                const data = {
-                    merchant_id: user_id,
-                    application_id: response.data.data,
-                };
-
-                await axiosInstance.patch('/backend/add_applicant', data);
-                const visaResponse = await axiosInstance.post('/backend/merchant/apply_manual_visa', data);
-                
-                if (visaResponse.status === 200) {
-                    setIsReviewModal(false);
-                    setConfetti(true);
-                    setModalShow(true);
-                } else {
-                    toast.error(visaResponse.data.msg, {
-                        position: 'top-center',
-                    });
-                }
-            } catch (error) {
-                console.error('Error while processing form:', error);
-                toast.error( 'Error occurred', {
-                    position: 'top-center',
-                });
-            }
+      for (const travelerForm of travelerForms) {
+        const postData = {
+          country_code: selectedEntry.country_code,
+          entry_process: selectedEntry.value,
+          original_visa_amount: selectedEntry.visa_actual_price,
+          nationality_code: selectedEntry.nationality_code,
+          first_name: travelerForm.firstName,
+          last_name: travelerForm.lastName,
+          birth_place: travelerForm.birthPlace,
+          group_id: groupId,
+          birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
+          nationality: selectedEntry.nationality_code,
+          passport_number: travelerForm.passportNumber,
+          passport_issue_date: formatDateWithTimezoneToYMD(travelerForm.passportIssueDate),
+          passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
+          gender: travelerForm.gender,
+          marital_status: travelerForm.maritalStatus,
+          application_arrival_date: formatDateWithTimezoneToYMD(
+            selectedEntry.application_arrival_date
+          ),
+          application_departure_date: formatDateWithTimezoneToYMD(
+            selectedEntry.application_departure_date
+          ),
+          application_destination: selectedEntry.country_code,
+          fathers_name: travelerForm.fatherName,
+          passport_front: travelerForm.passFrontPhoto,
+          passport_back: travelerForm.passBackPhoto,
+          pan_card: travelerForm.panPhoto,
+          photo: travelerForm.travelerPhoto,
+          itr: travelerForm.itr,
+          letter: travelerForm.letter,
+          tickets: travelerForm.tickets,
+          visa_provider: travelerForm.visaProvider,
+          visa_amount:
+            Math.ceil(selectedEntry.receipt['Visa Fees'] || 0) +
+            (selectedEntry.receipt['Service Fees'] || 0),
+          markup_visa_amount:
+            Math.ceil(
+              (selectedEntry.receipt['Visa Fees'] || 0) *
+                (parseFloat(markup_percentage) ? 1 + parseFloat(markup_percentage) / 100 : 1)
+            ) + (selectedEntry.receipt['Service Fees'] || 0),
+          visa_description: selectedEntry.description,
         }
-    } catch (error) {
-        console.error('Error while making API calls:', error);
-    } finally {
-        setLoading(false);
-    }
-};
 
+        try {
+          const response = await axiosInstance.post(
+            '/backend/create_manual_user_application',
+            postData
+          )
+          const user_id = Cookies.get('user_id')
+          const data = {
+            merchant_id: user_id,
+            application_id: response.data.data,
+          }
+
+          await axiosInstance.patch('/backend/add_applicant', data)
+          const visaResponse = await axiosInstance.post('/backend/merchant/apply_manual_visa', data)
+
+          if (visaResponse.status === 200) {
+            setIsReviewModal(false)
+            setConfetti(true)
+            setModalShow(true)
+          } else {
+            toast.error(visaResponse.data.msg, {
+              position: 'top-center',
+            })
+          }
+        } catch (error) {
+          console.error('Error while processing form:', error)
+          toast.error('Error occurred', {
+            position: 'top-center',
+          })
+        }
+      }
+    } catch (error) {
+      console.error('Error while making API calls:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleDeleteForm = (index) => {
     setTravelerForms((prevForms) => {
@@ -264,24 +288,24 @@ const Vertical1 = ({
   }
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.toLocaleString('default', { month: 'short' });
-    const year = date.getFullYear();
-    
-    let dayWithSuffix;
+    const date = new Date(dateString)
+    const day = date.getDate()
+    const month = date.toLocaleString('default', {month: 'short'})
+    const year = date.getFullYear()
+
+    let dayWithSuffix
     if (day === 1 || day === 21 || day === 31) {
-      dayWithSuffix = `${day}st`;
+      dayWithSuffix = `${day}st`
     } else if (day === 2 || day === 22) {
-      dayWithSuffix = `${day}nd`;
+      dayWithSuffix = `${day}nd`
     } else if (day === 3 || day === 23) {
-      dayWithSuffix = `${day}rd`;
+      dayWithSuffix = `${day}rd`
     } else {
-      dayWithSuffix = `${day}th`;
+      dayWithSuffix = `${day}th`
     }
-  
-    return `${dayWithSuffix} ${month} ${year}`;
-  };
+
+    return `${dayWithSuffix} ${month} ${year}`
+  }
 
   const stepsContent = [
     {
@@ -311,81 +335,138 @@ const Vertical1 = ({
     <div style={{backgroundColor: '#fff'}} className='w-full'>
       {confetti && <Confetti />}
       <Toaster />
-      <OrderSuccess 
-        show={modalShow} 
-        handleClose={handleClose} 
-        orderId={insuranceResponse ? insuranceResponse.insurance_plan_type : ''} 
-        orderTime={insuranceResponse ? formatDate(insuranceResponse.created_at) : ''} 
-        account={insuranceResponse ? insuranceResponse.insurance_id : ''} 
-        name={`${insuranceResponse ? insuranceResponse.first_name : ''} ${insuranceResponse ? insuranceResponse.last_name : ''}`} 
-        amount={insuranceResponse ? Number(insuranceResponse.Math.ceil(
-          selectedEntry.receipt['Visa Fees'] ? selectedEntry.receipt['Visa Fees'] : 0
-        ) +
-        (selectedEntry.receipt['Service Fees'] ? selectedEntry.receipt['Service Fees'] : 0),) * travelerForms.length : 0} 
+      <OrderSuccess
+        show={modalShow}
+        handleClose={handleClose}
+        orderId={insuranceResponse ? insuranceResponse.insurance_plan_type : ''}
+        orderTime={insuranceResponse ? formatDate(insuranceResponse.created_at) : ''}
+        account={insuranceResponse ? insuranceResponse.insurance_id : ''}
+        name={`${insuranceResponse ? insuranceResponse.first_name : ''} ${
+          insuranceResponse ? insuranceResponse.last_name : ''
+        }`}
+        amount={
+          insuranceResponse
+            ? Number(
+                insuranceResponse.Math.ceil(
+                  selectedEntry.receipt['Visa Fees'] ? selectedEntry.receipt['Visa Fees'] : 0
+                ) +
+                  (selectedEntry.receipt['Service Fees']
+                    ? selectedEntry.receipt['Service Fees']
+                    : 0)
+              ) * travelerForms.length
+            : 0
+        }
       />
-      <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
-      <div
+      <div className='d-flex gap-3' style={{justifyContent: 'space-between', width: '100%'}}>
+        <div
           style={{
-            width: '20%',
+            width: '25%',
             padding: '16px',
             paddingLeft: '10px',
-            position: "sticky",
+            position: 'sticky',
             height: '100%',
             overflowY: 'auto',
-            paddingTop: 20,
-            top: '75px',
-            left: "10px",
+            paddingTop: 10,
+            top: '0px',
           }}
         >
-           {travelerForms.map((form, index) => (
-            <>
-              <div onClick={() => {}} style={{ ...tabTextStyle }}>
-                <CheckCircleOutline style={{ color: '#327113', marginRight: 8 }} />
+          {travelerForms.map((form, index) => (
+            <div
+              style={{
+                borderRadius: 15,
+                borderColor: '#696969',
+                padding: '10px',
+                boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
+                backgroundColor: 'white',
+                marginBottom: '15px',
+                marginTop: '5px',
+              }}
+            >
+              <div onClick={() => {}} style={{...tabTextStyle}}>
+                <CheckCircleOutline style={{color: '#327113', marginRight: 8}} />
                 Traveller {index + 1}
               </div>
-              <div style={{ marginLeft: 20 }}>
-                <div onClick={() => {}} style={{ ...tabTextStyle }}>
+              <div style={{marginLeft: 20}}>
+                <div onClick={() => {}} style={{...tabTextStyle}}>
                   {form.passFrontPhoto ? (
-                    <CheckCircleOutline 
-                      style={{ color: '#327113', marginRight: 10 }} 
-                      onClick={() => handleFileDelete(index, 'passFrontPhoto')} 
+                    <CheckCircleOutline
+                      style={{color: '#327113', marginRight: 10}}
+                      onClick={() => handleFileDelete(index, 'passFrontPhoto')}
                     />
                   ) : (
-                    <CircleOutlined style={{ color: '#327113', marginRight: 10 }} />
+                    <CircleOutlined style={{color: '#327113', marginRight: 10}} />
                   )}
                   Passport Front
                 </div>
-                <div onClick={() => {}} style={{ ...tabTextStyle }}>
+                <div onClick={() => {}} style={{...tabTextStyle}}>
                   {form.passBackPhoto ? (
-                    <CheckCircleOutline 
-                      style={{ color: '#327113', marginRight: 10 }} 
-                      onClick={() => handleFileDelete(index, 'passBackPhoto')} 
+                    <CheckCircleOutline
+                      style={{color: '#327113', marginRight: 10}}
+                      onClick={() => handleFileDelete(index, 'passBackPhoto')}
                     />
                   ) : (
-                    <CircleOutlined style={{ color: '#327113', marginRight: 10 }} />
+                    <CircleOutlined style={{color: '#327113', marginRight: 10}} />
                   )}
                   Passport Back
                 </div>
-                <div onClick={() => {}} style={{ ...tabTextStyle }}>
+                <div onClick={() => {}} style={{...tabTextStyle}}>
                   {form.travelerPhoto ? (
-                    <CheckCircleOutline 
-                      style={{ color: '#327113', marginRight: 10 }} 
-                      onClick={() => handleFileDelete(index, 'travelerPhoto')} 
+                    <CheckCircleOutline
+                      style={{color: '#327113', marginRight: 10}}
+                      onClick={() => handleFileDelete(index, 'travelerPhoto')}
                     />
                   ) : (
-                    <CircleOutlined style={{ color: '#327113', marginRight: 10 }} />
+                    <CircleOutlined style={{color: '#327113', marginRight: 10}} />
                   )}
                   Traveller Photo
                 </div>
               </div>
-            </>
+            </div>
           ))}
-          <div onClick={() => {}} style={{...tabTextStyle, color: '#696969'}}>
-            <CircleOutlined style={{color: '#327113', marginRight: 10}} />
-            Submit
-          </div>
         </div>
-        <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
+        <div style={{width: '100%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
+          <div style={{margin: '0 auto', width: '100%'}} className='visa-card mb-12 mt-4'>
+            <div className='entry-info'>
+              <h2>{selectedEntry?.day || '--'} Days</h2>
+              <p>Single Entry</p>
+            </div>
+            <div className='left-section'>
+              <div className='visa-details'>
+                <p>Visa Type: Tourist Visa</p>
+                <p>Price is inclusive of taxes.</p>
+                <p>{selectedEntry?.description}</p>
+              </div>
+              <div className='stay-validity'>
+                <p>
+                  <span>✔</span> Stay Period: <strong>{selectedEntry?.day || '--'} Days</strong>
+                </p>
+                <p>
+                  <span>✔</span> Validity: <strong>58 Days</strong>
+                </p>
+              </div>
+            </div>
+            <div className='right-section'>
+              <div className='amount'>
+                <p>Amount</p>
+                <h2>
+                  ₹{' '}
+                  {Math.ceil(
+                    (selectedEntry && selectedEntry.receipt && selectedEntry.receipt['Visa Fees']
+                      ? selectedEntry.receipt['Visa Fees']
+                      : 0) *
+                      (parseFloat(markup_percentage)
+                        ? 1 + parseFloat(markup_percentage) / 100
+                        : 1) +
+                      (selectedEntry &&
+                      selectedEntry.receipt &&
+                      selectedEntry.receipt['Service Fees']
+                        ? selectedEntry.receipt['Service Fees']
+                        : 0)
+                  )}
+                </h2>
+              </div>
+            </div>
+          </div>
           {travelerForms.map((_, index) => (
             <div key={index}>
               <TravelerForm1
@@ -397,22 +478,22 @@ const Vertical1 = ({
               />
               {travelerForms.length > 1 && index !== 0 && (
                 <div className='d-flex justify-content-end w-100'>
-                <button
-                  onClick={() => handleDeleteForm(index)}
-                  style={{
-                    color: '#ffffff',
-                    padding: '7px 10px',
-                    border: 'none',
-                    backgroundColor: 'red',
-                    width: '100px',
-                    borderRadius: '5px',
-                    marginLeft: '20px',
-                    marginTop: '20px',
-                    fontSize: '16px',
-                  }}
-                >
-                  Delete
-                </button>
+                  <button
+                    onClick={() => handleDeleteForm(index)}
+                    style={{
+                      color: '#ffffff',
+                      padding: '7px 10px',
+                      border: 'none',
+                      backgroundColor: 'red',
+                      width: '100px',
+                      borderRadius: '5px',
+                      marginLeft: '20px',
+                      marginTop: '20px',
+                      fontSize: '16px',
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
               )}
             </div>
@@ -447,7 +528,6 @@ const Vertical1 = ({
                 borderRadius: 15,
                 borderColor: '#696969',
                 boxShadow: '4px 4px 15px rgba(0, 0, 0, 0.1)',
-                marginLeft: 10,
                 backgroundColor: 'white',
                 width: '60%',
               }}
@@ -518,11 +598,11 @@ const Vertical1 = ({
                 borderRadius: 10,
                 borderColor: '#f5f5f5',
                 boxShadow: '4px 4px 15px rgba(0, 0, 0, 0.1)',
-                marginLeft: '10%',
+                marginLeft: '5%',
                 backgroundColor: 'white',
                 height: 'max-content',
                 marginBottom: 20,
-                width: '30%',
+                width: '35%',
               }}
             >
               <h2 style={{fontSize: 20, marginBottom: 20}}>Price Details</h2>
@@ -542,17 +622,17 @@ const Vertical1 = ({
                   >
                     <h5>Traveler {index + 1}:</h5>
                     <h5>
-                      {(
-                        (selectedEntry.receipt['Visa Fees']
-                          ? selectedEntry.receipt['Visa Fees']
+                      {Math.floor(
+                        (parseInt(selectedEntry.receipt['Visa Fees'])
+                          ? parseInt(selectedEntry.receipt['Visa Fees'])
                           : 0) *
                           (parseFloat(markup_percentage)
                             ? 1 + parseFloat(markup_percentage) / 100
                             : 1) +
-                        (selectedEntry.receipt['Service Fees']
-                          ? selectedEntry.receipt['Service Fees']
-                          : 0)
-                      ).toFixed(0)}
+                          (parseInt(selectedEntry.receipt['Service Fees'])
+                            ? parseInt(selectedEntry.receipt['Service Fees'])
+                            : 0)
+                      )}
                       /-
                     </h5>
                   </div>
@@ -560,7 +640,7 @@ const Vertical1 = ({
 
                 <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
                   <h5>Total: </h5>
-                  <h5>{totalAmount.toFixed(0)}/-</h5>
+                  <h5>{Math.floor(totalAmount)}/-</h5> {/* Display total amount with floor value */}
                 </div>
                 <hr
                   style={{
@@ -585,7 +665,7 @@ const Vertical1 = ({
                   width: 190,
                   marginBottom: 20,
                   border: '1px solid',
-                  marginLeft: 20,
+                  margin: '0 auto',
                   borderColor: '#696969',
                   borderRadius: 10,
                   alignItems: 'center',

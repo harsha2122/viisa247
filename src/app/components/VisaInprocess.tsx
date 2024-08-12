@@ -15,10 +15,7 @@ import axiosInstance from '../helpers/axiosInstance'
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom'
 import Loader from './Loader'
-import { FcFullTrash } from "react-icons/fc";
-import Cookies from 'js-cookie'
-import { FcInfo } from "react-icons/fc";
-import Pagination from 'react-bootstrap/Pagination';
+import TablePagination from './TablePagination'
 
 type Props = {
   className: string
@@ -65,14 +62,14 @@ const VisaInprocess: React.FC<Props> = ({ className, title, data,loading }) => {
   const [deleteSelectedItem, setDeleteSelectedItem] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [tableData, setTableData] = useState(data);
-  const [activePage, setActivePage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const MAX_VISIBLE_PAGES = 7; 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const [filteredData, setFilteredData] = useState(data as any[]);
 
-  const handlePageChange = (page: number) => {
-    setActivePage(page);
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
   };
+
   const handleStatusChange = async (row, selectedStatus) => {
     try {
       const response = await axiosInstance.post('/backend/update_application_status', {
@@ -97,42 +94,11 @@ const VisaInprocess: React.FC<Props> = ({ className, title, data,loading }) => {
       toast.error('Failed to update status');
     }
   };
-  const startIndex = (activePage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
 
-  const visiblePages: (number | string)[] = [];
-
-  const addVisiblePage = (page: number | string) => {
-    visiblePages.push(page);
-  };
-
-  const addRangeOfPages = (start: number, end: number) => {
-    for (let i = start; i <= end; i++) {
-      addVisiblePage(i);
-    }
-  };
-
-  if (totalPages <= MAX_VISIBLE_PAGES) {
-    addRangeOfPages(1, totalPages);
-  } else {
-    if (activePage <= MAX_VISIBLE_PAGES - 3) {
-      addRangeOfPages(1, MAX_VISIBLE_PAGES - 2);
-      addVisiblePage('...');
-      addVisiblePage(totalPages - 1);
-      addVisiblePage(totalPages);
-    } else if (activePage >= totalPages - (MAX_VISIBLE_PAGES - 4)) {
-      addVisiblePage(1);
-      addVisiblePage('...');
-      addRangeOfPages(totalPages - (MAX_VISIBLE_PAGES - 3), totalPages);
-    } else {
-      addVisiblePage(1);
-      addVisiblePage('...');
-      addRangeOfPages(activePage - 1, activePage + 1);
-      addVisiblePage('...');
-      addVisiblePage(totalPages);
-    }
-  }
-
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
 
   const handleApproveClick = async () => {
@@ -185,22 +151,6 @@ const VisaInprocess: React.FC<Props> = ({ className, title, data,loading }) => {
     setVisible(false);
   };
 
-  const handleDownloadClick = async (item) => {
-    const response = await axiosInstance.post('/backend/download_visa', {
-      application_id: item._id
-    })
-
-    if (response.status == 200) {
-      toast.success(response.data.msg, {
-        position: 'top-center', // Center the toast notification
-      })
-      // navigate('/merchant/apply-visa')
-    } else {
-      toast.error(response.data.msg.error, {
-        position: 'top-center',
-      })
-    }
-  };
   const navigate = useNavigate();
 
   const handleIssueVisaClick = async (item) => {
@@ -288,7 +238,7 @@ const VisaInprocess: React.FC<Props> = ({ className, title, data,loading }) => {
                     </tr>
                   </thead>
                   <tbody>
-                  {data.slice(startIndex, endIndex).map((row, index) => (
+                  {currentItems.map((row, index) => (
                     <tr key={index}>
                       <td>
                         <a href='#' className='text-gray-600 fw-bold text-hover-primary fs-7'>
@@ -356,19 +306,9 @@ const VisaInprocess: React.FC<Props> = ({ className, title, data,loading }) => {
             </div>
           </section>
           }
-          <div className="d-flex justify-content-center">
-          <Pagination>
-                {visiblePages.map((page, index) => (
-                  <Pagination.Item
-                    key={index}
-                    active={page === activePage}
-                    onClick={() => handlePageChange(typeof page === 'number' ? page : activePage)}
-                  >
-                    {page}
-                  </Pagination.Item>
-                ))}
-              </Pagination>
-              </div>
+          {!loading && (
+            <TablePagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+          )}
           {/* end::Table */}
         </div>
         {/* end::Table container */}

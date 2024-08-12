@@ -1,10 +1,8 @@
 import {useEffect, useState, useRef, ChangeEvent} from 'react'
-import {useNavigate, useLocation} from 'react-router-dom'
-import Cookies from 'js-cookie'
+import {useNavigate, useLocation, Link} from 'react-router-dom'
 import toast, {Toaster} from 'react-hot-toast'
 import {ErrorMessage, Field, Form, Formik, FormikValues} from 'formik'
 import {ICreateAccount, inits} from './CreateAccountWizardHelper'
-import * as Yup from 'yup'
 import axiosInstance from '../../../helpers/axiosInstance'
 import ClearIcon from '@mui/icons-material/Delete'
 import {CheckCircleOutline, CircleOutlined} from '@mui/icons-material'
@@ -17,12 +15,7 @@ import Confetti from 'react-confetti'
 import OrderSuccess from '../../../components/OrderSuccess'
 
 const inputStyle = {
-  border: '1.5px solid #d3d3d3', // Border width and color
-  borderRadius: '15px', // Border radius
-  padding: '10px',
-  paddingLeft: '20px', // Padding
-  width: '90%', // 100% width
-  boxSizing: 'border-box', // Include padding and border in the width calculation
+  border: '0.5px solid rgb(244 244 244)',
 }
 
 interface VerticalProps {
@@ -456,7 +449,7 @@ const Vertical5: React.FC<VerticalProps> = ({
       />
       <div id='nav1'>
         <a href='/' className='part11'>
-          <img className='logo' src='./media/logos/logo.png' alt='logo' />
+          <img className='logo' src='./media/logos/logo1.png' alt='logo' />
         </a>
 
         <div className='part21'>
@@ -482,7 +475,7 @@ const Vertical5: React.FC<VerticalProps> = ({
             height: '100%',
             overflowY: 'auto',
             paddingTop: 20,
-            top: '10px',
+            top: '120px',
             left: "10px",
           }}
         >
@@ -536,65 +529,106 @@ const Vertical5: React.FC<VerticalProps> = ({
         </div>
 
         <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
-          <Formik initialValues={initValues} onSubmit={() => {}}>
-            <Form
-              className='py-10 px-20'
-              style={{
-                borderRadius: 20,
-                borderColor: '#f2f2f2',
-                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-                marginLeft: 10,
-                marginTop: 10,
-                backgroundColor: 'white',
-              }}
-            >
-              <div className='w-100 mb-12'>
-                <h1>Please Fill the form below to apply for visa</h1>
-              </div>
-              <div className='d-flex w-100'>
-                <div className='fv-row mb-5 w-50'>
-                  <label className='form-label required'>Name</label>
-                  <Field
-                    onChange={(e) => handleFieldChange('name', e.target.value)}
-                    name='name'
-                    style={inputStyle}
-                    className='form-control form-control-lg form-control-solid'
-                  />
-                  <div className='text-danger mt-2'>
-                    <ErrorMessage name='name' />
-                  </div>
+
+        <div className='w-100 my-12 d-flex justify-content-between px-20'>
+          <h3>
+            Selected Plan
+          </h3>
+          <Link style={{fontSize:"18px", fontWeight:"bold", color:"#327113"}} to="/">
+            Change
+          </Link>
+        </div>
+
+          <div style={{margin:"0 auto", width:"80%"}} className="visa-card mb-12">
+            <div className="entry-info">
+                <h2>{selectedEntry?.day || '--'} Days</h2>
+                <p>Single Entry</p>
+            </div>
+            <div className="left-section">
+                <div className="visa-details">
+                    <p>Visa Type: Tourist Visa</p>
+                    <p>Price is inclusive of taxes.</p>
+                    <p>{selectedEntry?.description}</p>
                 </div>
-                <div className='fv-row mb-5 w-50'>
-                  <label className='form-label required'>Email</label>
-                  <Field
-                    onChange={(e) => handleFieldChange('email', e.target.value)}
-                    name='email'
-                    style={inputStyle}
-                    className='form-control form-control-lg form-control-solid'
-                  />
-                  <div className='text-danger mt-2'>
-                    <ErrorMessage name='email' />
-                  </div>
+                <div className="stay-validity">
+                    <p><span>✔</span> Stay Period: <strong>{selectedEntry?.day || '--'} Days</strong></p>
+                    <p><span>✔</span> Validity: <strong>58 Days</strong></p>
                 </div>
-              </div>
-              <div className='d-flex w-100'>
-                <div className='fv-row mb-5 w-50'>
-                  <label className='form-label required'>Phone</label>
-                  <Field
-                    onChange={(e) => handleFieldChange('phone', e.target.value)}
-                    type='number'
-                    maxLength={10}
-                    name='phone'
-                    style={inputStyle}
-                    className='form-control form-control-lg form-control-solid'
-                  />
-                  <div className='text-danger mt-2'>
-                    <ErrorMessage name='phone' />
-                  </div>
+            </div>
+            <div className="right-section">
+                <div className="amount">
+                    <p>Amount</p>
+                    <h2>₹{' '}
+                    {  Math.ceil(selectedEntry?.receipt?.['Visa Fees'] ?? 0) +
+                      (selectedEntry?.receipt?.['Service Fees'] ?? 0)}
+                    </h2>
                 </div>
-              </div>
-            </Form>
-          </Formik>
+            </div>
+          </div>
+
+
+                  <Formik initialValues={initValues} onSubmit={() => {}}>
+                    <Form
+                      className='py-10 px-20'
+                      style={{
+                        borderRadius: 20,
+                        width: "80%",
+                        borderColor: '#f2f2f2',
+                        boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
+                        margin: "0 auto",
+                        marginTop: 10,
+                        backgroundColor: 'white',
+                      }}
+                    >
+                      <div className='w-100 mb-12'>
+                        <h1>Please Fill the form below to apply for visa</h1>
+                      </div>
+                      <div className='d-flex gap-8 w-100 mb-5'>
+                        <div className='fv-row w-50 pr-2'>
+                          <label className='form-label required'>Name</label>
+                          <Field
+                            onChange={(e) => handleFieldChange('name', e.target.value)}
+                            name='name'
+                            style={inputStyle}
+                            className='form-control form-control-lg border-2 form-control-solid'
+                          />
+                          <div className='text-danger mt-2'>
+                            <ErrorMessage name='name' />
+                          </div>
+                        </div>
+                        <div className='fv-row w-50 pl-2'>
+                          <label className='form-label required'>Phone Number</label>
+                          <Field
+                            onChange={(e) => handleFieldChange('phone', e.target.value)}
+                            name='phone'
+                            style={inputStyle}
+                            type='text'
+                            className='form-control form-control-lg border-2 form-control-solid'
+                          />
+                          <div className='text-danger mt-2'>
+                            <ErrorMessage name='phone' />
+                          </div>
+                        </div>
+                      </div>
+                      <div className='w-100 mb-5'>
+                        <label className='form-label required'>Email Address</label>
+                        <div className='input-group'>
+                          <span className='input-group-text'><i className="bi bi-envelope"></i></span>
+                          <Field
+                            onChange={(e) => handleFieldChange('email', e.target.value)}
+                            name='email'
+                            style={inputStyle}
+                            type='email'
+                            className='form-control form-control-lg border-2 form-control-solid'
+                          />
+                        </div>
+                        <div className='text-danger mt-2'>
+                          <ErrorMessage name='email' />
+                        </div>
+                      </div>
+                    </Form>
+                  </Formik>
+
 
           {travelerForms.map((_, index) => (
             <>
@@ -636,12 +670,13 @@ const Vertical5: React.FC<VerticalProps> = ({
               borderRadius: 20,
               borderColor: '#f2f2f2',
               boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-              marginLeft: 10,
-              marginTop: 10,
+              margin: "0 auto",
+              width:"80%",
+              marginTop: 40,
               backgroundColor: 'white',
             }}
           >
-            <div className='d-flex ' style={{width: '100%'}}>
+            <div className='d-flex w-100'>
               <div style={{width: '40%', marginLeft: '25px', marginTop: '30px'}}>
                 <h6>Receipt</h6>
                 {loading ? (
@@ -649,7 +684,7 @@ const Vertical5: React.FC<VerticalProps> = ({
                 ) : reciept ? (
                   <div
                     style={{
-                      border: '4px dotted gray',
+                      border: '2px dashed gray',
                       width: '100%',
                       height: 200,
                       borderRadius: '10px',
@@ -687,7 +722,7 @@ const Vertical5: React.FC<VerticalProps> = ({
                 ) : (
                   <div
                     style={{
-                      border: '4px dotted gray',
+                      border: '2px dashed gray',
                       width: '100%',
                       height: 200,
                       borderRadius: '10px',
@@ -925,7 +960,6 @@ const Vertical5: React.FC<VerticalProps> = ({
           {insuranceFormData &&
             insuranceFormData.map((data, index) => (
               <div key={index}>
-                <hr className='ahr' />
                 <p>
                   <strong>First Name:</strong> {data.firstName}
                 </p>
@@ -959,6 +993,7 @@ const Vertical5: React.FC<VerticalProps> = ({
                 <p>
                   <strong>Marital Status:</strong> {data.maritalStatus}
                 </p>
+                <hr className='ahr' />
               </div>
             ))}
         </Modal.Body>

@@ -3,6 +3,7 @@ import { DatePicker } from 'antd';
 import Papa from 'papaparse';
 import { Modal} from 'react-bootstrap';
 import moment from 'moment';
+import TablePagination from './TablePagination';
 
 type Props = {
   className: string;
@@ -26,6 +27,8 @@ const RevenueTable: React.FC<Props> = ({ className, title, data, loading }) => {
   };
 
   const [visible, setVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const [selectedItem, setSelectedItem] = useState(null);
   const [deleteSelectedItem, setDeleteSelectedItem] = useState(null);
   const [filter, setFilter] = useState('all');
@@ -34,8 +37,6 @@ const RevenueTable: React.FC<Props> = ({ className, title, data, loading }) => {
   const [issueDate, setIssueDate] = useState<string | undefined>('');
   const [expiryDate, setExpiryDate] = useState<string | undefined>('');
   const [filteredData, setFilteredData] = useState(data as any[]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   const handleDatePickerChange = (value: any) => {
     if (value && value.length === 2) {
@@ -54,6 +55,10 @@ const RevenueTable: React.FC<Props> = ({ className, title, data, loading }) => {
     }
   };
   
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
@@ -84,20 +89,9 @@ const RevenueTable: React.FC<Props> = ({ className, title, data, loading }) => {
     URL.revokeObjectURL(url);
   };
 
-  const renderPageNumbers = Array.from({ length: Math.ceil(filteredData.length / itemsPerPage) }, (_, index) => index + 1)
-    .map((number) => (
-      <li
-        key={number}
-        className={`page-item ${number === currentPage ? 'active' : ''}`}
-        onClick={() => setCurrentPage(number)}
-      >
-        <span className="page-link">{number}</span>
-      </li>
-    ));
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <div style={{ boxShadow: 'none' }} className={`card ${className}`}>
@@ -187,9 +181,9 @@ const RevenueTable: React.FC<Props> = ({ className, title, data, loading }) => {
                       <th className='fs-5 min-w-100px'>Name</th>
                       <th className='fs-5 min-w-40px'>Channel</th>
                       <th className='fs-5 text-center min-w-40px'>Provider</th>
-                      <th className='fs-5 text-center min-w-70px'>Paid</th>
-                      <th className='fs-5 text-center min-w-70px'>Recieved</th>
-                      <th className='fs-5 text-center min-w-70px'>Margin</th>
+                      <th className='fs-5 text-center min-w-70px'>Cost Price</th>
+                      <th className='fs-5 text-center min-w-70px'>Selling Price</th>
+                      <th className='fs-5 text-center min-w-70px'>Revenue</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -261,9 +255,9 @@ const RevenueTable: React.FC<Props> = ({ className, title, data, loading }) => {
               </div>
             </div>
           </section>
-              <ul className="pagination">
-                {renderPageNumbers}
-              </ul>
+          {!loading && (
+            <TablePagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+          )}
             </>
           )}
           {/* end::Table */}

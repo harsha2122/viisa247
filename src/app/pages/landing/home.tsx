@@ -10,6 +10,10 @@ import Loader from '../../components/Loader';
 import not from '../../../_metronic/assets/card/3dnot.webp'
 import toast, { Toaster } from 'react-hot-toast';
 import Cookies from 'js-cookie';
+import { FaFacebook } from "react-icons/fa";
+import { AiOutlineTwitter } from "react-icons/ai";
+import { AiFillInstagram } from "react-icons/ai";
+import hero from '../../../_metronic/assets/card/landing.svg'
 
 type Props = {
   className: string;
@@ -231,40 +235,61 @@ const Home: React.FC<Props> = ({
     <> 
         <Toaster />
         <Loader loading={visaListLoaderState} />
-        <div id="nav">
-        <a href='/' className="part11">
-          <img className="logo" src="./media/logos/logo.png" alt="logo" />
-        </a>
+        {/* <div id="nav">
+            <a href='/' className="part11">
+            <img className="logo" src="./media/logos/logo.png" alt="logo" />
+            </a>
 
-        <div className="part21">
-          <button className="button2" onClick={handleLoginClick}>
-            Login
-          </button>
-        </div>
-      </div>
+            <div className="part21">
+            <button className="button2" onClick={handleLoginClick}>
+                Login
+            </button>
+            </div>
+        </div> */}
 
         <div className="page1h">
-            <img className="bgimg" src="./media/assets/bgm1.jpg"/>
-            <h1>
-                Getting visa was <br /><span className='sapn'>never this easy</span>
-            </h1>
-            <div className="search-bar">
-                <div className="search-conti">
-                <HomeApply
-                    show={(value) => setVisaList(value)}
-                    visaList={visaList}
-                    visaListLoader={setVisalistLoader}
-                    onApiDataReceived={handleApiDataReceived}
-                    manualValue={handleManualReceived}
-                    selectedFromCountry={selectedFromCountry}
-                    selectedToCountry={selectedToCountry}
-                    />
+            <div className="bgimg"></div>
+            <div className='hero-content'>
+                <div id="nav">
+                    <a href='/' className="part11">
+                    <img className="logo" src="./media/logos/logo1.png" alt="logo" />
+                    </a>
 
+                    <div className="part21">
+                    <button className="button2" onClick={handleLoginClick}>
+                        Login
+                    </button>
+                    </div>
+                </div>
+                <div className="search-bar">
+                    <div className="search-conti">
+                        <HomeApply
+                            show={(value) => setVisaList(value)}
+                            visaList={visaList}
+                            visaListLoader={setVisalistLoader}
+                            onApiDataReceived={handleApiDataReceived}
+                            manualValue={handleManualReceived}
+                            selectedFromCountry={selectedFromCountry}
+                            selectedToCountry={selectedToCountry}
+                        />
+                    </div>
+                </div>
+                <div className='chips'>
+                    <div className='chip'>United Kingdom</div>
+                    <div className='chip'>U.A.E</div>
+                    <div className='chip'>Turkey</div>
+                    <div className='chip'>France</div>
+                </div>
+                <div className='hero'>
+                    <h1>
+                        Getting visa was <br /><span>never this easy</span>
+                    </h1>
+                    <img src={hero} alt="" />
                 </div>
             </div>
         </div>
 
-        <div className="visas">
+        {/* <div className="visas">
             <div className="offers">
                 <h2>Package Offers</h2>
                 <ul>
@@ -507,7 +532,7 @@ const Home: React.FC<Props> = ({
                     </div>
                 </>
             )}
-        </div>
+        </div> */}
 
         <div className="page2h">
             <h1 className="head">Premium Offers In Premium Destinations </h1>
@@ -516,25 +541,27 @@ const Home: React.FC<Props> = ({
                     <div className="img-conti">
                         <img className="imgr" src="./media/assets/uae.jpg" alt="" />
                     </div>
-                    <div className="title">
-                        <h1 className="heading">U.A.E</h1>
-                        <span className="rating">
-                            
-                        </span>
+                    <div className='cardcc'>
+                        <div className="title">
+                            <h1 className="heading">U.A.E</h1>
+                            <span className="rating">
+                                
+                            </span>
 
-                    </div>
-                    <div className="title-2">Tourist Visa</div>
-                    <div className="card-info">
-                        <ul>
-                            <li>Approval Chances 90%</li>
-                            <li>Best Visa time</li>
-                            <li>Look Around</li>
-                        </ul>  
-                    </div>
-                    <div className="card-price">
-                        <del className="del">₹700</del>
-                        <div className="amount">
-                            ₹300 <span className="per">Per Person</span>
+                        </div>
+                        <div className="title-2">Tourist Visa</div>
+                        <div className="card-info">
+                            <ul>
+                                <li>Approval Chances 90%</li>
+                                <li>Best Visa time</li>
+                                <li>Look Around</li>
+                            </ul>  
+                        </div>
+                        <div className="card-price">
+                            <del className="del">₹700</del>
+                            <div className="amount">
+                                ₹300 <span className="per">/ Per Person</span>
+                            </div>
                         </div>
                     </div>
                 </a>
@@ -542,6 +569,7 @@ const Home: React.FC<Props> = ({
                     <div className="img-conti">
                         <img className="imgr" src="./media/assets/singapore.jpg" alt="" />
                     </div>
+                    <div className="cardcc">
                     <div className="title">
                         <h1 className="heading">Singapore</h1>
                         <span className="rating">
@@ -560,14 +588,16 @@ const Home: React.FC<Props> = ({
                     <div className="card-price">
                         <del className="del">₹4,500</del>
                         <div className="amount">
-                            ₹3,999 <span className="per">Per Person</span>
+                            ₹3,999 <span className="per">/ Per Person</span>
                         </div>
+                    </div>
                     </div>
                 </a>
                 <a onClick={() => onSelect({ fromCountry: selectedFromCountry, toCountry: 'SA' })} className="cursor-pointer cards-single">
                     <div className="img-conti">
                         <img className="imgr" src="./media/assets/saudi.jpg" alt="" />
                     </div>
+                    <div className="cardcc">
                     <div className="title">
                         <h1 className="heading">Saudi Arabia</h1>
                         <span className="rating">
@@ -586,14 +616,16 @@ const Home: React.FC<Props> = ({
                     <div className="card-price">
                         <del className="del">₹700</del>
                         <div className="amount">
-                            ₹500<span className="per">Per Person</span>
+                            ₹500<span className="per">/ Per Person</span>
                         </div>
+                    </div>
                     </div>
                 </a>
                 <a onClick={() => onSelect({ fromCountry: selectedFromCountry, toCountry: 'MY' })} className="cursor-pointer cards-single">
                     <div className="img-conti">
                         <img className="imgr" src="./media/assets/malaysia.jpg" alt="" />
                     </div>
+                    <div className="cardcc">
                     <div className="title">
                         <h1 className="heading">Malaysia</h1>
                         <span className="rating">
@@ -612,14 +644,16 @@ const Home: React.FC<Props> = ({
                     <div className="card-price">
                         <del className="del">₹4,100</del>
                         <div className="amount">
-                            ₹3,500 <span className="per">Per Person</span>
+                            ₹3,500 <span className="per">/ Per Person</span>
                         </div>
+                    </div>
                     </div>
                 </a>
                 <a onClick={() => onSelect({ fromCountry: selectedFromCountry, toCountry: 'TH' })} className="cursor-pointer cards-single">
                     <div className="img-conti">
                         <img className="imgr" src="./media/assets/thailand.jpg" alt="" />
                     </div>
+                    <div className="cardcc">
                     <div className="title">
                         <h1 className="heading">Thailand</h1>
                         <span className="rating">
@@ -638,14 +672,16 @@ const Home: React.FC<Props> = ({
                     <div className="card-price">
                         <del className="del">₹2,499</del>
                         <div className="amount">
-                            ₹1,999 <span className="per">Per Person</span>
+                            ₹1,999 <span className="per">/ Per Person</span>
                         </div>
+                    </div>
                     </div>
                 </a>
                 <a onClick={() => onSelect({ fromCountry: selectedFromCountry, toCountry: 'OM' })} className="cursor-pointer cards-single">
                     <div className="img-conti">
                         <img className="imgr" src="./media/assets/oman.jpg" alt="" />
                     </div>
+                    <div className="cardcc">
                     <div className="title">
                         <h1 className="heading">Oman</h1>
                         <span className="rating">
@@ -664,8 +700,9 @@ const Home: React.FC<Props> = ({
                     <div className="card-price">
                         <del className="del">₹4,500</del>
                         <div className="amount">
-                            ₹2,238 <span className="per">Per Person</span>
+                            ₹2,238 <span className="per">/ Per Person</span>
                         </div>
+                    </div>
                     </div>
                 </a>
             </div>
@@ -800,17 +837,19 @@ const Home: React.FC<Props> = ({
             
               <div className="newsletter rowse">
                   <div className="footer-header">
-                    <h3 >Join Our Newsletter</h3>
+                    <h3 >Social Links</h3>
                   </div>
-                  <div className="newsletter-des">
-                    <div className="subcribe">
-                        <input type="mail" placeholder = "Your email address" required/>
-                        <button className="butt">Subscribe</button>
-                    </div>
-                    <div className="icons">
-                        <p>Will send you weekly updates for your better tour packages</p>
-                    </div>
-                  </div>
+                  <div className="social-icons-btn">
+                    <a className="iconss twitter"  href="#">
+                        <AiOutlineTwitter name="logo-twitter"/>
+                    </a>
+                    <a className="iconss facebook"  href="#">
+                        <FaFacebook name="logo-facebook"/>
+                    </a>
+                    <a className="iconss instagram"  href="#">
+                        <AiFillInstagram  name="logo-instagram"/>
+                    </a>
+                </div>
               </div>
             
             </div>

@@ -158,9 +158,6 @@ const MerchantApplyVisa: React.FC<Props> = ({ show, visaList, onApiDataReceived,
     <>
       <Toaster />
       <div className='d-flex flex-row' >
-        <div>
-          <img style={{width:"700px", height:"530px", filter: "contrast(130%) drop-shadow(5px 8px 8px #c1d4b8)"}} src={bgl} alt="" />
-        </div>
         <Formik validationSchema={null} initialValues={initValues} onSubmit={onSubmit}>
           {({ handleSubmit }) => (
             <Form
@@ -168,7 +165,6 @@ const MerchantApplyVisa: React.FC<Props> = ({ show, visaList, onApiDataReceived,
               noValidate
               id='kt_create_account_form'
               onSubmit={handleSubmit}
-              style={{marginLeft:"-70px"}}
             >
           <div style={{justifyContent:"center", alignItems:"center"}} className='d-flex flex-column mx-auto'>
             <h1 className='px-9 mt-25' style={{fontSize: 50 }}>
@@ -720,9 +716,9 @@ const MerchantApplyVisa: React.FC<Props> = ({ show, visaList, onApiDataReceived,
                   </div>
                 </div>
               </div>
-              <div className='fv-row mb-10 w-50 mx-auto'>
+              <div className='fv-row mb-10 d-flex justify-content-center w-50 mx-auto'>
                 <DatePicker.RangePicker 
-                  style={{backgroundClip:'#fff',color:"#686868",width:400,marginTop:8,border:'2px solid #e5e5e5',borderRadius:10,padding:10,marginLeft:-20}}
+                  style={{backgroundClip:'#fff',color:"#686868",width:400,marginTop:8,border:'2px solid #e5e5e5',borderRadius:10,padding:10}}
                   onChange={(value)=>{
                     if (value && value.length === 2) {
                       var x = value[0]?.format('YYYY-MM-DD');

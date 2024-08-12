@@ -402,7 +402,7 @@ const HomeApply: React.FC<Props> = ({
                   as='select'
                   name='toCountry'
                   defaultValue={selectedToCountry}
-                  style={{"color":"#000","background":"transparent","width":"100%","border":"none","height":"35px","marginTop":"10px", fontSize:"15px"}}
+                  style={{"color":"#000","background":"transparent","width":"380px","border":"none",padding:"14px", marginTop:"10px", fontSize:"15px"}}
                 >
                   <option value=''>Where to ...</option>
                   <option value='AF'>Afghanistan</option>
@@ -685,13 +685,13 @@ const HomeApply: React.FC<Props> = ({
                     border:"none",
                     cursor:"pointer",
                     fontWeight:"500",
-                    borderRadius:"7px",
+                    borderRadius:"20px",
                     display:"flex",
                     alignItems:"center",
                     justifyContent:"center",
                     marginRight:"-25px",
                     height:"42px",
-                    marginTop:"9px",
+                    marginTop:"14px",
                   }}
                 ><IoMdSearch style={{fontSize:"20px", marginRight:"5px"}} />
                   Search

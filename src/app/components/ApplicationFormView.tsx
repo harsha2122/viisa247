@@ -1,12 +1,12 @@
 import {useEffect, useState, useRef, ChangeEvent} from 'react'
 import {ErrorMessage, Field, Form, Formik, FormikValues} from 'formik'
-import {useNavigate} from 'react-router-dom'
-import axiosInstance from '../helpers/axiosInstance'
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import {ICreateAccount, inits} from '../modules/wizards/components/CreateAccountWizardHelper'
-function ApplicationFormView({viewApplication}) {
-  const [initValues] = useState<ICreateAccount>(inits)
+function ApplicationFormView({ viewApplication }) {
+  const [initValues] = useState<ICreateAccount>(inits);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -26,96 +26,72 @@ function ApplicationFormView({viewApplication}) {
     travelerPhoto: '',
     panNo: '',
     panPhoto: '',
-  })
+  });
 
   const inputStyle = {
     border: '1.5px solid #d3d3d3',
-    borderRadius: '10px', 
+    borderRadius: '10px',
     padding: '10px',
-    paddingLeft: '20px', 
-    width: '90%', 
-    boxSizing: 'border-box', 
-  }
+    paddingLeft: '20px',
+    width: '90%',
+    boxSizing: 'border-box',
+  };
 
-  const [issueDate, setIssueDate] = useState(null)
-  const [expiryDate, setExpiryDate] = useState(null)
-  const [dob, setDob] = useState(null)
+  const [issueDate, setIssueDate] = useState(null);
+  const [expiryDate, setExpiryDate] = useState(null);
+  const [dob, setDob] = useState(null);
 
-  const handleDownload1 = () => {
-    const imageUrl = viewApplication.passport_front || '';
-    const link = document.createElement('a');
-    link.href = imageUrl;
-    const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-};
-const handleDownload2 = () => {
-  const imageUrl = viewApplication.itr || '';
-  const link = document.createElement('a');
-  link.href = imageUrl;
-  const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-const handleDownload3 = () => {
-  const imageUrl = viewApplication.photo || '';
-  const link = document.createElement('a');
-  link.href = imageUrl;
-  const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-const handleDownload4 = () => {
-  const imageUrl = viewApplication.pan_card || '';
-  const link = document.createElement('a');
-  link.href = imageUrl;
-  const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-const handleDownload5 = () => {
-  const imageUrl = viewApplication.passport_back || '';
-  const link = document.createElement('a');
-  link.href = imageUrl;
-  const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-const handleDownload6 = () => {
-  const imageUrl = viewApplication.letter || '';
-  const link = document.createElement('a');
-  link.href = imageUrl;
-  const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-const handleDownload7 = () => {
-  const imageUrl = viewApplication.tickets || '';
-  const link = document.createElement('a');
-  link.href = imageUrl;
-  const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
+  const downloadFilesAsZip = async () => {
+    const zip = new JSZip();
+
+    // Define file details
+    const files = [
+      { url: viewApplication.passport_front, name: 'passport_front.jpg' },
+      { url: viewApplication.itr, name: 'itr.jpg' },
+      { url: viewApplication.photo, name: 'photo.jpg' },
+      { url: viewApplication.pan_card, name: 'pan_card.jpg' },
+      { url: viewApplication.passport_back, name: 'passport_back.jpg' },
+      { url: viewApplication.letter, name: 'letter.jpg' },
+      { url: viewApplication.tickets, name: 'tickets.jpg' },
+    ];
+
+    // Function to fetch and add file to the zip
+    const fetchFile = async ({ url, name }) => {
+      if (!url) return; // Skip if URL is not available
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch file from ${url}`);
+        }
+        const blob = await response.blob();
+        zip.file(name, blob);
+      } catch (error) {
+        console.error(`Error fetching file from`);
+      }
+    };
+
+    // Fetch and add files to zip
+    await Promise.all(files.map(fetchFile));
+
+    // Generate and download the zip file
+    zip.generateAsync({ type: 'blob' }).then((content) => {
+      saveAs(content, 'documents.zip');
+    });
+  };
 
   return (
     <div
       className='py-10 px-20'
     >
+    <button style={{
+              color: '#fff',
+              border: 'none',
+              backgroundColor: '#327113',
+              padding: '10px 20px',
+              borderRadius: '10px',
+              marginBottom: '20px'
+          }} onClick={downloadFilesAsZip}>Download All Documents</button>
       <h5 className='mx-auto' style={{fontSize: 30, letterSpacing: 0.3}}>Traveller 1 </h5>
       <hr style={{
         width:"70%",
@@ -148,21 +124,6 @@ const handleDownload7 = () => {
               style={{maxWidth: '100%', maxHeight: '100%',}}
             />
           </div>
-          <button
-          onClick={handleDownload1}
-          style={{
-              position: 'relative',
-              color: '#fff',
-              border: 'none',
-              backgroundColor: '#327113',
-              padding: '10px 20px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              marginTop:"20px"
-          }}
-      >
-          Download Passport Front
-      </button>
         </div>
 
         <div
@@ -359,21 +320,6 @@ const handleDownload7 = () => {
               style={{maxWidth: '100%', maxHeight: '100%',}}
             />
           </div>
-          <button
-          onClick={handleDownload5}
-          style={{
-              position: 'relative',
-              color: '#fff',
-              border: 'none',
-              backgroundColor: '#327113',
-              padding: '10px 20px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              marginTop:"20px"
-          }}
-      >
-          Download Passport Back
-      </button>
         </div>
 
         <div
@@ -445,21 +391,6 @@ const handleDownload7 = () => {
               style={{maxWidth: '100%', maxHeight: '100%',}}
             />
           </div>
-          <button
-          onClick={handleDownload4}
-          style={{
-              position: 'relative',
-              color: '#fff',
-              border: 'none',
-              backgroundColor: '#327113',
-              padding: '10px 20px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              marginTop:"20px"
-          }}
-      >
-          Download Pan Card
-      </button>
         </div>
       </div>
       </>
@@ -486,21 +417,6 @@ const handleDownload7 = () => {
               style={{maxWidth: '100%', maxHeight: '100%', }}
             />
           </div>
-          <button
-          onClick={handleDownload3}
-          style={{
-              position: 'relative',
-              color: '#fff',
-              border: 'none',
-              backgroundColor: '#327113',
-              padding: '10px 20px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              marginTop:"20px"
-          }}
-      >
-          Download Photo
-      </button>
         </div>
       </div>
 
@@ -530,21 +446,6 @@ const handleDownload7 = () => {
                 style={{maxWidth: '100%', maxHeight: '100%', }}
               />
             </div>
-            <button
-            onClick={handleDownload2}
-            style={{
-                position: 'relative',
-                color: '#fff',
-                border: 'none',
-                backgroundColor: '#327113',
-                padding: '10px 20px',
-                borderRadius: '10px',
-                cursor: 'pointer',
-                marginTop:"20px"
-            }}
-        >
-            Download ITR
-        </button>
           </div>
         </div>
       </>
@@ -573,21 +474,6 @@ const handleDownload7 = () => {
                 style={{maxWidth: '100%', maxHeight: '100%', }}
               />
             </div>
-            <button
-            onClick={handleDownload6}
-            style={{
-                position: 'relative',
-                color: '#fff',
-                border: 'none',
-                backgroundColor: '#327113',
-                padding: '10px 20px',
-                borderRadius: '10px',
-                cursor: 'pointer',
-                marginTop:"20px"
-            }}
-        >
-            Download Letter
-        </button>
           </div>
         </div>
       </>
@@ -617,21 +503,6 @@ const handleDownload7 = () => {
                 style={{maxWidth: '100%', maxHeight: '100%', }}
               />
             </div>
-            <button
-            onClick={handleDownload7}
-            style={{
-                position: 'relative',
-                color: '#fff',
-                border: 'none',
-                backgroundColor: '#327113',
-                padding: '10px 20px',
-                borderRadius: '10px',
-                cursor: 'pointer',
-                marginTop:"20px"
-            }}
-        >
-            Download Tickets
-        </button>
           </div>
         </div>
         </>

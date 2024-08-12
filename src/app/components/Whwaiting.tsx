@@ -176,8 +176,6 @@ const Whwaiting: React.FC<Props> = ({ className, title, data}) => {
   };
   
 
-  console.log("sdfg", data)
-
   const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
   
@@ -387,7 +385,7 @@ const Whwaiting: React.FC<Props> = ({ className, title, data}) => {
                       </td>
                       <td>
                         <a href='#' className='text-muted text-center text-hover-primary d-block mb-1 fs-7'>
-                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.hotel_original_amount))}
+                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.hotel_amount))}
                         </a>
                       </td>
                       <td className='text-end d-flex'>

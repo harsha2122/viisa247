@@ -296,9 +296,10 @@ const handleDownload2 = () => {
           </Formik>
         </div>
       </div>
-      <div className='d-flex ' style={{width: '100%'}}>
-        <div style={{width: '40%', marginTop: 70}}>
-          <h6>Passport Front Page Image</h6>
+      {viewApplication.receipt_url && (
+      <div className='d-flex' style={{ width: '100%' }}>
+        <div style={{ width: '40%', marginTop: 70 }}>
+          <h6>Reciept</h6>
           <div
             style={{
               border: '4px dotted gray',
@@ -313,12 +314,12 @@ const handleDownload2 = () => {
             <img
               src={viewApplication.receipt_url}
               alt='Uploaded Image'
-              style={{maxWidth: '100%', maxHeight: '100%',}}
+              style={{ maxWidth: '100%', maxHeight: '100%' }}
             />
           </div>
           <button
-          onClick={handleDownload2}
-          style={{
+            onClick={handleDownload2}
+            style={{
               position: 'relative',
               color: '#fff',
               border: 'none',
@@ -326,13 +327,14 @@ const handleDownload2 = () => {
               padding: '10px 20px',
               borderRadius: '10px',
               cursor: 'pointer',
-              marginTop:"20px"
-          }}
-      >
-          Download Reciept
-      </button>
+              marginTop: '20px'
+            }}
+          >
+            Download Receipt
+          </button>
         </div>
       </div>
+    )}
     </div>
   )
 }

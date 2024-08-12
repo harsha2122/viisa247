@@ -7,6 +7,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import ClearIcon from '@mui/icons-material/Delete'
 import axiosInstance from '../../../helpers/axiosInstance'
 import { DatePicker } from 'antd'
+import moment from 'moment';
 import * as Yup from 'yup';
 import 'react-datepicker/dist/react-datepicker.css'
 function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
@@ -142,6 +143,10 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
   const [expiryDate, setExpiryDate] =useState<string | undefined>('');
   const [dob, setDob] = useState<string | undefined>('');
 
+  const disabledDate = (current) => {
+    return current && current > moment().endOf('day');
+  };
+
   return (
     <div
       className='py-10 px-20'
@@ -155,26 +160,26 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
       }}
     >
       <Toaster />
-      <h5 style={{ fontSize: 30, letterSpacing: 0.3 }}>Traveller {ind + 1} </h5>
-      <hr style={{
-        width:"100%",
-        border: 0,
-        height: "0.5px",
-        backgroundImage: "linear-gradient(to right, rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0))"
-      }} />
+      <h5 style={{fontSize: 30, letterSpacing: 0.3}}>Traveller {ind + 1} </h5>
+      <hr
+        style={{
+          width: '100%',
+          border: 0,
+          height: '1px',
+          backgroundImage:
+            'linear-gradient(to right, rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0))',
+        }}
+      />
       <br />
-      <h3 style={{color:"red", margin:"20px 0px 20px 0px"}}>Note - All fields are mandatory.</h3>
-      <h3>Upload Traveler's Front Passport Page</h3>
-      <div className='d-flex ' style={{ width: '100%' }}>
-      <div style={{ width: '40%', marginTop: 70 }}>
-        <h6>Passport Front Page Image</h6>
-        {loading ? (
-          <div style={{color:"#000"}}>Loading...</div>
-        ) : (
-          passportFrontImageURL ? (
+      <div className='d-flex w-100 flex-column'>
+        <div style={{width: '100%'}}>
+          <h6>Passport Front Page Image</h6>
+          {loading ? (
+            <div style={{color: '#000'}}>Loading...</div>
+          ) : passportFrontImageURL ? (
             <div
               style={{
-                border: '4px dotted gray',
+                border: '2px dashed gray',
                 width: '100%',
                 height: 300,
                 borderRadius: '10px',
@@ -184,34 +189,39 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
               }}
             >
               <div
-                onClick={() => {
-                  setPassportFrontImageURL('');
-                  handleFileDelete('passFrontPhoto');
-                }}
+                  onClick={() => {
+                    setPassportFrontImageURL('');
+                    handleFileDelete('passFrontPhoto');
+                  }}
                 style={{
                   justifyContent: 'flex-end',
                   position: 'relative',
                   backgroundColor: 'white',
                   padding: 7,
                   borderRadius: 50,
-                  left: "10px",
-                  width:"35px",
-                  zIndex:"1",
+                  left: '10px',
+                  width: '35px',
+                  zIndex: '1',
                   cursor: 'pointer',
                 }}
               >
-                <ClearIcon style={{ color: 'red' }} />
+                <ClearIcon style={{color: 'red'}} />
               </div>
               <img
                 src={passportFrontImageURL}
                 alt='Uploaded Image'
-                style={{ maxWidth: '100%', maxHeight: '100%', position:"relative", marginTop:"-35px" }}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  position: 'relative',
+                  marginTop: '-35px',
+                }}
               />
             </div>
           ) : (
             <div
               style={{
-                border: '4px dotted gray',
+                border: '2px dashed gray',
                 width: '100%',
                 height: 300,
                 borderRadius: '10px',
@@ -226,39 +236,43 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                 type='button'
                 onClick={handleImageUpload}
                 className='btn btn-lg btn-success me-3 mt-7'
-                style={{ justifyContent: 'flex-end', backgroundColor: '#327113' }}
+                style={{justifyContent: 'flex-end', backgroundColor: '#327113'}}
               >
                 <span className='indicator-label'>Select Files</span>
               </button>
-              <p className='text-bold pt-5 fs-9' style={{ color: '#555555' }}>
+              <p className='text-bold pt-5 fs-9' style={{color: '#555555'}}>
                 Supports Image only.
               </p>
               <input
                 type='file'
                 ref={passportFrontFileInputRef}
-                style={{ display: 'none' }}
-                accept="image/*"
+                style={{display: 'none'}}
+                accept='image/*'
                 onChange={handleFileSelect}
               />
             </div>
-          )
-        )}
-      </div>
+          )}
+        </div>
+
         <div
           className='d-flex flex-row-fluid flex-center bg-body rounded'
-          style={{ width: '70%', backgroundColor: 'blue' }}
+          style={{width: '100%', backgroundColor: 'blue'}}
         >
-          <Formik initialValues={initValues} onSubmit={() => { }} validationSchema={validationSchema}>
+          <Formik
+            initialValues={initValues}
+            onSubmit={() => {}}
+            validationSchema={validationSchema}
+          >
             {() => (
-              <Form className='py-20 px-9' noValidate id='kt_create_account_form'>
+              <Form className='py-20 px-9 w-100' noValidate id='kt_create_account_form'>
                 <div>
-                  <div className='fv-row mb-5'>
+                  <div className='fv-row gap-8 w-100 mb-5'>
                     <label className='d-flex align-items-center form-label'>
                       <span className='required'>Passport Number</span>
                     </label>
 
                     <Field
-                      style={{ ...inputStyle, width: '500px' }}
+                      style={{...inputStyle}}
                       name='passportNumber'
                       className='form-control form-control-lg form-control-solid'
                       onChange={(e) => handleFieldChange('passportNumber', e.target.value)}
@@ -267,8 +281,8 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                       <ErrorMessage name='passportNumber' />
                     </div>
                   </div>
-                  <div className='d-flex' style={{ justifyContent: 'space-between' }}>
-                    <div className='fv-row mb-5'>
+                  <div className='d-flex gap-8'>
+                    <div className='fv-row gap-8 w-100 mb-5'>
                       <label className='form-label required'>First Name</label>
 
                       <Field
@@ -281,7 +295,7 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                         <ErrorMessage name='businessName' />
                       </div>
                     </div>
-                    <div className='fv-row mb-5'>
+                    <div className='fv-row gap-8 w-100 mb-5'>
                       <label className='d-flex align-items-center form-label'>
                         <span className='required'>Last Name</span>
                       </label>
@@ -298,8 +312,8 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                     </div>
                   </div>
 
-                  <div className='d-flex' style={{ justifyContent: 'space-between' }}>
-                    <div className='fv-row mb-5'>
+                  <div className='d-flex gap-8'>
+                    <div className='fv-row gap-8 w-100 mb-5'>
                       <label className='d-flex align-items-center form-label'>
                         <span className='required'>Birth Place</span>
                       </label>
@@ -314,19 +328,25 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                         <ErrorMessage name='birthPlace' />
                       </div>
                     </div>
-                    <div className='fv-row mb-5'>
+                    <div className='fv-row gap-8 w-100 mb-5'>
                       <label className='d-flex align-items-center form-label'>
                         <span className='required'>Date of Birth</span>
                       </label>
 
                       <DatePicker
-                        style={{ backgroundClip: '#fff', width: 230, marginTop: 2, border: '1.5px solid #d3d3d3', borderRadius: 15, padding: 10 }}
+                        style={{
+                          backgroundClip: '#fff',
+                          width: "100%",
+                          marginTop: 2,
+                          border: '1.5px solid #d3d3d3',
+                          borderRadius: 10,
+                          padding: 10,
+                        }}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('birthDetail', value.format('YYYY-MM-DD'))
                           }
-                        }
-                        }
+                        }}
                       />
 
                       <div className='text-danger mt-2'>
@@ -335,19 +355,25 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                     </div>
                   </div>
 
-                  <div className='d-flex' style={{ justifyContent: 'space-between' }}>
-                    <div className='fv-row mb-5'>
+                  <div className='d-flex gap-8'>
+                    <div className='fv-row gap-8 w-100 mb-5'>
                       <label className='d-flex align-items-center form-label'>
                         <span className='required'>Passport Issue Date</span>
                       </label>
                       <DatePicker
-                        style={{ backgroundClip: '#fff', width: 230, marginTop: 2, border: '1.5px solid #d3d3d3', borderRadius: 15, padding: 10 }}
+                        style={{
+                          backgroundClip: '#fff',
+                          width: "100%",
+                          marginTop: 2,
+                          border: '1.5px solid #d3d3d3',
+                          borderRadius: 10,
+                          padding: 10,
+                        }}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('passportIssueDate', value.format('YYYY-MM-DD'))
                           }
-                        }
-                        }
+                        }}
                       />
 
                       <div className='text-danger mt-2'>
@@ -355,18 +381,24 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                       </div>
                     </div>
 
-                    <div className='fv-row mb-5'>
+                    <div className='fv-row gap-8 w-100 mb-5'>
                       <label className='d-flex align-items-center form-label'>
                         <span className='required'>Passport Expiry Date</span>
                       </label>
                       <DatePicker
-                        style={{ backgroundClip: '#fff', width: 230, marginTop: 2, border: '1.5px solid #d3d3d3', borderRadius: 15, padding: 10 }}
+                        style={{
+                          backgroundClip: '#fff',
+                          width: "100%",
+                          marginTop: 2,
+                          border: '1.5px solid #d3d3d3',
+                          borderRadius: 10,
+                          padding: 10,
+                        }}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('passPortExpiryDate', value.format('YYYY-MM-DD'))
                           }
-                        }
-                        }
+                        }}
                       />
 
                       <div className='text-danger mt-2'>
@@ -374,14 +406,14 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                       </div>
                     </div>
                   </div>
-                  <div className='d-flex' style={{ justifyContent: 'space-between' }}>
-                    <div className='fv-row mb-10'>
+                  <div className='d-flex gap-8'>
+                    <div className='fv-row gap-8 w-100 mb-10'>
                       <label className='form-label required'>Gender</label>
 
                       <Field
                         as='select'
                         name='gender'
-                        style={{ ...inputStyle, width: '230px', backgroundColor: 'white' }}
+                        style={{...inputStyle, width: '100%', backgroundColor: 'white'}}
                         className='form-select form-select-lg form-select-solid'
                         onChange={(e) => handleFieldChange('gender', e.target.value)}
                       >
@@ -393,12 +425,12 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                         <ErrorMessage name='businessType' />
                       </div>
                     </div>
-                    <div className='fv-row mb-10'>
+                    <div className='fv-row gap-8 w-100 mb-10'>
                       <label className='form-label required'>Marital Status</label>
 
                       <Field
                         as='select'
-                        style={{ ...inputStyle, width: '230px', backgroundColor: 'white' }}
+                        style={{...inputStyle, width: '100%', backgroundColor: 'white'}}
                         name='maritalStatus'
                         className='form-select form-select-lg form-select-solid'
                         onChange={(e) => handleFieldChange('maritalStatus', e.target.value)}

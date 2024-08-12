@@ -1,10 +1,5 @@
 import React, { useState } from 'react'
-import toast, { Toaster } from 'react-hot-toast';
-import { Button } from 'react-bootstrap';
-import { KTIcon } from '../../_metronic/helpers';
-import { toAbsoluteUrl } from '../../_metronic/helpers';
-import Ticket1 from '../../_metronic/assets/card/ticket1.svg';
-import Ticket2 from '../../_metronic/assets/card/ticket2.svg';
+import hotels from "../../_metronic/assets/card/hotel.svg"
 
 type Props = {
   className: string;
@@ -60,100 +55,60 @@ const HotelTable: React.FC<Props> = ({ className, title, apiData = {}, onSelectC
 
   const numberOfDays = calculateNumberOfDays(apiData.issue_date, apiData.expiry_date);
 
-  const handleHotelSelect = (hotel: any) => {
+  const handleSelectAndProceed = (hotel: any) => {
     setSelectedHotel(hotel);
-  };
-
-  const handleProceed = () => {
-    if (selectedHotel && onSelectClick) {
+    if (onSelectClick) {
       onSelectClick({
-        id: selectedHotel._id,
-        totalAmount: parseFloat(selectedHotel.hotel_price_retailer),
+        id: hotel._id,
+        totalAmount: parseFloat(hotel.hotel_price_retailer),
         country_code: apiData.selectedFromCountry,
         nationality_code: apiData.selectedToCountry,
-        hotel_original_amount: parseFloat(selectedHotel.hotel_actual_price),
-        description: selectedHotel.description,
-        merchant_hotel_amount: calculateRetailerPrice(parseFloat(selectedHotel.hotel_price_retailer)),
+        hotel_original_amount: parseFloat(hotel.hotel_actual_price),
+        description: hotel.description,
+        merchant_hotel_amount: calculateRetailerPrice(parseFloat(hotel.hotel_price_retailer)),
       });
     }
   };
 
-  const selectedHotelPrice = selectedHotel ? calculateRetailerPrice(parseFloat(selectedHotel.hotel_price_retailer)) : 0;
-  const selectedDays = selectedHotel ? numberOfDays : "--";
-
   return (
-    <div className={`card ${className}`} style={{ boxShadow: "none" }}>
-      <Toaster />
-      <div className="card-body">
-        <div className="choice">
-          <div className="ticket-container" id="ticketContainer">
-            {apiData.hotelData.map((hotel, index) => (
-              <div
-                key={index}
-                className={`ticket ${selectedHotel && selectedHotel._id === hotel._id ? 'selected' : ''}`}
-                onClick={() => handleHotelSelect(hotel)}
-                style={{
-                  backgroundPosition: 'right top',
-                  backgroundSize: '30% auto',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundImage: `url(${toAbsoluteUrl(getRandomBackgroundImage())})`,
-                }}
-              >
-                <div className="days">
-                  <h1 className="days-size">{numberOfDays}</h1>
-                  <span>Days</span>
-                </div>
-                <div className="ticket-area">
-                  <div className="visa-type">HOTEL STAY&nbsp;
-                    <img src={Ticket1} alt="" />
+    <div className="choice-maini">
+      <h1 className="title">Choose Your Hotel Stay</h1>
+      <div className="choice">
+        <div className="ticket-container" id="ticketContainer">
+          {apiData.hotelData.map((hotel, index) => (
+            <div key={index} className="visa-card">
+              <div className="entry-info">
+                <h2>{numberOfDays} Days</h2>
+                <p>Hotel Stay</p>
+              </div>
+              <div className="left-sectiona">
+                <div className="hotel-details">
+                  <div className='hotel-data'>
+                    <h5>{apiData.selectedFromCountry}</h5>
+                    <p>{apiData.issue_date}</p>
                   </div>
-                  <div className="visa-des">
-                    <div className="upper">
-                      <div className="travel-from">
-                        <h6 className="from">From</h6>
-                        <h2 className="country">{apiData.selectedFromCountry}</h2>
-                      </div>
-                      <div className="svg-area">
-                        <img src={Ticket2} alt="" />
-                      </div>
-                      <div className="travel-to">
-                        <h6 className="from">To</h6>
-                        <h2 className="country">{apiData.selectedToCountry}</h2>
-                      </div>
-                    </div>
-                    <div className="lower">
-                      <div className="details">
-                        <h6>Description</h6>
-                        <h2>{hotel.description}</h2>
-                      </div>
-                      <div className="details1">
-                        <h6>Price</h6>
-                        <h2>₹ {calculateRetailerPrice(parseFloat(hotel.hotel_price_retailer))}</h2>
-                      </div>
-                    </div>
+                  <img src={hotels} alt="" />
+                  <div className='hotel-data'>
+                    <h5>{apiData.selectedToCountry}</h5>
+                    <p>{apiData.expiry_date}</p>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-          <div style={{ top: "25px" }} className="apply-card">
-              <div className="text-cont">
-                <h2><img className="icons" src="/media/assets/vt2.png" alt="" />No of Days</h2>
-                <h6>{selectedDays} Days</h6>
-              </div>
-              <div className="text-cont1">
-                <h2 className="tb"><img className="icons" src="/media/assets/vt4.png" alt="" />Total</h2>
-                <div className="pb">
-                  <h6 style={{ top: "10px" }} className="amount">₹{selectedHotelPrice}</h6>
-                  <h2 className="tax-des">(includes all government related fees)</h2>
+              <div className="right-section">
+                <div className="amount">
+                  <p>Amount</p>
+                  <h2>₹ {calculateRetailerPrice(parseFloat(hotel.hotel_price_retailer))}</h2>
                 </div>
+                <button 
+                  className="choose-button" 
+                  onClick={() => handleSelectAndProceed(hotel)}
+                >
+                  Pay Now
+                </button>
               </div>
-              <button onClick={handleProceed}>
-                Apply Now
-              </button>
             </div>
+          ))}
         </div>
-        
       </div>
     </div>
   );

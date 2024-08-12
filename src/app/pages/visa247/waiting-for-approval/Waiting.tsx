@@ -11,15 +11,11 @@ function Waiting() {
       setLoading(true);
       try {
         const response = await axiosInstance.get('/backend/super_admin/fetch_all_visa');
-        const data = [...(response.data.data || []), ...(response.data.data1 || [])];
-        const filteredData = data.filter(item => 
-          ['Applied', 'Not Issued'].includes(item.visa_status) && item.visa_provider === 'manual'
-        );
-        const sortedData = filteredData.sort((a, b) => 
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-        setVisasStatsData(sortedData as any);
-
+        
+        // Filter data to exclude entries with null group_id
+        const filteredData = response.data.data.filter(item => item.group_id !== null);
+        
+        setVisasStatsData(filteredData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {

@@ -1,6 +1,9 @@
 import React from 'react';
 import '../landing/home.css'
 import tac from '../../../_metronic/assets/card/tac.png'
+import { FaFacebook } from "react-icons/fa";
+import { AiOutlineTwitter } from "react-icons/ai";
+import { AiFillInstagram } from "react-icons/ai";
 
 const Terms: React.FC = () => {
     const toggleMenu = () => {
@@ -137,17 +140,19 @@ const Terms: React.FC = () => {
             
               <div className="newsletter rowse">
                   <div className="footer-header">
-                    <h3 >Join Our Newsletter</h3>
+                    <h3 >Social Links</h3>
                   </div>
-                  <div className="newsletter-des">
-                    <div className="subcribe">
-                        <input type="mail" placeholder = "Your email address" required/>
-                        <button className="butt">Subscribe</button>
-                    </div>
-                    <div className="icons">
-                        <p>Will send you weekly updates for your better tour packages</p>
-                    </div>
-                  </div>
+                  <div className="social-icons-btn">
+                    <a className="iconss twitter"  href="#">
+                        <AiOutlineTwitter name="logo-twitter"/>
+                    </a>
+                    <a className="iconss facebook"  href="#">
+                        <FaFacebook name="logo-facebook"/>
+                    </a>
+                    <a className="iconss instagram"  href="#">
+                        <AiFillInstagram  name="logo-instagram"/>
+                    </a>
+                </div>
               </div>
             
             </div>

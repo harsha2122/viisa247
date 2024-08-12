@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { KTIcon, toAbsoluteUrl } from '../../../helpers';
 import { HeaderNotificationsMenu, HeaderUserMenu, Search, ThemeModeSwitcher } from '../../../partials';
 import { useLayout } from '../../core';
+import { FcExport } from "react-icons/fc";
 import Cookies from 'js-cookie';
 import toast, { Toaster } from 'react-hot-toast';
 import axiosInstance from '../../../../app/helpers/axiosInstance';
@@ -47,6 +48,22 @@ const Navbar = () => {
   const handleChatContainerOpen = () => {
     setIsChatContainerOpen(true);
     setIsDrawerOpen(false);
+  };
+
+  const handleMerchantLogout = async () => {
+    try {
+      const response = await axiosInstance.get('/backend/logout/merchant_user');
+      if (response.status === 200) {
+        Cookies.remove('isLoggedIn');
+        setTimeout(() => {
+          window.location.href = '/merchant/login';
+        }, 400);
+      } else {
+        toast.error(response.data.msg);
+      }
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   useEffect(() => {
@@ -246,6 +263,11 @@ const Navbar = () => {
             alt='Profile' 
           />
         </div>
+        <div className='d-flex flex-column mx-4'>
+          <h5 style={{marginBottom:"0", marginTop:"5px"}}>{profile.merchant_name || profile.user_name}</h5>
+          <p className='text-muted'>Partner</p>
+        </div>
+        <FcExport title='Logout' onClick={handleMerchantLogout} style={{fontSize:"35px", marginTop:"-10px", cursor:"pointer"}} />
         <HeaderUserMenu profile={profile} />
       </div>
 
