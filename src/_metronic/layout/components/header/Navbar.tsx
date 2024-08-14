@@ -11,6 +11,7 @@ import { MdRefresh } from 'react-icons/md';
 import Drawer from '@mui/material/Drawer';
 import Chat from '../../../../app/pages/chat/Chat';
 import { FaWhatsapp } from "react-icons/fa";
+import lgout from '../../../assets/card/logout.svg'
 
 const itemClass = 'ms-1 ms-md-4';
 const btnClass = 'btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px';
@@ -263,11 +264,17 @@ const Navbar = () => {
             alt='Profile' 
           />
         </div>
-        <div className='d-flex flex-column mx-4'>
-          <h5 style={{marginBottom:"0", marginTop:"5px"}}>{profile.merchant_name || profile.user_name}</h5>
-          <p className='text-muted'>Partner</p>
-        </div>
-        <FcExport title='Logout' onClick={handleMerchantLogout} style={{fontSize:"35px", marginTop:"-10px", cursor:"pointer"}} />
+        {user_type === 'merchant' ? (
+          <>
+            <div className='d-flex flex-column mx-4'>
+              <h5 style={{marginBottom:"0", marginTop:"5px"}}>{profile.merchant_name || profile.user_name}</h5>
+              <p className='text-muted'>Partner</p>
+            </div>
+            <img src={lgout} alt='logout' title='Logout' onClick={handleMerchantLogout} style={{width:"25px", marginTop:"-10px", cursor:"pointer", marginLeft:"10px"}} />
+          </>
+      ) : (
+        <div></div>
+      )}
         <HeaderUserMenu profile={profile} />
       </div>
 

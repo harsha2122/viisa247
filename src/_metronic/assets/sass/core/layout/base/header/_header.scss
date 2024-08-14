@@ -89,8 +89,7 @@
       @include property(backdrop-filter, $app-header-minimize-backdrop-filter);
 
       background-color: var(--#{$prefix}app-header-minimize-bg-color);
-      box-shadow: var(--#{$prefix}app-header-minimize-box-shadow);
-      border-bottom: var(--#{$prefix}app-header-minimize-border-bottom);
+      border-bottom: 0.5px solid #dadada;
     }
 
     .app-header-mobile-drawer {

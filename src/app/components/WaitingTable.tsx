@@ -9,7 +9,6 @@ import { Accordion, Button, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom'
 import Loader from './Loader'
 import Cookies from 'js-cookie'
-import { FcCancel, FcInfo } from "react-icons/fc";
 import axiosInstance from '../helpers/axiosInstance'
 import Pagination from 'react-bootstrap/Pagination';
 
@@ -19,6 +18,17 @@ type Props = {
   data: any[];
   loading:Boolean
 }
+
+interface InsurancePayload {
+  id: string
+}
+
+type TableRow = InsurancePayload & {
+  first_name: string
+  _id: string
+  group_id: string
+}
+
 const overlayStyle: CSSProperties = {
   position: 'fixed',
   top: 0,
@@ -58,7 +68,6 @@ const inputStyle = {
 }
 
 
-
 const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
   const [visible, setVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -68,42 +77,85 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
   const [open, setOpen] = React.useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectRemark, setRejectRemark] = useState('');
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedRow, setSelectedRow] = useState<TableRow[]>([])
+  const [selectedRows, setSelectedRows] = useState<TableRow[]>([])
+  const [selectedApplicants, setSelectedApplicants] = useState<string[]>([])
+  const [showResubmitModal, setShowResubmitModal] = useState(false)
 
-  const handleStatusChange = async (row, selectedStatus) => {
-    try {
-      if (selectedStatus === 'Reject') {
-        setSelectedItem(row);
-        setShowRejectModal(true);
-      } else {
-        const response = await axiosInstance.post('/backend/update_application_status', {
-          id: row._id,
+  const handleStatusChange = async (applications, selectedStatus) => {
+    if (selectedStatus === 'Reject') {
+      setSelectedRow(applications)
+      setShowRejectModal(true);
+    } else if (selectedStatus === 'Re-Submit') {
+      setSelectedRow(applications)
+      setShowResubmitModal(true);
+    } else {
+      try {
+        const payload = applications.map(app => ({
+          id: app._id,
           visa_status: selectedStatus,
-        });
-
+        }));
+  
+        const response = await axiosInstance.post('/backend/update_application_status', payload);
+  
         if (response.status === 200) {
           const updatedData = tableData.map(item => {
-            if (item._id === row._id) {
-              return { ...item, visa_status: selectedStatus };
-            }
-            return item;
+            const app = payload.find(p => p.id === item._id);
+            return app ? { ...item, visa_status: app.visa_status } : item;
           });
           setTableData(updatedData);
-          setShowRejectModal(false);
           toast.success('Status updated successfully');
         } else {
-          setShowRejectModal(false);
           toast.error('Failed to update status');
         }
+      } catch (error) {
+        console.error('Error updating status:', error);
+        toast.error('Failed to update status');
+      }
+    }
+  };
+  
+  const handleCheckboxChange = (id: string) => {
+    setSelectedApplicants((prevState) => {
+      if (prevState.includes(id)) {
+        return prevState.filter((applicantId) => applicantId !== id);
+      } else {
+        return [...prevState, id];
+      }
+    });
+  };
+  
+  const handleResubmitSubmit = async () => {
+    try {
+      const payload = {
+        ids: selectedApplicants,
+        visa_status: 'Re-Submit',
+        visa_remark: rejectRemark,
+      };
+  
+      const response = await axiosInstance.post('/backend/update_application_status', payload);
+  
+      if (response.data.success === 1) {
+        setShowRejectModal(false);
+        setSelectedApplicants([]);
+        setRejectRemark('');
+        toast.success('Applications resubmitted successfully');
+      } else {
+        toast.error('Error resubmitting the applications');
       }
     } catch (error) {
-      console.error('Error updating status:', error);
-      toast.error('Failed to update status');
+      console.error('Error submitting resubmission:', error);
+      toast.error('Error submitting resubmission');
     }
   };
 
   const handleCloseRejectModal = () => {
     setShowRejectModal(false);
+    setRejectRemark('');
+  };
+
+  const handleCloseResubmitModal = () => {
+    setShowResubmitModal(false);
     setRejectRemark('');
   };
 
@@ -138,8 +190,6 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
       toast.error('Failed to update status: Network error');
     }
   };
-  
-
 
   const [activePage, setActivePage] = useState(1);
   const itemsPerPage = 10;
@@ -210,8 +260,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
     setVisible(false);
   };
 
-  console.log("asd", data)
-
+  console.log("sdf", data)
 
   return (
     <div style={{boxShadow:"none"}} className={`card ${className}`}>
@@ -262,177 +311,177 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
               </h3>
             </div>
             <div className='card-body py-3'>
-  <div className='table-responsive'>
-    {loading ? (
-      <div
-        style={{
-          height: 300,
-          overflowX: 'hidden',
-          justifyContent: 'center',
-          alignItems: 'center',
-          display: 'flex',
-        }}
-      >
-        <span className='indicator-progress' style={{ display: 'block' }}>
-          Please wait...
-          <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
-        </span>
-      </div>
-        ) : (
-          <Accordion defaultActiveKey='0'>
-            {data.map(({ group_id, applications }) => {
-              const firstApp = applications[0] || {};
-              const totalApps = applications.length;
-              return (
-                <Accordion.Item
-                  style={{ border: '1px solid #327113', borderRadius: '5px' }}
-                  eventKey={group_id}
-                  key={group_id}
+            <div className='table-responsive'>
+              {loading ? (
+                <div
+                  style={{
+                    height: 300,
+                    overflowX: 'hidden',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    display: 'flex',
+                  }}
                 >
-                  <Accordion.Header>
-                    <Table
-                      bordered
-                      size='sm'
-                      style={{ marginBottom: 0, tableLayout: 'fixed', width: '90%' }}
-                    >
-                      <thead>
-                        <tr>
-                          <th style={{ width: '20%' }}>Group ID</th>
-                          <th style={{ width: '20%' }}>Name</th>
-                          <th style={{ width: '20%' }}>Email</th>
-                      <th style={{ width: '20%' }}>Total Applications</th>
-                      <th style={{ width: '20%' }}>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{group_id}</td>
-                      <td>{firstApp.first_name || 'N/A'}</td>
-                      <td>{firstApp.merchant_email_id || 'N/A'}</td>
-                      <td>{totalApps}</td>
-                      <td>
-                        <select
-                          className='form-select form-select-sm form-select-white w-75'
-                          onChange={(e) =>
-                            handleStatusChange(applications, e.target.value)
-                          }
-                        >
-                          <option value='Not Issued'>Update</option>
-                          <option value='Issue'>Issue</option>
-                          <option value='Reject'>Reject</option>
-                          <option value='Re-Sumit'>Re-Sumit</option>
-                        </select>
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </Accordion.Header>
-              <Accordion.Body>
-                <Table striped bordered hover responsive>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Contact</th>
-                      <th>Channel</th>
-                      <th className='text-center'>To</th>
-                      <th className='text-center'>Date</th>
-                      <th className='text-center'>Status</th>
-                      <th className='text-center'>Amount</th>
-                      <th className='text-center'>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {applications.map((app) => (
-                      <tr key={app._id}>
-                        <td>
-                          <a
-                            href='#'
-                            className='text-gray-600 fw-bold text-hover-primary fs-7'
+                  <span className='indicator-progress' style={{ display: 'block' }}>
+                    Please wait...
+                    <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                  </span>
+                </div>
+                  ) : (
+                    <Accordion defaultActiveKey='0'>
+                      {data.map(({ group_id, applications }) => {
+                        const firstApp = applications[0] || {};
+                        const totalApps = applications.length;
+                        return (
+                          <Accordion.Item
+                            style={{ border: '1px solid #327113', borderRadius: '5px' }}
+                            eventKey={group_id}
+                            key={group_id}
                           >
-                            {app.first_name}
-                          </a>
-                        </td>
-                        <td>
-                          <a
-                            href='#'
-                            className='text-muted text-hover-primary d-block mb-1 fs-7'
-                          >
-                            {app.merchant_email_id || app.customer_email_id}
-                          </a>
-                        </td>
-                        <td>
-                          <a
-                            href='#'
-                            className='text-muted text-hover-primary d-block mb-1 fs-7'
-                          >
-                            {app.merchant_phone_number || app.customer_phone_number}
-                          </a>
-                        </td>
-                        <td>
-                          <a
-                            href='#'
-                            className='text-muted text-hover-primary d-block mb-1 fs-7'
-                          >
-                            {app.customer_email_id ? 'Customer' : 'Merchant'}
-                          </a>
-                        </td>
-                        <td>
-                          <a
-                            href='#'
-                            className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
-                          >
-                            {app.application_destination}
-                          </a>
-                        </td>
-                        <td>
-                          <a
-                            href='#'
-                            className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
-                          >
-                            {app.application_departure_date}
-                          </a>
-                        </td>
-                        <td>
-                          <a
-                            href='#'
-                            className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
-                          >
-                            {app.visa_status}
-                          </a>
-                        </td>
-                        <td>
-                          <a
-                            href='#'
-                            className='text-muted text-center text-hover-primary d-block mb-1 fs-7'
-                          >
-                            ₹{' '}
-                            {new Intl.NumberFormat('en-IN').format(
-                              Number(app.visa_amount)
-                            )}
-                          </a>
-                        </td>
-                        <td className='text-end d-flex'>
-                          <button
-                            title='Edit'
-                            onClick={() => handleVisibilityClick(app)}
-                            className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                          >
-                            <KTIcon iconName='eye' className='fs-3' />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </Accordion.Body>
-            </Accordion.Item>
-          );
-        })}
-      </Accordion>
-    )}
-  </div>
-</div>
+                            <Accordion.Header>
+                              <Table
+                                bordered
+                                size='sm'
+                                style={{ marginBottom: 0, tableLayout: 'fixed', width: '90%' }}
+                              >
+                                <thead>
+                                  <tr>
+                                    <th style={{ width: '20%' }}>Group ID</th>
+                                    <th style={{ width: '20%' }}>Name</th>
+                                    <th style={{ width: '20%' }}>Email</th>
+                                <th style={{ width: '20%' }}>Total Applications</th>
+                                <th style={{ width: '20%' }}>Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>{group_id}</td>
+                                <td>{firstApp.first_name || 'N/A'}</td>
+                                <td>{firstApp.merchant_email_id || 'N/A'}</td>
+                                <td>{totalApps}</td>
+                                <td>
+                                  <select
+                                    className='form-select form-select-sm form-select-white w-75'
+                                    onChange={(e) =>
+                                      handleStatusChange(applications, e.target.value)
+                                    }
+                                  >
+                                    <option value='Not Issued'>Update</option>
+                                    <option value='Issue'>Issue</option>
+                                    <option value='Reject'>Reject</option>
+                                    <option value='Re-Submit'>Re-Submit</option>
+                                  </select>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </Table>
+                        </Accordion.Header>
+                        <Accordion.Body>
+                          <Table striped bordered hover responsive>
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact</th>
+                                <th>Channel</th>
+                                <th className='text-center'>To</th>
+                                <th className='text-center'>Date</th>
+                                <th className='text-center'>Status</th>
+                                <th className='text-center'>Amount</th>
+                                <th className='text-center'>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {applications.map((app) => (
+                                <tr key={app._id}>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-gray-600 fw-bold text-hover-primary fs-7'
+                                    >
+                                      {app.first_name}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-muted text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      {app.merchant_email_id || app.customer_email_id}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-muted text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      {app.merchant_phone_number || app.customer_phone_number}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-muted text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      {app.customer_email_id ? 'Customer' : 'Merchant'}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      {app.application_destination}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      {app.application_departure_date}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      {app.visa_status}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-muted text-center text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      ₹{' '}
+                                      {new Intl.NumberFormat('en-IN').format(
+                                        Number(app.visa_amount)
+                                      )}
+                                    </a>
+                                  </td>
+                                  <td className='text-end d-flex'>
+                                    <button
+                                      title='Edit'
+                                      onClick={() => handleVisibilityClick(app)}
+                                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
+                                    >
+                                      <KTIcon iconName='eye' className='fs-3' />
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    );
+                  })}
+                </Accordion>
+              )}
+            </div>
+          </div>
 
           </section>
           }
@@ -477,6 +526,68 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
               <h2>Reject Application</h2>
               <textarea style={{ ...inputStyle, boxSizing: 'border-box' }} value={rejectRemark} onChange={(e) => setRejectRemark(e.target.value)} placeholder="Enter your remark"></textarea>
               <button className='btn' style={{background:"#327113", width:"100px", color:"#fff"}} onClick={() => handleReject(selectedItem)}>Reject</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showResubmitModal && (
+        <div
+          className='loader-overlay'
+          style={{...overlayStyle, ...(showResubmitModal && activeOverlayStyle)}}
+        >
+          <div style={contentStyle}>
+            <div
+              onClick={handleCloseResubmitModal}
+              style={{
+                backgroundColor: '#d3d3d3',
+                padding: 10,
+                position: 'absolute',
+                right: '193px',
+                borderRadius: 20,
+                cursor: 'pointer',
+                top: '83px',
+              }}
+            >
+              <CloseOutlined />
+            </div>
+            <div
+              style={{justifyContent: 'center', alignItems: 'center', marginTop: '50px'}}
+              className='d-flex flex-column gap-5'
+            >
+              <h2>Remarks</h2>
+              <textarea
+                style={{...inputStyle, boxSizing: 'border-box'}}
+                value={rejectRemark}
+                onChange={(e) => setRejectRemark(e.target.value)}
+                placeholder='Enter your remark'
+              ></textarea>
+
+              <h3>Select Applicants</h3>
+              <ul style={{listStyle: 'none', paddingLeft: 0}}>
+              {selectedRow && selectedRow.length > 0 ? (
+                selectedRow.map((app) => (
+                  <li key={app._id}>
+                    <input
+                      type='checkbox'
+                      checked={selectedApplicants.includes(app._id)}
+                      onChange={() => handleCheckboxChange(app._id)}
+                    />
+                    {app.first_name}
+                  </li>
+                ))
+              ) : (
+                <p>No Applicants Found</p>
+              )}
+            </ul>
+
+
+              <button
+                className='btn'
+                style={{background: '#327113', width: '100px', color: '#fff'}}
+                onClick={handleResubmitSubmit}
+              >
+                Confirm
+              </button>
             </div>
           </div>
         </div>

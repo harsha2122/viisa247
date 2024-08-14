@@ -7,48 +7,25 @@ import html2pdf from 'html2pdf.js'
 import {toAbsoluteUrl} from '../../_metronic/helpers'
 import image from '../../_metronic/assets/card/nodata.jpg'
 import imag from '../../../public/media/logos/logo.png'
+import {Form, Button, Row, Col, Container} from 'react-bootstrap'
 import Loader from '../components/Loader'
 import axiosInstance from '../helpers/axiosInstance'
-import { CloseOutlined } from '@mui/icons-material'
+import {CloseOutlined} from '@mui/icons-material'
 import TravelerForm1 from '../modules/wizards/components/TravelerForm1'
 import TraverlerReForm from './TraverlerReForm'
+import toast, {Toaster} from 'react-hot-toast'
 import InsuranceReForm from './InsuranceReForm'
 import HotelReForm from './HotelReForm'
 import FlightReForm from './FlightReForm'
 
-type VisaData = {
-  country_code: string
-  nationality_code: string
-  entry_process: string
-  application_id: string
-  customer_id: string
+
+interface ApplicantData {
+  _id: string
   first_name: string
-  last_name: string
-  birth_place: string
-  birthday_date: string
-  nationality: string
-  passport_number: string
-  passport_issue_date: string
-  passport_expiry_date: string
+  age: string
   gender: string
-  marital_status: string
+  receipt_url: string
   passport_front: string
-  application_arrival_date: string
-  application_departure_date: string
-  application_destination: string
-  photo: string
-  fathers_name: string
-  passport_back: string
-  pan_card: string
-  visa_status: string
-  visa_amount: string
-  visa_provider: string
-  created_at: string
-  updated_at: string
-  visa_description: string
-  visa_pdf: string
-  visa_remark: string
-  // Add other properties as needed
 }
 
 type InsuranceData = {
@@ -97,23 +74,70 @@ type HotelData = {
   __v: number
 }
 
-type FlightData = {
+type Application = {
   _id: string
   country_code: string
   nationality_code: string
   first_name: string
-  traveller: string
+  passport_front: string | null
+  age: string
+  gender: string
   flight_status: string
   flight_pdf: string | null
   flight_remark: string | null
   flight_id: string
+  group_id: string
   flight_amount: string
   flight_original_amount: string
   merchant_flight_amount: string
-  receipt_url: string
+  receipt_url: string | null
   created_at: string
   updated_at: string
   __v: number
+}
+
+type Applications = {
+country_code: string
+nationality_code: string
+entry_process: string
+application_id: string
+customer_id: string
+first_name: string
+last_name: string
+birth_place: string
+birthday_date: string
+nationality: string
+passport_number: string
+passport_issue_date: string
+passport_expiry_date: string
+gender: string
+marital_status: string
+passport_front: string
+application_arrival_date: string
+application_departure_date: string
+application_destination: string
+photo: string
+fathers_name: string
+passport_back: string
+pan_card: string
+visa_status: string
+visa_amount: string
+visa_provider: string
+created_at: string
+updated_at: string
+visa_description: string
+visa_pdf: string
+visa_remark: string
+}
+
+type FlightData = {
+  group_id: string
+  applications: Application[]
+}
+
+type VisaData = {
+  group_id: string
+  applications: Applications[]
 }
 
 type Props = {
@@ -145,7 +169,7 @@ const activeOverlayStyle: CSSProperties = {
 }
 
 const contentStyle: CSSProperties = {
-  backgroundColor: '#fff', 
+  backgroundColor: '#fff',
   padding: '15px',
   borderRadius: '5px',
   width: '70%',
@@ -213,24 +237,23 @@ const getStepStatuses = (visa_status) => {
     {label: 'Visa In-Process', done: false},
     {label: 'Visa Approved', done: false},
     {label: 'Visa Rejected', done: false},
-  ];
+  ]
 
   switch (visa_status) {
     case 'Applied':
-      case 'Not Issued':
-      return defaultStepStatuses.map((step, index) => (index <= 1 ? {...step, done: true} : step));
+    case 'Not Issued':
+      return defaultStepStatuses.map((step, index) => (index <= 1 ? {...step, done: true} : step))
     case 'Processed':
     case 'Issue':
-      return defaultStepStatuses.map((step, index) => (index === 3 ? {...step, done: true} : step));
+      return defaultStepStatuses.map((step, index) => (index === 3 ? {...step, done: true} : step))
     case 'Reject':
-      return defaultStepStatuses.map((step, index) => (index === 4 ? {...step, done: true} : step));
+      return defaultStepStatuses.map((step, index) => (index === 4 ? {...step, done: true} : step))
     case 'Waiting':
-      return defaultStepStatuses.map((step, index) => (index <= 2 ? {...step, done: true} : step));
+      return defaultStepStatuses.map((step, index) => (index <= 2 ? {...step, done: true} : step))
     default:
-      return defaultStepStatuses;
+      return defaultStepStatuses
   }
-};
-
+}
 
 const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props) => {
   function generateDynamicInvoice(data) {
@@ -464,7 +487,8 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
   const [visible1, setVisible1] = useState(false)
   const [visible2, setVisible2] = useState(false)
   const [visible3, setVisible3] = useState(false)
-  const [selectedItem, setSelectedItem] = useState(null)
+  const [selectedItem, setSelectedItem] = useState<ApplicantData[]>([])
+  const [formData, setFormData] = useState<any[]>([]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab)
@@ -505,7 +529,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
   }
 
   if (selectedVisa) {
-    const stepStatusesForVisa = getStepStatuses(selectedVisa.visa_status)
+    const stepStatusesForVisa = getStepStatuses(selectedVisa.applications[0]?.visa_status);
 
     return (
       <div style={{marginTop: '30px'}}>
@@ -519,18 +543,18 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
         </div>
         <div className='p-10'>
           <h2>
-            {selectedVisa.first_name} {selectedVisa.last_name} - {selectedVisa.passport_number} -{' '}
-            {formatDate1(selectedVisa.application_arrival_date)}
+            {selectedVisa.applications[0]?.first_name} {selectedVisa.applications[0]?.last_name} - {selectedVisa.applications[0]?.passport_number} -{' '}
+            {formatDate1(selectedVisa.applications[0]?.application_arrival_date)}
           </h2>
           <br />
           <div className='d-flex'>
             <h6>
               Created On
-              <p className='pt-2 fs-8'>{formatDate1(selectedVisa.created_at)}</p>
+              <p className='pt-2 fs-8'>{formatDate1(selectedVisa.applications[0]?.created_at)}</p>
             </h6>
             <h6 className='px-20'>
               Applicants
-              <p className='pt-2 fs-8'>1</p>
+              <p className='pt-2 fs-8'>{selectedVisa.applications.length}</p>
             </h6>
           </div>
         </div>
@@ -539,7 +563,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
             className='w-full'
             style={{
               borderRadius: 20,
-              borderColor: '#f5f5f5',
+              borderColor: '#DFDFDF',
               boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
               marginLeft: 10,
             }}
@@ -556,7 +580,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 display: 'flex',
               }}
             >
-              <h2 style={{color: 'white', paddingTop: 7}}>VISA {selectedVisa.visa_status}</h2>
+              <h2 style={{color: 'white', paddingTop: 7}}>VISA {selectedVisa.applications[0]?.visa_status}</h2>
             </div>
 
             <div
@@ -567,29 +591,29 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 marginTop: 15,
               }}
             >
-              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
+              <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
                 <h2>
-                  {selectedVisa.first_name} {selectedVisa.last_name}
+                  {selectedVisa.applications[0]?.first_name} {selectedVisa.applications[0]?.last_name}
                 </h2>
                 <br />
                 <h6>
                   Submitted On:
-                  {formatDate(selectedVisa.created_at)}
+                  {formatDate(selectedVisa.applications[0]?.created_at)}
                   <br />
                   <br />
-                  Passport Number: {selectedVisa.passport_number}
+                  Passport Number: {selectedVisa.applications[0]?.passport_number}
                 </h6>
                 <br />
 
-                <h5>{getCountryNameByCode(selectedVisa.country_code)}</h5>
+                <h5>{getCountryNameByCode(selectedVisa.applications[0]?.country_code)}</h5>
                 <p>
-                  {selectedVisa.visa_description}
+                  {selectedVisa.applications[0]?.visa_description}
                   <br />
-                  Travel: {formatDate1(selectedVisa.application_arrival_date)} -{' '}
-                  {formatDate1(selectedVisa.application_departure_date)}
+                  Travel: {formatDate1(selectedVisa.applications[0]?.application_arrival_date)} -{' '}
+                  {formatDate1(selectedVisa.applications[0]?.application_departure_date)}
                 </p>
               </div>
-              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
+              <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
                 <h2>Application Details :</h2>
                 <br />
 
@@ -608,7 +632,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 </div>
               </div>
 
-              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10 '>
+              <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10 '>
                 <div
                   onClick={() => handleViewApplicationClick(selectedVisa)}
                   className='mb-10 mx-10 mt-20 px-10 py-5'
@@ -733,58 +757,121 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
     window.open(pdfUrl, '_blank')
   }
 
-  const handleVisibilityClick = (entry) => {
-    console.log(entry)
-    setSelectedItem(entry) // Set the selected item
+  const handleVisibilityClick = (selectedEntry) => {
+    const reSubmitApplicants = selectedEntry.applications.filter(
+      (app) => app.visa_status === 'Re-Submit'
+    )
     setVisible(true)
+    setSelectedItem(reSubmitApplicants)
   }
 
   const handleVisibilityClick1 = (entry) => {
     console.log(entry)
-    setSelectedItem(entry) // Set the selected item
+    setSelectedItem(entry)
     setVisible1(true)
   }
 
   const handleVisibilityClick2 = (entry) => {
-    setSelectedItem(entry) // Set the selected item
+    setSelectedItem(entry)
     setVisible2(true)
-
   }
 
-  const handleVisibilityClick3 = (entry) => {
-    console.log(entry)
-    setSelectedItem(entry) // Set the selected item
+  const handleVisibilityClick3 = (selectedEntry) => {
+    const reSubmitApplicants = selectedEntry.applications.filter(
+      (app) => app.flight_status === 'Re-Submit'
+    )
     setVisible3(true)
+    setSelectedItem(reSubmitApplicants)
   }
 
   const handleCloseClick1 = () => {
-    setSelectedItem(null)
     setVisible1(false)
   }
 
   const handleCloseClick = () => {
-    setSelectedItem(null)
     setVisible(false)
   }
 
   const handleCloseClick2 = () => {
-    setSelectedItem(null)
     setVisible2(false)
   }
 
   const handleCloseClick3 = () => {
-    setSelectedItem(null)
     setVisible3(false)
   }
 
   const handleTravelerDataChange = (newData, index) => {
-    console.log("Updated data:", newData);
-    setSelectedItem(newData);
+    console.log('Updated data:', newData)
+    setSelectedItem(newData)
+  }
+
+  const handleDataChange = (index: number, updatedData: ApplicantData) => {
+    const updatedItems = [...selectedItem]
+    updatedItems[index] = updatedData
+    setSelectedItem(updatedItems)
+  }
+
+  const handleTravelerDataChangee = (updatedData: any, index: number) => {
+    const newFormData = [...formData];
+    newFormData[index] = updatedData; // Update data at the specific index
+    setFormData(newFormData);
+  };
+
+  const handleSubmitVisa = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const responses = await Promise.all(
+        formData.map((data) =>
+          axiosInstance.post('/backend/update_user_application', data)
+        )
+      );
+
+      const success = responses.every((response) => response.data.success === 1);
+      if (success) {
+        toast.success('All data updated successfully!');
+        setTimeout(() => {
+          window.location.reload();
+        }, 2500);
+      } else {
+        toast.error('Error updating some data');
+      }
+    } catch (error) {
+      console.error('Error updating user applications:', error);
+      toast.error('Error updating data');
+    }
   };
 
 
+  const handleSubmitAll = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    const allData = selectedItem.map((data) => ({
+      _id: data._id,
+      first_name: data.first_name,
+      age: data.age,
+      gender: data.gender,
+      receipt_url: data.receipt_url,
+      passport_front: data.passport_front,
+    }))
+
+    try {
+      const response = await axiosInstance.post('/backend/update_flight_application', allData)
+
+      if (response.data.success === 1) {
+        toast.success('All data updated successfully!')
+      } else {
+        toast.error('Error updating data: ' + response.data.message || 'Unknown error')
+      }
+    } catch (error) {
+      console.error('Error updating data:', error)
+      toast.error('Error updating data: ')
+    }
+  }
+
   return (
     <div>
+      <Toaster />
       <div className='d-flex justify-content-center best-tab my-8 gap-4'>
         <button
           className={`age-group-tab capitalize ${activeTab === 'visa' ? 'active' : ''}`}
@@ -828,104 +915,108 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
         </button>
       </div>
       <div>
-        {activeTab === 'visa' &&
-          visaData?.map((entry, index) => (
-            <div
-              className='w-full mt-5'
-              key={index}
-              style={{
-                display: 'flex',
-                backgroundColor: '#fff',
-                justifyContent: 'space-between',
-                borderRadius: 25,
-                borderColor: '#f5f5f5',
-                boxShadow: '0px 0px 7px rgba(0, 0, 0, 0.1)',
-                width: '100%',
-              }}
-            >
-              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
-                <h2 style={{textTransform: 'capitalize'}}>
-                  {entry.first_name} {entry.last_name} - {entry.passport_number} -{' '}
-                  {formatDate1(entry.application_arrival_date)}
-                </h2>
-                <h6>Created: {formatDate(entry.created_at)}</h6>
+      {activeTab === 'visa' &&
+        visaData?.map((entry, index) => {
+            const hasReSubmit = entry.applications.some((app) => app.visa_status === 'Re-Submit');
 
-                <h5 style={{marginTop: 20}}>{entry.country_code}</h5>
-                <p>
-                  {entry.visa_description} {entry.entry_process}:{' '}
-                  {formatDate1(entry.application_arrival_date)} -{' '}
-                  {formatDate1(entry.application_departure_date)}
-                </p>
-              </div>
-              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
-                <h2>Applicants: 1</h2>
-                <br />
-                <h6 style={{color: 'red'}}>{entry.visa_status}</h6>
-                <br />
-                {entry.visa_remark && (
-                  <h6>
-                    Remarks -{' '}
-                    <span style={{color: 'red'}}>{entry.visa_remark ? entry.visa_remark : ''}</span>
-                  </h6>
-                )}
-              </div>
+            return (
               <div
+                className='w-full mt-5'
+                key={index}
                 style={{
-                  flex: '1',
                   display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  backgroundColor: '#fff',
+                  justifyContent: 'space-between',
+                  borderRadius: 25,
+                  border: '1px solid #DFDFDF',
+                  width: '100%',
                 }}
               >
-                <button
-                  type='submit'
-                  id='kt_sign_in_submit'
-                  className='btn btn-success'
-                  onClick={() => handleViewDetailsClick(entry)}
-                  style={{backgroundColor: '#327113'}}
+                <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
+                  <h3 style={{textTransform: 'capitalize'}}>
+                    {entry.applications[0]?.first_name} {entry.applications[0]?.last_name} - {entry.applications[0]?.passport_number}
+                  </h3>
+                  <p>Created: {formatDate(entry.applications[0]?.created_at)}</p>
+
+                  <h5 style={{marginTop: 20}}>{entry.applications[0]?.country_code}</h5>
+                  <p>
+                    {entry.applications[0]?.visa_description} {entry.applications[0]?.entry_process}:{' '}
+                    {formatDate1(entry.applications[0]?.application_arrival_date)} -{' '}
+                    {formatDate1(entry.applications[0]?.application_departure_date)}
+                  </p>
+                </div>
+                <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
+                  <h2>Applicants: {entry.applications.length}</h2>
+                  <br />
+                  <h6 style={{color: 'red'}}>
+                    Status: {hasReSubmit ? 'Re-Submit' : entry.applications[0]?.visa_status}
+                  </h6>
+                  <br />
+                  {entry.applications[0]?.visa_remark && (
+                    <h6>
+                      Remarks -{' '}
+                      <span style={{color: 'red'}}>{entry.applications[0]?.visa_remark}</span>
+                    </h6>
+                  )}
+                </div>
+                <div
+                  style={{
+                    flex: '1',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
                 >
-                  Track Application
-                </button>
-                <button
-                  type='submit'
-                  id='kt_sign_in_submit'
-                  className='btn btn-success'
-                  onClick={() => generateAndDownloadPDF(entry)}
-                  style={{backgroundColor: '#327113', marginTop: 20}}
-                >
-                  Download Invoice
-                </button>
-                {(entry.visa_status === 'Reject' || entry.visa_status === 'Rejected') && (
+                  {/* <button
+                    type='submit'
+                    id='kt_sign_in_submit'
+                    className='btn btn-success'
+                    onClick={() => handleViewDetailsClick(entry)}
+                    style={{backgroundColor: '#327113'}}
+                  >
+                    Track Application
+                  </button> */}
                   <button
                     type='submit'
                     id='kt_sign_in_submit'
                     className='btn btn-success'
-                    onClick={() => handleVisibilityClick(entry)}
-                    style={{ backgroundColor: '#327113', marginTop: 20 }}
+                    onClick={() => generateAndDownloadPDF(entry)}
+                    style={{backgroundColor: '#327113', marginTop: 20}}
                   >
-                    Re - Submit Form
+                    Download Invoice
                   </button>
-                )}
-
-
-                {entry.visa_pdf && (
-                  <button
-                    type='submit'
-                    id='kt_sign_in_submit'
-                    className='btn btn-success'
-                    onClick={() => downloadVisa(entry)}
-                    style={{
-                      backgroundColor: '#327113',
-                      marginTop: 20,
-                    }}
-                  >
-                    Download Visa
-                  </button>
-                )}
+                  {hasReSubmit && (
+                    <button
+                      type='submit'
+                      id='kt_sign_in_submit'
+                      className='btn btn-success'
+                      onClick={() => handleVisibilityClick(entry)}
+                      style={{backgroundColor: '#327113', marginTop: 20}}
+                    >
+                      Re - Submit Form
+                    </button>
+                  )}
+                  {entry.applications[0]?.visa_pdf && (
+                    <button
+                      type='submit'
+                      id='kt_sign_in_submit'
+                      className='btn btn-success'
+                      onClick={() => downloadVisa(entry.applications[0])}
+                      style={{
+                        backgroundColor: '#327113',
+                        marginTop: 20,
+                      }}
+                    >
+                      Download Visa
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+        })}
+
+
 
         {activeTab === 'insurance' &&
           insuranceData?.map((entry, index) => (
@@ -937,17 +1028,15 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 backgroundColor: '#fff',
                 justifyContent: 'space-between',
                 borderRadius: 25,
-                borderColor: '#f5f5f5',
-                boxShadow: '0px 0px 7px rgba(0, 0, 0, 0.1)',
+                border: '1px solid #DFDFDF',
                 width: '100%',
               }}
             >
-              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
-                <h2 style={{textTransform: 'capitalize'}}>
-                  {entry.first_name} {entry.last_name} - {entry.passport_number} -{' '}
-                  {formatDate1(entry.created_at)}
-                </h2>
-                <h6>Created: {formatDate(entry.created_at)}</h6>
+              <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
+                <h3 style={{textTransform: 'capitalize'}}>
+                  {entry.first_name} {entry.last_name} - {entry.passport_number}
+                </h3>
+                <p>Created: {formatDate(entry.created_at)}</p>
 
                 <h5 style={{marginTop: 20}}>Passport Details</h5>
                 <p>
@@ -955,7 +1044,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                   {formatDate1(entry.passport_expiry_date)}
                 </p>
               </div>
-              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
+              <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
                 <h2>{entry.insurance_plan_type}</h2>
                 <h6>{entry.insurance_age_group}</h6>
                 <br />
@@ -999,13 +1088,13 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                     from here only
                   </p>
                 )}
-                                {(entry.insurance_status === 'Reject' || entry.insurance_status === 'Rejected') && (
+                {(entry.insurance_status === 'Reject' || entry.insurance_status === 'Rejected') && (
                   <button
                     type='submit'
                     id='kt_sign_in_submit'
                     className='btn btn-success'
                     onClick={() => handleVisibilityClick1(entry)}
-                    style={{ backgroundColor: '#327113', marginTop: 20 }}
+                    style={{backgroundColor: '#327113', marginTop: 20}}
                   >
                     Re - Submit Form
                   </button>
@@ -1024,16 +1113,15 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 backgroundColor: '#fff',
                 justifyContent: 'space-between',
                 borderRadius: 25,
-                borderColor: '#f5f5f5',
-                boxShadow: '0px 0px 7px rgba(0, 0, 0, 0.1)',
+                border: '1px solid #DFDFDF',
                 width: '100%',
               }}
             >
-              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
-                <h2 style={{textTransform: 'capitalize'}}>
+              <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
+                <h3 style={{textTransform: 'capitalize'}}>
                   {entry.first_name} - {entry.country_code} - {entry.nationality_code}
-                </h2>
-                <h6>Created: {formatDate(entry.created_at)}</h6>
+                </h3>
+                <p>Created: {formatDate(entry.created_at)}</p>
                 <h5 style={{marginTop: 20}}>{entry.country_code}</h5>
                 <p>
                   <strong>Hotel ID: &nbsp;&nbsp;&nbsp;</strong>
@@ -1042,7 +1130,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                   <strong>Total Amount:</strong> &nbsp;&nbsp;₹{entry.merchant_hotel_amount}
                 </p>
               </div>
-              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
+              <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
                 <h2>Applicants: {entry.traveller}</h2>
                 <br />
                 <h6 style={{color: 'red'}}>Status: {entry.hotel_status}</h6>
@@ -1085,13 +1173,13 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                     here only
                   </p>
                 )}
-                {(entry.hotel_status === 'Reject' || entry.hotel_status === 'Rejected') && (
+                {entry.hotel_status === 'Re-Submit' && (
                   <button
                     type='submit'
                     id='kt_sign_in_submit'
                     className='btn btn-success'
                     onClick={() => handleVisibilityClick2(entry)}
-                    style={{ backgroundColor: '#327113', marginTop: 20 }}
+                    style={{backgroundColor: '#327113', marginTop: 20}}
                   >
                     Re - Submit Form
                   </button>
@@ -1101,122 +1189,140 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
           ))}
 
         {activeTab === 'flight' &&
-          flightData?.map((entry, index) => (
-            <div
-              className='w-full mt-5'
-              key={index}
-              style={{
-                display: 'flex',
-                backgroundColor: '#fff',
-                justifyContent: 'space-between',
-                borderRadius: 25,
-                borderColor: '#f5f5f5',
-                boxShadow: '0px 0px 7px rgba(0, 0, 0, 0.1)',
-                width: '100%',
-              }}
-            >
-              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
-                <h2 style={{textTransform: 'capitalize'}}>
-                  {entry.first_name} - {entry.country_code} - {entry.nationality_code}
-                </h2>
-                <h6>Created: {formatDate(entry.created_at)}</h6>
-                <h5 style={{marginTop: 20}}>{entry.country_code}</h5>
-                <p>
-                  <strong>Flight ID: &nbsp;&nbsp;&nbsp;</strong>
-                  {entry.flight_id}
-                  <br />
-                  <strong>Total Amount:</strong> &nbsp;&nbsp;₹{entry.merchant_flight_amount}
-                </p>
-              </div>
-              <div style={{flex: '1', borderRight: '1px solid #f5f5f5'}} className='p-10'>
-                <h2>Applicants: {entry.traveller}</h2>
-                <br />
-                <h6 style={{color: 'red'}}>Status: {entry.flight_status}</h6>
-                <br />
-                {entry.flight_remark && (
-                  <h6>
-                    Remarks -{' '}
-                    <span style={{color: 'red'}}>
-                      {entry.flight_remark ? entry.flight_remark : ''}
-                    </span>
-                  </h6>
-                )}
-              </div>
-              <div
-                style={{
-                  flex: '1',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  padding: '10px',
-                }}
-              >
-                {entry.flight_pdf ? (
-                  <button
-                    type='submit'
-                    id='kt_sign_in_submit'
-                    className='btn btn-success'
-                    onClick={() => downloadFlightPDF(entry)}
-                    style={{
-                      backgroundColor: '#327113',
-                      marginTop: 20,
-                    }}
-                  >
-                    Download Flight
-                  </button>
-                ) : (
-                  <p style={{color: 'red', marginTop: 20}}>
-                    Once available your flight pdf will be shown here and you can download it from
-                    here only
-                  </p>
-                )}
-                {(entry.flight_status === 'Reject' || entry.flight_status === 'Rejected') && (
-                  <button
-                    type='submit'
-                    id='kt_sign_in_submit'
-                    className='btn btn-success'
-                    onClick={() => handleVisibilityClick3(entry)}
-                    style={{ backgroundColor: '#327113', marginTop: 20 }}
-                  >
-                    Re - Submit Form
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
+          flightData?.map((entry, index) => {
+            const hasReSubmit = entry.applications.some((app) => app.flight_status === 'Re-Submit')
 
-        {visible && (
-          <div
-            className='loader-overlay'
-            style={{...overlayStyle, ...(visible && activeOverlayStyle)}}
-          >
-            <div style={contentStyle}>
+            return (
               <div
-                onClick={() => handleCloseClick()}
+                className='w-full mt-5'
+                key={index}
                 style={{
-                  backgroundColor: '#d3d3d3',
-                  padding: '9px',
-                  position: 'absolute',
-                  top: '15%',
-                  left: '84.5%',
-                  transform: 'translate(-35%, -40%)',
-                  borderRadius: 20,
-                  cursor: 'pointer',
+                  display: 'flex',
+                  backgroundColor: '#fff',
+                  justifyContent: 'space-between',
+                  borderRadius: 25,
+                  border: '1px solid #DFDFDF',
+                  width: '100%',
                 }}
               >
-                <CloseOutlined />
+                <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
+                  <h3 style={{textTransform: 'capitalize'}}>
+                    {entry.applications[0]?.first_name} - {entry.applications[0]?.country_code} -{' '}
+                    {entry.applications[0]?.nationality_code}
+                  </h3>
+                  <p>Created: {formatDate(entry.applications[0]?.created_at)}</p>
+                  <p className='mt-8'>
+                    <strong>Group ID: &nbsp;&nbsp;&nbsp;</strong>
+                    {entry.group_id}
+                    <br />
+                    <strong>Total Amount:</strong> &nbsp;&nbsp;₹
+                    {entry.applications[0]?.merchant_flight_amount}
+                  </p>
+                </div>
+                <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
+                  <h2>Applicants: {entry.applications.length}</h2>
+                  <br />
+                  <h6 style={{color: 'red'}}>
+                    Status: {hasReSubmit ? 'Re-Submit' : entry.applications[0]?.flight_status}
+                  </h6>
+                  <br />
+                  {entry.applications[0]?.flight_remark && (
+                    <h6>
+                      Remarks -{' '}
+                      <span style={{color: 'red'}}>
+                        {entry.applications[0]?.flight_remark
+                          ? entry.applications[0]?.flight_remark
+                          : ''}
+                      </span>
+                    </h6>
+                  )}
+                </div>
+                <div
+                  style={{
+                    flex: '1',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '10px',
+                  }}
+                >
+                  {entry.applications[0]?.flight_pdf ? (
+                    <button
+                      type='submit'
+                      id='kt_sign_in_submit'
+                      className='btn btn-success'
+                      onClick={() => downloadFlightPDF(entry.applications[0])}
+                      style={{
+                        backgroundColor: '#327113',
+                        marginTop: 20,
+                      }}
+                    >
+                      Download Flight
+                    </button>
+                  ) : (
+                    <p style={{color: 'red', marginTop: 20}}>
+                      Once available your flight pdf will be shown here and you can download it from
+                      here only
+                    </p>
+                  )}
+                  {hasReSubmit && (
+                    <button
+                      type='submit'
+                      id='kt_sign_in_submit'
+                      className='btn btn-success'
+                      onClick={() => handleVisibilityClick3(entry)}
+                      style={{backgroundColor: '#327113', marginTop: 20}}
+                    >
+                      Re - Submit Form
+                    </button>
+                  )}
+                </div>
               </div>
-              <h1>Edit Application</h1>
-              <hr className='ahr'/>
-              <TraverlerReForm
-              ind={0}
-              onDataChange={handleTravelerDataChange}
-              selectedEntry={selectedItem}
-            />
+            )
+          })}
+
+          {visible && (
+            <div
+              className='loader-overlay'
+              style={{...overlayStyle, ...(visible && activeOverlayStyle)}}
+            >
+              <div style={contentStyle}>
+                <div
+                  onClick={() => handleCloseClick()}
+                  style={{
+                    backgroundColor: '#d3d3d3',
+                    padding: '9px',
+                    position: 'absolute',
+                    top: '15%',
+                    left: '84.5%',
+                    transform: 'translate(-35%, -40%)',
+                    borderRadius: 20,
+                    cursor: 'pointer',
+                  }}
+                >
+                  <CloseOutlined />
+                </div>
+                <h1>Edit Application</h1>
+                <hr className='ahr' />
+                <form onSubmit={handleSubmitVisa}>
+                  {Array.isArray(selectedItem) &&
+                    selectedItem.map((applicant, idx) => (
+                      <TraverlerReForm
+                        key={idx}
+                        ind={idx}
+                        onDataChange={(data) => handleTravelerDataChangee(data, idx)}
+                        selectedEntry={applicant}
+                      />
+                    ))}
+                  <Button variant='primary' type='submit' className='mt-3'>
+                    Submit
+                  </Button>
+                </form>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+
         {visible1 && (
           <div
             className='loader-overlay'
@@ -1239,12 +1345,12 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 <CloseOutlined />
               </div>
               <h1>Edit Application</h1>
-              <hr className='ahr'/>
+              <hr className='ahr' />
               <InsuranceReForm
-              ind={0}
-              onDataChange={handleTravelerDataChange}
-              selectedEntry={selectedItem}
-            />
+                ind={0}
+                onDataChange={handleTravelerDataChange}
+                selectedEntry={selectedItem}
+              />
             </div>
           </div>
         )}
@@ -1270,12 +1376,12 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 <CloseOutlined />
               </div>
               <h1>Edit Application</h1>
-              <hr className='ahr'/>
+              <hr className='ahr' />
               <HotelReForm
-              ind={0}
-              onDataChange={handleTravelerDataChange}
-              selectedEntry={selectedItem}
-            />
+                ind={0}
+                onDataChange={handleTravelerDataChange}
+                selectedEntry={selectedItem}
+              />
             </div>
           </div>
         )}
@@ -1301,12 +1407,21 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                 <CloseOutlined />
               </div>
               <h1>Edit Application</h1>
-              <hr className='ahr'/>
-              <FlightReForm
-              ind={0}
-              onDataChange={handleTravelerDataChange}
-              selectedEntry={selectedItem}
-            />
+              <hr className='ahr' />
+              <form onSubmit={handleSubmitAll}>
+                {Array.isArray(selectedItem) &&
+                  selectedItem.map((applicant, idx) => (
+                    <FlightReForm
+                      key={idx}
+                      ind={idx}
+                      onDataChange={handleDataChange}
+                      selectedEntry={applicant}
+                    />
+                  ))}
+                <Button variant='primary' type='submit' className='mt-3'>
+                  Submit
+                </Button>
+              </form>
             </div>
           </div>
         )}

@@ -140,6 +140,7 @@ const Inner: React.FC<Props> = ({
             {sortedTickets.map((entry: any, index: number) => {
               return (
                 <div
+                className='d-flex justify-content-center'
                   key={index}
                 >
                   <div className="visa-card">

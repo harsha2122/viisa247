@@ -11,10 +11,12 @@ import { FaShieldAlt } from "react-icons/fa";
 import logo from '../../../../_metronic/assets/favi.png'
 import { MdOutlineFlight } from "react-icons/md";
 import { FaHotel } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 import MerchantNewVisaWrapper from "../apply-visa/MerchantNewVisaWrapper";
 import MerchantNewInsurance from "../apply-insurance/MerchantNewInsurance";
 import MerchantNewHotel from "../apply-others/MerchantNewHotel";
 import MerchantNewFlight from "../apply-others/MerchantNewFlight";
+import { toAbsoluteUrl } from "../../../../_metronic/helpers";
 
 const MerchantDashboard = () => {
   const [activeTab, setActiveTab] = useState("Analytics"); 
@@ -205,27 +207,81 @@ const MerchantDashboard = () => {
     marginTop: 25,
   };
 
+  const formatDate = (timestamp: string) => {
+    const date = new Date(timestamp)
+  
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    }
+  
+    const formattedDate = date.toLocaleDateString('en-US', options)
+    return formattedDate
+  }
+
+  const formatDate1 = (dateString) => {
+    const date = new Date(dateString)
+    const monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ]
+    const month = monthNames[date.getMonth()]
+  
+    // Get the day and year
+    const day = date.getDate()
+    const year = date.getFullYear()
+  
+    // Format the date string
+    return `${month} ${day}, ${year}`
+  }
+
   return (
     <div style={{ display: 'flex', width: '100%', marginTop: -70, background: '#fff' }}>
       {/* Sidebar */}
       <div
         style={{
-          width: sidebarOpen ? '240px' : '80px', // Toggle sidebar width
+          width: sidebarOpen ? '240px' : '80px',
           backgroundColor: '#f8f8f8',
           padding: '12px',
           position: 'fixed',
           height: '100%',
           overflowY: 'auto',
+          zIndex:"101",
           paddingTop: 70,
+          top:"0",
           paddingBottom: 100,
           left: 0,
-          transition: 'all 0.5s ease', // Add transition property
+          transition: 'all 0.5s ease',
         }}
       >
         {sidebarOpen ? (
           <>
+            <div style={{position:"absolute", marginLeft:"10%", top:"35px"}} className='d-flex align-items-center flex-grow-1 flex-lg-grow-0 me-lg-15'>
+              <Link to='/merchant/dashboard'>
+                <img
+                  alt='Logo'
+                  src={toAbsoluteUrl('/media/logos/logo.png')}
+                  className='h-20px h-lg-30px app-sidebar-logo-default'
+                />
+              </Link>
+            </div>
             <div
               onClick={() => handleTabClick("Analytics")}
+              className="mt-20"
               style={activeTab === "Analytics" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
             >
               {sidebarOpen && <> Dashboard</>}
@@ -253,6 +309,12 @@ const MerchantDashboard = () => {
               style={activeTab === "ApplyFlight" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
             >
               {sidebarOpen && <> Flight</>}
+            </div>
+            <div
+              onClick={() => handleTabClick("All")}
+              style={activeTab === "All" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
+            >
+              {sidebarOpen && <> Applications</>}
             </div>
           </>
           ) : (
@@ -292,16 +354,19 @@ const MerchantDashboard = () => {
           )}
         </div>
 
-        <div style={{ marginLeft: sidebarOpen ? '15%' : '80px', width: sidebarOpen ? '80%' : '100%', overflowY: 'auto', padding: '16px' }}>
+        <div style={{ marginLeft: sidebarOpen ? '18%' : '80px', width: sidebarOpen ? '80%' : '100%', overflowY: 'auto', padding: '16px' }}>
           {activeTab === "Analytics" ?
+          <>
             <div>
               <MerchantAnaltytics dashboardData={dashboardData} />
             </div>
+          </>
             :
             <>
               <Loader loading={loading} />
               {!loading && (
                 <div className="pt-12">
+                  {activeTab === "All" && <VisaDetailCard visaData={visaData} insuranceData={insuranceData} hotelData={hotelData} flightData={flightData} />}
                   {activeTab === "ApplyVisa" && <MerchantNewVisaWrapper />}
                   {activeTab === "ApplyInsurance" && <MerchantNewInsurance />}
                   {activeTab === "ApplyHotel" && <MerchantNewHotel />}

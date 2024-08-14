@@ -33,10 +33,15 @@ const Verticalii: React.FC<VerticalProps> = ({
       return updatedForms;
     });
   };
+
+  const generateGroupId = () => {
+    return Math.random().toString(36).substring(2, 12)
+  }
   
   const [applicantForms, setApplicantForms] = useState<any[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [groupId, setGroupId] = useState<string>('')
   const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null);
   const recieptFileInputRef = useRef<HTMLInputElement | null>(null);
   const [reciept, setReciept] = useState('');
@@ -66,6 +71,8 @@ const Verticalii: React.FC<VerticalProps> = ({
     setInsuranceFormData(formData);
     handleShowReviewModal();
   };
+
+  console.log("as", selectedEntry)
   
   
   const [insuranceFormData, setInsuranceFormData] = useState<any | null>(null);
@@ -126,6 +133,11 @@ const Verticalii: React.FC<VerticalProps> = ({
   const addTravelerForm = () => {
     setTravelerForms((prevForms) => [...prevForms, {}])
   }
+
+  useEffect(() => {
+    const newGroupId = generateGroupId()
+    setGroupId(newGroupId)
+  }, [])
 
   const [currentWallet, setCurrentWallet] = useState('')
   function formatDateWithTimezoneToYMD(dateString) {
@@ -223,6 +235,7 @@ const Verticalii: React.FC<VerticalProps> = ({
             passport_issue_date: formatDateWithTimezoneToYMD(travelerForm.passportIssueDate),
             passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
             gender: travelerForm.gender,
+            group_id: groupId,
             marital_status: travelerForm.maritalStatus,
             passport_front: travelerForm.passport_front,
             insurance_id: selectedEntry.id,

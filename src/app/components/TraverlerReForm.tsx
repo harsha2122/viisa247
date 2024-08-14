@@ -13,23 +13,27 @@ const inputStyle: CSSProperties = {
   boxSizing: 'border-box',
 };
 
-const TraverlerReForm = ({ ind, onDataChange, selectedEntry }) => {
-  const [formData, setFormData] = useState({ ...selectedEntry });
+interface TraverlerReFormProps {
+  ind: number;
+  onDataChange: (data: any) => void;
+  selectedEntry: any;
+}
+
+const TraverlerReForm: React.FC<TraverlerReFormProps> = ({ ind, onDataChange, selectedEntry }) => {
+  const [formData, setFormData] = useState<any>(selectedEntry);
   const [loading, setLoading] = useState(false);
   const [userType, setUserType] = useState('');
-
-  useEffect(() => {
-    setFormData({ ...selectedEntry });
-  }, [selectedEntry]);
-
-  console.log("sc", selectedEntry)
-
+  
   useEffect(() => {
     const userTypeFromCookies = Cookies.get('userType');
     setUserType(userTypeFromCookies || '');
   }, []);
 
-  const handleFileUpload = async (file) => {
+  useEffect(() => {
+    setFormData({ ...selectedEntry });
+  }, [selectedEntry]);
+
+  const handleFileUpload = async (file: File) => {
     try {
       setLoading(true);
       const formData = new FormData();
@@ -48,35 +52,24 @@ const TraverlerReForm = ({ ind, onDataChange, selectedEntry }) => {
     }
   };
 
-  const handleFileChange = async (e) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (files && files[0]) {
       const uploadedFileUrl = await handleFileUpload(files[0]);
-      console.log('Uploaded File URL:', uploadedFileUrl);
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: uploadedFileUrl,
-      }));
-      onDataChange({
-        ...formData,
-        [name]: uploadedFileUrl,
-      });
+      const updatedData = { ...formData, [name]: uploadedFileUrl };
+      setFormData(updatedData);
+      onDataChange(updatedData);
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-    onDataChange({
-      ...formData,
-      [name]: value,
-    });
+    const updatedData = { ...formData, [name]: value };
+    setFormData(updatedData);
+    onDataChange(updatedData);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const updatedData = {
       _id: selectedEntry._id,
@@ -99,22 +92,7 @@ const TraverlerReForm = ({ ind, onDataChange, selectedEntry }) => {
       visa_description: formData.visa_description,
       marital_status: formData.marital_status,
     };
-
-    try {
-      const response = await axiosInstance.post('/backend/update_user_application', updatedData);
-
-      if (response.data.success === 1) {
-        toast.success('Data updated successfully!');
-        setTimeout(() => {
-          window.location.reload();
-        }, 2500);
-      } else {
-        toast.error('Error updating data: ' + response.data.message || 'Unknown error');
-      }
-    } catch (error) {
-      console.error('Error updating user application:', error);
-      toast.error('Error updating data: ');
-    }
+    onDataChange(updatedData); // Call onDataChange to notify parent
   };
 
   return (
@@ -431,11 +409,6 @@ const TraverlerReForm = ({ ind, onDataChange, selectedEntry }) => {
             </Col>
           )}
         </Row>
-
-
-          <Button variant="primary" type="submit" className="mt-3">
-            Submit
-          </Button>
         </Form>
       </div>
     </Container>

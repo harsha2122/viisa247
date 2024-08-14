@@ -11,7 +11,21 @@ function Fwaiting() {
       setLoading(true);
       try {
         const response = await axiosInstance.get('/backend/super_admin/fetch_all_flight');
-        setInsuranceData(response.data.data);
+        const data = response.data.data;
+
+        const filteredByStatus = data.filter((entry: any) => {
+          const status = entry.applications[0]?.flight_status;
+          return status === 'Applied' || status === 'Not Issued';
+        });
+
+        const sortedData = filteredByStatus.sort((a: any, b: any) => {
+          const dateA = new Date(a.applications[0]?.updated_at);
+          const dateB = new Date(b.applications[0]?.updated_at);
+          return dateB.getTime() - dateA.getTime();
+        });
+
+        setInsuranceData(sortedData);
+        console.log("Sorted and Filtered Data:", sortedData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {

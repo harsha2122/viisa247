@@ -1109,18 +1109,17 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
   };
   const uploadReciept = (
     <div className='d-flex ' style={{ width: '100%' }}>
-      <div style={{ width: '30%', marginTop: 50, marginBottom: 30 }}>
+      <div style={{ width: '30%', marginTop: 65, marginBottom: 30, marginLeft: 40 }}>
         <h6>Receipt</h6>
         {recieptImage ? (
           <div
             style={{
               border: '4px dotted gray',
               width: '100%',
-              height: 250,
+              height: 200,
               borderRadius: '10px',
               justifyContent: 'center',
               textAlign: 'center',
-              marginTop: 20,
             }}
           >
             <div
@@ -1150,15 +1149,14 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
             style={{
               border: '4px dotted gray',
               width: '100%',
-              height: 250,
+              height: 200,
               borderRadius: '10px',
               justifyContent: 'center',
               textAlign: 'center',
               paddingTop: 40,
-              marginTop: 20,
             }}
           >
-            <h4 className='mx-10 mt-10'>Receipt Photo</h4>
+            <h4 className='mx-10 mt-4'>Receipt Photo</h4>
             <button
               type='button'
               onClick={handleImageUpload}
@@ -1181,14 +1179,14 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
         )}
       </div>
       <div
-        className='d-flex flex-row-fluid flex-center bg-body rounded mt-10'
+        className='d-flex flex-row-fluid flex-center bg-body rounded'
         style={{ width: '70%', backgroundColor: 'blue' }}
       >
         <Formik initialValues={initValues} onSubmit={() => { }}>
           {() => (
-            <Form className='py-20 px-9' noValidate id='kt_create_account_form'>
+            <Form className='py-20 px-20' noValidate id='kt_create_account_form'>
               <div>
-                <div className='fv-row mb-10'>
+                <div className='fv-row mb-4'>
                   <label className='form-label required'>Transaction ID</label>
                   <Field
                     name='upi_ref_id'
@@ -1201,7 +1199,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
                   </div>
                 </div>
 
-                <div className='fv-row mb-10'>
+                <div className='fv-row mb-4'>
                   <label className='d-flex align-items-center form-label'>
                     <span className='required'>Amount</span>
                   </label>
@@ -1555,7 +1553,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
     >
       <div className='d-flex align-items-center px-10'>
         <div className='d-flex align-items-center' style={{ flex: 1 }}>
-          <h2 className='' >Visa 247 Wallet</h2>
+          <h2 className='' >Visa247 Wallet</h2>
 
         </div>
 
@@ -1595,7 +1593,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
       <table className='table align-middle gs-10 mt-10'>
         {/* begin::Table head */}
         <thead >
-        <tr style={{ background: '#f2f2f2', color: '#000'}} className='fw-bold'>
+        <tr style={{ background: '#F9FAFB', color: '#000'}} className='fw-bold'>
             <th className='min-w-100px'>Date/Time</th>
             <th className='min-w-100px'>Particular</th>
             <th className='min-w-100px'>Status</th>
@@ -1728,7 +1726,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
       <table className='table align-middle gs-10 mt-10'>
         {/* begin::Table head */}
         <thead >
-        <tr style={{ background: '#f2f2f2', color: '#000'}} className='fw-bold'>
+        <tr style={{ background: '#F9FAFB', color: '#000'}} className='fw-bold'>
             <th className='min-w-100px'>Name</th>
             <th className='min-w-100px'>Transaction time</th>
             <th className='min-w-100px'>Application No.</th>
@@ -1848,7 +1846,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
       <table className='table align-middle gs-10 mt-10'>
         {/* begin::Table head */}
         <thead>
-          <tr style={{ background: '#f2f2f2', color: '#000' }} className='fw-bold'>
+          <tr style={{ background: '#F9FAFB', color: '#000' }} className='fw-bold'>
             <th className='min-w-100px'>Name</th>
             <th className='min-w-100px'>Transaction time</th>
             <th className='min-w-100px'>Application No.</th>
@@ -1958,7 +1956,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
       <table className='table align-middle gs-10 mt-10'>
         {/* begin::Table head */}
         <thead>
-          <tr style={{ background: '#f2f2f2', color: '#000' }} className='fw-bold'>
+          <tr style={{ background: '#F9FAFB', color: '#000' }} className='fw-bold'>
             <th className='min-w-100px'>Name</th>
             <th className='min-w-100px'>Transaction time</th>
             <th className='min-w-100px'>Application No.</th>
@@ -2068,7 +2066,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
       <table className='table align-middle gs-10 mt-10'>
         {/* begin::Table head */}
         <thead>
-          <tr style={{ background: '#f2f2f2', color: '#000' }} className='fw-bold'>
+          <tr style={{ background: '#F9FAFB', color: '#000' }} className='fw-bold'>
             <th className='min-w-100px'>Name</th>
             <th className='min-w-100px'>Transaction time</th>
             <th className='min-w-100px'>Application No.</th>

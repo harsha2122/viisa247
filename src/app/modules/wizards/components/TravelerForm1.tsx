@@ -403,6 +403,10 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
     return current && current > moment().endOf('day');
   };
 
+  const disabledDates = (current) => {
+    return current && current < moment().endOf('day');
+  };
+
 
   return (
     <div
@@ -600,6 +604,7 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                           borderRadius: 10,
                           padding: 10,
                         }}
+                        disabledDate={disabledDate}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('birthDetail', value.format('YYYY-MM-DD'))
@@ -627,6 +632,7 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                           borderRadius: 10,
                           padding: 10,
                         }}
+                        disabledDate={disabledDate}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('passportIssueDate', value.format('YYYY-MM-DD'))
@@ -652,6 +658,7 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
                           borderRadius: 10,
                           padding: 10,
                         }}
+                        disabledDate={disabledDates}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('passPortExpiryDate', value.format('YYYY-MM-DD'))
