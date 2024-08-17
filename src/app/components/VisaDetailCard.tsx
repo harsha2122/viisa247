@@ -28,7 +28,7 @@ interface ApplicantData {
   passport_front: string
 }
 
-type InsuranceData = {
+type Applicationss = {
   _id: string
   country_code: string
   nationality_code: string
@@ -138,6 +138,11 @@ type FlightData = {
 type VisaData = {
   group_id: string
   applications: Applications[]
+}
+
+type InsuranceData = {
+  group_id: string
+  applications: Applicationss[]
 }
 
 type Props = {
@@ -869,6 +874,8 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
     }
   }
 
+  console.log("frg", insuranceData)
+
   return (
     <div>
       <Toaster />
@@ -1016,92 +1023,95 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
             )
         })}
 
-
-
         {activeTab === 'insurance' &&
-          insuranceData?.map((entry, index) => (
-            <div
-              className='w-full mt-5'
-              key={index}
-              style={{
-                display: 'flex',
-                backgroundColor: '#fff',
-                justifyContent: 'space-between',
-                borderRadius: 25,
-                border: '1px solid #DFDFDF',
-                width: '100%',
-              }}
-            >
-              <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
-                <h3 style={{textTransform: 'capitalize'}}>
-                  {entry.first_name} {entry.last_name} - {entry.passport_number}
-                </h3>
-                <p>Created: {formatDate(entry.created_at)}</p>
+          insuranceData?.map((entry, index) => {
+            const hasReSubmit = entry.applications.some((app) => app.insurance_status === 'Re-Submit');
 
-                <h5 style={{marginTop: 20}}>Passport Details</h5>
-                <p>
-                  Validity : {formatDate1(entry.passport_issue_date)} -{' '}
-                  {formatDate1(entry.passport_expiry_date)}
-                </p>
-              </div>
-              <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
-                <h2>{entry.insurance_plan_type}</h2>
-                <h6>{entry.insurance_age_group}</h6>
-                <br />
-                <h6 style={{color: 'red'}}>{entry.insurance_status}</h6>
-                <br />
-                {entry.insurance_remark && (
-                  <h6>
-                    Remarks -{' '}
-                    <span style={{color: 'red'}}>
-                      {entry.insurance_remark ? entry.insurance_remark : ''}
-                    </span>
-                  </h6>
-                )}
-              </div>
+            return (
               <div
+                className='w-full mt-5'
+                key={index}
                 style={{
-                  flex: '1',
                   display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  padding: '10px',
+                  backgroundColor: '#fff',
+                  justifyContent: 'space-between',
+                  borderRadius: 25,
+                  border: '1px solid #DFDFDF',
+                  width: '100%',
                 }}
               >
-                {entry.insurance_pdf ? (
-                  <button
-                    type='submit'
-                    id='kt_sign_in_submit'
-                    className='btn btn-success'
-                    onClick={() => downloadInsurance(entry)}
-                    style={{
-                      backgroundColor: '#327113',
-                      marginTop: 20,
-                    }}
-                  >
-                    Download Insurance
-                  </button>
-                ) : (
-                  <p style={{color: 'red', marginTop: 20}}>
-                    Once available your insurance pdf will be shown here and you can download it
-                    from here only
+                <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
+                  <h3 style={{textTransform: 'capitalize'}}>
+                    {entry.applications[0]?.first_name} {entry.applications[0]?.last_name} - {entry.applications[0]?.passport_number}
+                  </h3>
+                  <p>Created: {formatDate(entry.applications[0]?.created_at)}</p>
+
+                  <h5 style={{marginTop: 20}}>Passport Details</h5>
+                  <p>
+                    Validity: {formatDate1(entry.applications[0]?.passport_issue_date)} -{' '}
+                    {formatDate1(entry.applications[0]?.passport_expiry_date)}
                   </p>
-                )}
-                {(entry.insurance_status === 'Reject' || entry.insurance_status === 'Rejected') && (
-                  <button
-                    type='submit'
-                    id='kt_sign_in_submit'
-                    className='btn btn-success'
-                    onClick={() => handleVisibilityClick1(entry)}
-                    style={{backgroundColor: '#327113', marginTop: 20}}
-                  >
-                    Re - Submit Form
-                  </button>
-                )}
+                </div>
+                <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
+                  <h2>{entry.applications[0]?.insurance_plan_type}</h2>
+                  <h6>{entry.applications[0]?.insurance_age_group}</h6>
+                  <br />
+                  <h6 style={{color: 'red'}}>{entry.applications[0]?.insurance_status}</h6>
+                  <br />
+                  {entry.applications[0]?.insurance_remark && (
+                    <h6>
+                      Remarks -{' '}
+                      <span style={{color: 'red'}}>
+                        {entry.applications[0]?.insurance_remark || ''}
+                      </span>
+                    </h6>
+                  )}
+                </div>
+                <div
+                  style={{
+                    flex: '1',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '10px',
+                  }}
+                >
+                  {entry.applications[0]?.insurance_pdf ? (
+                    <button
+                      type='submit'
+                      id='kt_sign_in_submit'
+                      className='btn btn-success'
+                      onClick={() => downloadInsurance(entry.applications[0])}
+                      style={{
+                        backgroundColor: '#327113',
+                        marginTop: 20,
+                      }}
+                    >
+                      Download Insurance
+                    </button>
+                  ) : (
+                    <p style={{color: 'red', marginTop: 20}}>
+                      Once available your insurance pdf will be shown here and you can download it
+                      from here only
+                    </p>
+                  )}
+                  {hasReSubmit && (
+                    <button
+                      type='submit'
+                      id='kt_sign_in_submit'
+                      className='btn btn-success'
+                      onClick={() => handleVisibilityClick(entry)}
+                      style={{backgroundColor: '#327113', marginTop: 20}}
+                    >
+                      Re - Submit Form
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
+
 
         {activeTab === 'hotel' &&
           hotelData?.map((entry, index) => (

@@ -26,13 +26,7 @@ const Verticalii: React.FC<VerticalProps> = ({
   visaListLoader,
   show,
 }) => {
-  const handleTravelerDataChange = (newData, index) => {
-    setTravelerForms(prevForms => {
-      const updatedForms = [...prevForms];
-      updatedForms[index] = { ...updatedForms[index], ...newData };
-      return updatedForms;
-    });
-  };
+  
 
   const generateGroupId = () => {
     return Math.random().toString(36).substring(2, 12)
@@ -43,6 +37,7 @@ const Verticalii: React.FC<VerticalProps> = ({
   const [loading, setLoading] = useState(false)
   const [groupId, setGroupId] = useState<string>('')
   const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null);
+  const [travelerAge, setTravelerAge] = useState<number[]>([]);
   const recieptFileInputRef = useRef<HTMLInputElement | null>(null);
   const [reciept, setReciept] = useState('');
   const maxSize = 1024 * 1024;
@@ -94,6 +89,106 @@ const Verticalii: React.FC<VerticalProps> = ({
     photo: false,
   });
 
+  const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [totalAmounta, setTotalAmounta] = useState<number>(0);
+
+  const calculateAge = (birthDate: string) => {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const getMerchantInsuranceAmount = (age: number, ageGroups: any[]) => {
+    const ageGroup = ageGroups.find(group => {
+      const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
+        const ageRangeParts = ageRange.split(' ');
+        return ageRangeParts[0] === 'mths' ? 0 : parseInt(ageRangeParts[0], 10);
+      });
+      return age >= minAge && age <= maxAge;
+    });
+    return ageGroup ? ageGroup.merchant_insurance_amount : 0;
+  };
+  useEffect(() => {
+    const calculateTotalAmount = () => {
+      let totalAmount = 0;
+      travelerForms.forEach(form => {
+        if (form.birthDetail) {
+          const age = calculateAge(form.birthDetail);
+          const amount = getMerchantInsuranceAmount(age, selectedEntry.age_groups);
+          totalAmount += amount;
+        }
+      });
+      setTotalAmounta(totalAmount);
+    };
+
+    calculateTotalAmount();
+  }, [travelerForms, selectedEntry.age_groups]);
+
+  const handleTravelerDataChange = (newData, index) => {
+    setTravelerForms(prevForms => {
+      const updatedForms = [...prevForms];
+      if (newData.birthDetail) {
+        const age = calculateAge(newData.birthDetail);
+        updatedForms[index] = { ...updatedForms[index], ...newData, age };
+      } else {
+        updatedForms[index] = { ...updatedForms[index], ...newData };
+      }
+      return updatedForms;
+    });
+  };
+
+  const getInsuranceAmountForAge = (age: number, ageGroups: any[]) => {
+    const ageGroup = ageGroups.find(group => {
+      const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
+        const ageRangeParts = ageRange.split(' ');
+        return ageRangeParts[0] === 'mths' ? 0 : parseInt(ageRangeParts[0], 10);
+      });
+  
+      return age >= minAge && age <= maxAge;
+    });
+    return ageGroup ? ageGroup.merchant_insurance_amount : 0;
+  };
+
+  const getInsuranceAmounts = (age, ageGroups) => {
+    const ageGroup = ageGroups.find(group => {
+      const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
+        const ageRangeParts = ageRange.split(' ');
+        return ageRangeParts[0] === 'mths' ? 0 : parseInt(ageRangeParts[0], 10);
+      });
+      return age >= minAge && age <= maxAge;
+    });
+    if (ageGroup) {
+      return {
+        insurance_amount: ageGroup.insurance_amount,
+        insurance_original_amount: ageGroup.insurance_original_amount,
+        merchant_insurance_amount: ageGroup.merchant_insurance_amount,
+      };
+    }
+    return {
+      insurance_amount: 0,
+      insurance_original_amount: 0,
+      merchant_insurance_amount: 0,
+    };
+  };
+  
+  
+
+  useEffect(() => {
+    const totalAmount = travelerForms.reduce((acc, form) => {
+      const age = calculateAge(form.birthDetail);
+      const amount = getInsuranceAmountForAge(age, selectedEntry.age_groups);
+      return acc + amount;
+    }, 0);
+  
+    setTotalAmount(totalAmount);
+  }, [travelerForms, selectedEntry.age_groups]);
+  
+
   const handleTravelFieldChange = (index: number, fieldName: string, value: string) => {
     setTravelerForms((prevForms) => {
       const updatedForms = [...prevForms];
@@ -127,8 +222,6 @@ const Verticalii: React.FC<VerticalProps> = ({
     }
   }, [])
 
-  const totalAmount = travelerForms.length * selectedEntry.merchant_insurance_amount
-  const totalAmounta = selectedEntry.merchant_insurance_amount
 
   const addTravelerForm = () => {
     setTravelerForms((prevForms) => [...prevForms, {}])
@@ -223,6 +316,9 @@ const Verticalii: React.FC<VerticalProps> = ({
             allFieldsFilled = false;
             break;
           }
+          const age = calculateAge(travelerForm.birthDetail);
+          const { insurance_amount, insurance_original_amount, merchant_insurance_amount } = getInsuranceAmounts(age, selectedEntry.age_groups);
+
           const postData = {
             country_code: selectedEntry.country_code,
             nationality_code: selectedEntry.nationality_code,
@@ -239,13 +335,13 @@ const Verticalii: React.FC<VerticalProps> = ({
             marital_status: travelerForm.maritalStatus,
             passport_front: travelerForm.passport_front,
             insurance_id: selectedEntry.id,
-            insurance_amount: selectedEntry.totalAmount,
-            insurance_original_amount: selectedEntry.insurance_original_amount,
+            insurance_amount: insurance_amount,
+            insurance_original_amount: insurance_original_amount,
             insurance_benefit: selectedEntry.benefits,
             insurance_plan_type: selectedEntry.description,
             insurance_age_group: selectedEntry.age_group,
-            merchant_insurance_amount: selectedEntry.merchant_insurance_amount
-          }
+            merchant_insurance_amount: merchant_insurance_amount,
+          };
   
           try {
             const createApplicationResponse = await axiosInstance.post('/backend/create_insurance_application', postData);
@@ -511,19 +607,16 @@ console.log("sadf", selectedEntry)
                   <div
                     key={index}
                     className='d-flex'
-                    style={{justifyContent: 'space-between', width: '100%'}}
+                    style={{ justifyContent: 'space-between', width: '100%' }}
                   >
                     <h5>Traveler {index + 1}:</h5>
-                    <h5>
-                      {totalAmounta.toFixed(0)}
-                      /-
-                    </h5>
+                    <h5>{getMerchantInsuranceAmount(calculateAge(traveler.birthDetail), selectedEntry.age_groups)}/-</h5>
                   </div>
                 ))}
 
-                <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
+                <div className='d-flex' style={{ justifyContent: 'space-between', width: '100%' }}>
                   <h5>Total: </h5>
-                  <h5>{totalAmount.toFixed(0)}/-</h5>
+                  <h5>{totalAmounta}/-</h5>
                 </div>
                 <hr
                   style={{

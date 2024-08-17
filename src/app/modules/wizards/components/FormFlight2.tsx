@@ -316,7 +316,7 @@ const FormFlight2: React.FC<VerticalProps> = ({
       />
 
       <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
-      <div
+        <div
           style={{
             width: '25%',
             padding: '16px',

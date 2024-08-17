@@ -11,6 +11,7 @@ function Iwaiting() {
       setLoading(true);
       try {
         const response = await axiosInstance.get('/backend/super_admin/fetch_all_insurance');
+        console.log("sfdr", response.data.data)
         const data = [...(response.data.data || []), ...(response.data.data1 || [])];
         const filteredData = data.filter(item => ['Applied', 'Not Issued'].includes(item.insurance_status));
         const sortedData = filteredData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());

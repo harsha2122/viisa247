@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toAbsoluteUrl } from '../../_metronic/helpers';
 import Cookies from 'js-cookie';
 
+
 type Plan = {
   age_group: string;
   description: string;
@@ -26,6 +27,25 @@ type InsuranceData = {
   insurance_per_day_price: string;
 };
 
+type OnSelectClickData = {
+  id: string;
+  issueDate: string;
+  expiryDate: string;
+  country_code: string;
+  nationality_code: string;
+  age_groups: {
+    id: string;
+    issueDate: string;
+    expiryDate: string;
+    country_code: string;
+    nationality_code: string;
+    benefits: string[];
+    description: string;
+    age_group: string;
+  }[];
+};
+
+
 type Props = {
   className: string;
   title: string;
@@ -38,20 +58,9 @@ type Props = {
     insuranceData: InsuranceData[];
   };
   manualValue: any;
-  onSelectClick: (entryData: {
-    id: string;
-    totalAmount: number;
-    issueDate: string;
-    expiryDate: string;
-    country_code: string;
-    nationality_code: string;
-    insurance_original_amount: number;
-    age_group: string;
-    benefits: string[];
-    description: string;
-    merchant_insurance_amount: number; // new property for amount with markup
-  }) => void;
+  onSelectClick: (entryData: OnSelectClickData) => void;  // Updated type
 };
+
 
 const InsuranceTablec: React.FC<Props> = ({
   className,
@@ -88,44 +97,43 @@ const InsuranceTablec: React.FC<Props> = ({
     );
   
     if (selectedInsurance) {
-      const ageGroupData = selectedInsurance.plans[activeTab as keyof typeof selectedInsurance.plans].age_groups;
-      
-      ageGroupData.forEach(plan => {
-        const totalPrice = calculatePrice(
-          parseFloat(plan.retailer.base_price),
-          parseFloat(plan.retailer.price_per_day),
-          apiData.issue_date,
-          apiData.expiry_date
-        ).totalPrice;
+      const selectedPlanData = selectedInsurance.plans[activeTab as keyof typeof selectedInsurance.plans].age_groups.map(plan => {
+        const basePrice = parseFloat(plan.retailer.base_price);
+        const pricePerDay = parseFloat(plan.retailer.price_per_day);
+        const { totalPrice } = calculatePrice(basePrice, pricePerDay, apiData.issue_date, apiData.expiry_date);
+        const insuranceBasePrice = parseFloat(selectedInsurance.insurance_base_price);
+        const insurancePerDayPrice = parseFloat(selectedInsurance.insurance_per_day_price);
+        const { totalPrice1: insuranceOriginalAmount } = calculatePrice1(insuranceBasePrice, insurancePerDayPrice, apiData.issue_date, apiData.expiry_date);
+        const merchantOriginalAmount = calculateretailerPrice(totalPrice);
   
-        const merchantPrice = calculateretailerPrice(totalPrice);
-  
-        const planData = {
+        return {
           id: plan.retailer._id,
-          totalAmount: totalPrice,
-          merchant_insurance_amount: merchantPrice,
           issueDate: apiData.issue_date,
           expiryDate: apiData.expiry_date,
           country_code: selectedInsurance.country_code.join(', '),
           nationality_code: selectedInsurance.nationality_code,
           benefits: plan.benefits,
           description: plan.description,
-          insurance_original_amount: totalPrice,
           age_group: plan.age_group,
+          insurance_amount: totalPrice,
+          merchant_insurance_amount: merchantOriginalAmount,
+          insurance_original_amount: insuranceOriginalAmount
         };
+      });
   
-        onSelectClick(planData);
+      onSelectClick({
+        id: selectedInsurance._id,
+        issueDate: apiData.issue_date,
+        expiryDate: apiData.expiry_date,
+        country_code: selectedInsurance.country_code.join(', '),
+        nationality_code: selectedInsurance.nationality_code,
+        age_groups: selectedPlanData,
       });
     } else {
       console.warn("No insurance plan selected!");
     }
   };
   
-
-  const getRandomBackgroundImage = () => {
-    const randomIndex = Math.floor(Math.random() * backgroundImages.length);
-    return backgroundImages[randomIndex];
-  };
 
   useEffect(() => {
     if (apiData.insuranceData.length > 0) {
@@ -187,8 +195,6 @@ const InsuranceTablec: React.FC<Props> = ({
     const markupPercentage = parseFloat(markupPercentageString);
     return Math.round(price * (1 + markupPercentage / 100));
   };
-
-console.log("sdf", apiData)
 
   return (
     <div className="pb-8">

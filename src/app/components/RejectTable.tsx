@@ -4,8 +4,7 @@ import { KTIcon, toAbsoluteUrl } from '../../_metronic/helpers'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { CloseOutlined, DeleteOutline } from '@mui/icons-material'
 import ApplicationFormView from './ApplicationFormView'
-import ConfirmationModal from './ConfirmationModal'
-import Button from '@mui/material/Button';
+import { Accordion, Button, Table } from 'react-bootstrap';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -249,80 +248,163 @@ const RejectTable: React.FC<Props> = ({ className, title, data,loading }) => {
               </h3>
             </div>
             <div className='card-body py-3'>
-              <div className='table-responsive'>
-                <table className='table table-row-bordered table-row-gray-300 align-middle gs-0 gy-3'>
-                  <thead>
-                    <tr className='fw-bold '>
-                      <th className='fs-5 min-w-160px'>Name</th>
-                      <th className='fs-5 min-w-100px'>Email</th>
-                      <th className='fs-5 min-w-100px'>Contact</th>
-                      <th className='fs-5 min-w-40px'>From</th>
-                      <th className='fs-5 text-center min-w-40px'>To</th>
-                      <th className='fs-5 text-center min-w-70px'>Date</th>
-                      <th className='fs-5 text-center min-w-70px'>Status</th>
-                      <th className='fs-5 text-center min-w-70px'>Amount</th>
-                      <th className='fs-5 min-w-100px text-center'>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  {data.slice(startIndex, endIndex).map((row, index) => (
-                    <tr key={index}>
-                      <td>
-                        <a href='#' className='text-gray-600 fw-bold text-hover-primary fs-7'>
-                          {row.first_name}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                            {row.merchant_email_id}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.merchant_phone_number}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.nationality}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.application_destination}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.application_departure_date}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.visa_status}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-center text-hover-primary d-block mb-1 fs-7'>
-                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.visa_amount))}
-                        </a>
-                      </td>
-                      <td className='text-end'>
-                      <button
-                        title='Edit'
-                        onClick={() => handleVisibilityClick(row)}
-                        className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                      >
-                        <KTIcon iconName='pencil' className='fs-3' />
-                      </button>
-
-                    </td>
-                    </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+            <div className='table-responsive'>
+              {loading ? (
+                <div
+                  style={{
+                    height: 300,
+                    overflowX: 'hidden',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    display: 'flex',
+                  }}
+                >
+                  <span className='indicator-progress' style={{ display: 'block' }}>
+                    Please wait...
+                    <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                  </span>
+                </div>
+                  ) : (
+                    <Accordion defaultActiveKey='0'>
+                      {data.map(({ group_id, applications }) => {
+                        const firstApp = applications[0] || {};
+                        const totalApps = applications.length;
+                        return (
+                          <Accordion.Item
+                            style={{ border: '1px solid #327113', borderRadius: '5px' }}
+                            eventKey={group_id}
+                            key={group_id}
+                          >
+                            <Accordion.Header>
+                              <Table
+                                bordered
+                                size='sm'
+                                style={{ marginBottom: 0, tableLayout: 'fixed', width: '90%' }}
+                              >
+                                <thead>
+                                  <tr>
+                                    <th style={{ width: '20%' }}>Group ID</th>
+                                    <th style={{ width: '20%' }}>Name</th>
+                                    <th style={{ width: '20%' }}>Email</th>
+                                <th style={{ width: '20%' }}>Total Applications</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>{group_id}</td>
+                                <td>{firstApp.first_name || 'N/A'}</td>
+                                <td>{firstApp.merchant_email_id || 'N/A'}</td>
+                                <td>{totalApps}</td>
+                              </tr>
+                            </tbody>
+                          </Table>
+                        </Accordion.Header>
+                        <Accordion.Body>
+                          <Table striped bordered hover responsive>
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact</th>
+                                <th>Channel</th>
+                                <th className='text-center'>To</th>
+                                <th className='text-center'>Date</th>
+                                <th className='text-center'>Status</th>
+                                <th className='text-center'>Amount</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {applications.map((app) => (
+                                <tr key={app._id}>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-gray-600 fw-bold text-hover-primary fs-7'
+                                    >
+                                      {app.first_name}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-muted text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      {app.merchant_email_id || app.customer_email_id}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-muted text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      {app.merchant_phone_number || app.customer_phone_number}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-muted text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      {app.customer_email_id ? 'Customer' : 'Merchant'}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      {app.application_destination}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      {app.application_departure_date}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      {app.visa_status}
+                                    </a>
+                                  </td>
+                                  <td>
+                                    <a
+                                      href='#'
+                                      className='text-muted text-center text-hover-primary d-block mb-1 fs-7'
+                                    >
+                                      ₹{' '}
+                                      {new Intl.NumberFormat('en-IN').format(
+                                        Number(app.visa_amount)
+                                      )}
+                                    </a>
+                                  </td>
+                                  {/* <td className='text-end d-flex'>
+                                    <button
+                                      title='Edit'
+                                      onClick={() => handleVisibilityClick(app)}
+                                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
+                                    >
+                                      <KTIcon iconName='eye' className='fs-3' />
+                                    </button>
+                                  </td> */}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    );
+                  })}
+                </Accordion>
+              )}
             </div>
+          </div>
+
           </section>
           }
           <div className="d-flex justify-content-center">

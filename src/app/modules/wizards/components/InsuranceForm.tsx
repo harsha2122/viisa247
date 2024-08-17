@@ -124,20 +124,28 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
       }
     }
 
-  const handleFieldChange = (fieldName, value) => {
-    setFormData({ ...formData, [fieldName]: value })
-    onDataChange({ ...formData, [fieldName]: value })
-
-    if (fieldName == 'birthDetail') {
-      setDob(value)
+    const calculateAge = (dob) => {
+      const today = moment();
+      const birthDate = moment(dob);
+      let age = today.diff(birthDate, 'years');
+      return age;
+    };
+  
+    const handleFieldChange = (fieldName, value) => {
+      setFormData({ ...formData, [fieldName]: value })
+      onDataChange({ ...formData, [fieldName]: value })
+  
+      if (fieldName === 'birthDetail') {
+        setDob(value);
+        const age = calculateAge(value);
+      }
+      if (fieldName === 'passportIssueDate') {
+        setIssueDate(value)
+      }
+      if (fieldName === 'passPortExpiryDate') {
+        setExpiryDate(value)
+      }
     }
-    if (fieldName == 'passportIssueDate') {
-      setIssueDate(value)
-    }
-    if (fieldName == 'passPortExpiryDate') {
-      setExpiryDate(value)
-    }
-  }
 
   const [issueDate, setIssueDate] = useState<string | undefined>('');
   const [expiryDate, setExpiryDate] =useState<string | undefined>('');
@@ -146,6 +154,11 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
   const disabledDate = (current) => {
     return current && current > moment().endOf('day');
   };
+
+  const disabledDates = (current) => {
+    return current && current < moment().endOf('day');
+  };
+
 
   return (
     <div
@@ -342,6 +355,7 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                           borderRadius: 10,
                           padding: 10,
                         }}
+                        disabledDate={disabledDate}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('birthDetail', value.format('YYYY-MM-DD'))
@@ -369,6 +383,7 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                           borderRadius: 10,
                           padding: 10,
                         }}
+                        disabledDate={disabledDate}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('passportIssueDate', value.format('YYYY-MM-DD'))
@@ -394,6 +409,7 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                           borderRadius: 10,
                           padding: 10,
                         }}
+                        disabledDate={disabledDates}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('passPortExpiryDate', value.format('YYYY-MM-DD'))

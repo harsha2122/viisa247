@@ -177,7 +177,7 @@ const FormFlight1: React.FC<VerticalProps> = ({
 
   const totalAmount = travelerForms.length * selectedEntry.totalAmount
   const totalAmounta = selectedEntry.totalAmount
-
+console.log("sdf", selectedEntry)
   const addTravelerForm = () => {
     setTravelerForms((prevForms) => [...prevForms, {}])
   }
@@ -336,19 +336,26 @@ const FormFlight1: React.FC<VerticalProps> = ({
       <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
       <div
           style={{
-            width: '20%',
+            width: '25%',
             padding: '16px',
             paddingLeft: '10px',
-            position: "sticky",
+            position: 'sticky',
             height: '100%',
             overflowY: 'auto',
-            paddingTop: 20,
-            top: '75px',
-            left: "10px",
+            paddingTop: 10,
+            top: '0px',
           }}
         >
            {travelerForms.map((form, index) => (
-            <>
+            <div style={{
+              borderRadius: 15,
+              borderColor: '#696969',
+              padding: '10px',
+              boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
+              backgroundColor: 'white',
+              marginBottom: '15px',
+              marginTop: '5px',
+            }}>
               <div onClick={() => {}} style={{ ...tabTextStyle }}>
                 <CheckCircleOutline style={{ color: '#327113', marginRight: 8 }} />
                 Traveller {index + 1}
@@ -366,12 +373,8 @@ const FormFlight1: React.FC<VerticalProps> = ({
                   Passport Front
                 </div>
               </div>
-            </>
+            </div>
           ))}
-          <div onClick={() => {}} style={{...tabTextStyle, color: '#696969'}}>
-            <CircleOutlined style={{color: '#327113', marginRight: 10}} />
-            Submit
-          </div>
         </div>
         <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
           {travelerForms.map((_, index) => (
@@ -569,11 +572,11 @@ const FormFlight1: React.FC<VerticalProps> = ({
                 borderRadius: 10,
                 borderColor: '#f5f5f5',
                 boxShadow: '4px 4px 15px rgba(0, 0, 0, 0.1)',
-                marginLeft: '10%',
+                marginLeft: '5%',
                 backgroundColor: 'white',
                 height: 'max-content',
                 marginBottom: 20,
-                width: '30%',
+                width: '35%',
               }}
             >
               <h2 style={{fontSize: 20, marginBottom: 20}}>Price Details</h2>

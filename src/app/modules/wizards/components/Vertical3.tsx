@@ -402,66 +402,104 @@ const Vertical3: React.FC<VerticalProps> = ({
       <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
       <div
           style={{
-            width: '20%',
+            width: '25%',
             padding: '16px',
             paddingLeft: '10px',
-            position: "sticky",
+            position: 'sticky',
             height: '100%',
             overflowY: 'auto',
-            paddingTop: 20,
-            top: '75px',
-            left: "10px",
+            paddingTop: 10,
+            top: '0px',
           }}
         >
            {travelerForms.map((form, index) => (
-            <>
-              <div onClick={() => {}} style={{ ...tabTextStyle }}>
-                <CheckCircleOutline style={{ color: '#327113', marginRight: 8 }} />
+            <div
+              style={{
+                borderRadius: 15,
+                borderColor: '#696969',
+                padding: '10px',
+                boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
+                backgroundColor: 'white',
+                marginBottom: '15px',
+                marginTop: '5px',
+              }}
+            >
+              <div onClick={() => {}} style={{...tabTextStyle}}>
+                <CheckCircleOutline style={{color: '#327113', marginRight: 8}} />
                 Traveller {index + 1}
               </div>
-              <div style={{ marginLeft: 20 }}>
-                <div onClick={() => {}} style={{ ...tabTextStyle }}>
+              <div style={{marginLeft: 20}}>
+                <div onClick={() => {}} style={{...tabTextStyle}}>
                   {form.passFrontPhoto ? (
-                    <CheckCircleOutline 
-                      style={{ color: '#327113', marginRight: 10 }} 
-                      onClick={() => handleFileDelete(index, 'passFrontPhoto')} 
+                    <CheckCircleOutline
+                      style={{color: '#327113', marginRight: 10}}
+                      onClick={() => handleFileDelete(index, 'passFrontPhoto')}
                     />
                   ) : (
-                    <CircleOutlined style={{ color: '#327113', marginRight: 10 }} />
+                    <CircleOutlined style={{color: '#327113', marginRight: 10}} />
                   )}
                   Passport Front
                 </div>
-                <div onClick={() => {}} style={{ ...tabTextStyle }}>
+                <div onClick={() => {}} style={{...tabTextStyle}}>
                   {form.passBackPhoto ? (
-                    <CheckCircleOutline 
-                      style={{ color: '#327113', marginRight: 10 }} 
-                      onClick={() => handleFileDelete(index, 'passBackPhoto')} 
+                    <CheckCircleOutline
+                      style={{color: '#327113', marginRight: 10}}
+                      onClick={() => handleFileDelete(index, 'passBackPhoto')}
                     />
                   ) : (
-                    <CircleOutlined style={{ color: '#327113', marginRight: 10 }} />
+                    <CircleOutlined style={{color: '#327113', marginRight: 10}} />
                   )}
                   Passport Back
                 </div>
-                <div onClick={() => {}} style={{ ...tabTextStyle }}>
+                <div onClick={() => {}} style={{...tabTextStyle}}>
                   {form.travelerPhoto ? (
-                    <CheckCircleOutline 
-                      style={{ color: '#327113', marginRight: 10 }} 
-                      onClick={() => handleFileDelete(index, 'travelerPhoto')} 
+                    <CheckCircleOutline
+                      style={{color: '#327113', marginRight: 10}}
+                      onClick={() => handleFileDelete(index, 'travelerPhoto')}
                     />
                   ) : (
-                    <CircleOutlined style={{ color: '#327113', marginRight: 10 }} />
+                    <CircleOutlined style={{color: '#327113', marginRight: 10}} />
                   )}
                   Traveller Photo
                 </div>
               </div>
-            </>
+            </div>
           ))}
-          <div onClick={() => {}} style={{...tabTextStyle, color: '#696969'}}>
-            <CircleOutlined style={{color: '#327113', marginRight: 10}} />
-            Submit
-          </div>
         </div>
-        <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
+        <div style={{width: '100%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
+          <div style={{margin: '0 auto', width: '100%'}} className='visa-card mb-12 mt-4'>
+              <div className='entry-info'>
+                <h2>{selectedEntry?.day || '--'} Days</h2>
+                <p>Single Entry</p>
+              </div>
+              <div className='left-section'>
+                <div className='visa-details'>
+                  <p>Visa Type: Tourist Visa</p>
+                  <p>Price is inclusive of taxes.</p>
+                  <p>{selectedEntry?.description}</p>
+                </div>
+                <div className='stay-validity'>
+                  <p>
+                    <span>✔</span> Stay Period: <strong>{selectedEntry?.day || '--'} Days</strong>
+                  </p>
+                  <p>
+                    <span>✔</span> Validity: <strong>58 Days</strong>
+                  </p>
+                </div>
+              </div>
+              <div className='right-section'>
+                <div className='amount'>
+                  <p>Amount</p>
+                  <h2>
+                    ₹{' '}
+                    {(
+                        Number(selectedEntry?.receipt?.['Visa Fees'] ?? 0) +
+                        Number(selectedEntry?.receipt?.['Service Fees'] ?? 0)
+                      ).toFixed(0)}
+                  </h2>
+                </div>
+              </div>
+            </div>
           {travelerForms.map((_, index) => (
             <>
               <div key={index}>
@@ -621,7 +659,6 @@ const Vertical3: React.FC<VerticalProps> = ({
                 borderRadius: 15,
                 borderColor: '#696969',
                 boxShadow: '4px 4px 15px rgba(0, 0, 0, 0.1)',
-                marginLeft: 10,
                 backgroundColor: 'white',
                 width: '60%',
               }}
@@ -693,11 +730,11 @@ const Vertical3: React.FC<VerticalProps> = ({
                 borderRadius: 10,
                 borderColor: '#f5f5f5',
                 boxShadow: '4px 4px 15px rgba(0, 0, 0, 0.1)',
-                marginLeft: '10%',
+                marginLeft: '5%',
                 backgroundColor: 'white',
                 height: 'max-content',
                 marginBottom: 20,
-                width: '30%',
+                width: '35%',
               }}
             >
               <h2 style={{fontSize: 20, marginBottom: 20}}>Price Details</h2>

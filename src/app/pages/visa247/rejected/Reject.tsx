@@ -11,14 +11,28 @@ function Reject() {
       setLoading(true);
       try {
         const response = await axiosInstance.get('/backend/super_admin/fetch_all_visa');
-        const data = [...(response.data.data || []), ...(response.data.data1 || [])];
-        const filteredData = data.filter(item => 
-          item.visa_provider === 'manual' && item.visa_status === 'Reject'
-        );
-        const sortedData = filteredData.sort((a, b) => 
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-        setVisaStatsData(sortedData as any);
+        
+        // Filter data to exclude entries with null group_id
+        const filteredData = response.data.data.filter((item: any) => item.group_id !== null);
+
+        // Define the type of visaData explicitly
+        const visaData: any[] = [];
+        filteredData.forEach((group: any) => {
+          // Filter applications within the group
+          const filteredApplications = group.applications.filter((application: any) => 
+            application.visa_status === 'Rejected' || application.visa_status === 'Reject'
+          );
+
+          if (filteredApplications.length > 0) {
+            // Add filtered group with relevant applications
+            visaData.push({
+              ...group,
+              applications: filteredApplications,
+            });
+          }
+        });
+
+        setVisaStatsData(visaStatsData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {

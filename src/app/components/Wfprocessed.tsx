@@ -1,11 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { CSSProperties, useState } from 'react'
-import { KTIcon, toAbsoluteUrl } from '../../_metronic/helpers'
-import VisibilityIcon from '@mui/icons-material/Visibility'
 import { CloseOutlined, DeleteOutline } from '@mui/icons-material'
 import ApplicationFormView from './ApplicationFormView'
 import ConfirmationModal from './ConfirmationModal'
-import Button from '@mui/material/Button';
+import {Accordion, Button, Table} from 'react-bootstrap'
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -254,99 +252,114 @@ const Wfprocessed: React.FC<Props> = ({ className, title, data,loading }) => {
         {/* begin::Table container */}
         <div className='table-responsive'>
           {/* begin::Table */}
-          {loading ?
-            <div style={{ height: 300, overflowX: 'hidden', justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
-              <span className='indicator-progress' style={{ display: 'block' }}>
+          {loading ? (
+            <div
+              style={{
+                height: 300,
+                overflowX: 'hidden',
+                justifyContent: 'center',
+                alignItems: 'center',
+                display: 'flex',
+              }}
+            >
+              <span className='indicator-progress' style={{display: 'block'}}>
                 Please wait...
                 <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
               </span>
             </div>
-            :
-            <section style={{border:"1px solid #adc6a0"}} className='w-100 card my-5 '>
-            <div style={{borderBottom:"1.5px solid #327113"}} className='card-header'>
-              <h3 className='card-title align-content-start flex-row'>
-                <span className='card-label text-gray-600 fw-bold fs-3'>Recent Applications</span>
-              </h3>
-            </div>
-            <div className='card-body py-3'>
-              <div className='table-responsive'>
-                <table className='table table-row-bordered table-row-gray-300 align-middle gs-0 gy-3'>
-                  <thead>
-                    <tr className='fw-bold '>
-                      <th className='fs-5 min-w-160px'>Name</th>
-                      <th className='fs-5 min-w-100px'>Email</th>
-                      <th className='fs-5 min-w-100px'>Contact</th>
-                      <th className='fs-5 min-w-40px'>To</th>
-                      <th className='fs-5 min-w-40px'>From</th>
-                      <th className='fs-5 min-w-40px'>Channel</th>
-                      <th className='fs-5 text-center min-w-70px'>Status</th>
-                      <th className='fs-5 text-center min-w-70px'>Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  {data.slice(startIndex, endIndex).map((row, index) => (
-                    <tr key={index}>
-                      <td>
-                        <a href='#' className='text-gray-600 fw-bold text-hover-primary fs-7'>
-                          {row.first_name}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                            {row.merchant_email_id || row.customer_email_id}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.merchant_phone_number || row.customer_phone_number}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.nationality_code}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.country_code}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
-                          {row.customer_email_id ? 'Customer' : 'Merchant'}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
-                            {row.flight_status}
-                        </a>
-                      </td>
-                      <td>
-                        <a href='#' className='text-muted text-center text-hover-primary d-block mb-1 fs-7'>
-                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.flight_amount))}
-                        </a>
-                      </td>
-                    </tr>
-                    ))}
-                  </tbody>
-                </table>
+          ) : (
+            <section style={{border: '1px solid #adc6a0'}} className='w-100 card my-5'>
+              <div style={{borderBottom: '1.5px solid #327113'}} className='card-header'>
+                <h3 className='card-title align-content-start flex-row'>
+                  <span className='card-label text-gray-600 fw-bold fs-3'>Recent Applications</span>
+                </h3>
               </div>
-            </div>
-          </section>
-          }
-          <div className="d-flex justify-content-center">
-          <Pagination>
-                {visiblePages.map((page, index) => (
-                  <Pagination.Item
-                    key={index}
-                    active={page === activePage}
-                    onClick={() => handlePageChange(typeof page === 'number' ? page : activePage)}
-                  >
-                    {page}
-                  </Pagination.Item>
-                ))}
-              </Pagination>
+              <div className='card-body py-3'>
+                <div className='table-responsive'>
+                  {loading ? (
+                    <div
+                      style={{
+                        height: 300,
+                        overflowX: 'hidden',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        display: 'flex',
+                      }}
+                    >
+                      <span className='indicator-progress' style={{display: 'block'}}>
+                        Please wait...
+                        <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                      </span>
+                    </div>
+                  ) : (
+                    <Accordion defaultActiveKey='0'>
+                      {data.map(({group_id, applications}) => {
+                        const firstApp = applications[0] || {}
+                        const totalApps = applications.length
+                        return (
+                          <Accordion.Item
+                            style={{border: '1px solid #327113', borderRadius: '5px'}}
+                            eventKey={group_id}
+                            key={group_id}
+                          >
+                          <Accordion.Header>
+                            <Table
+                              bordered
+                              size='sm'
+                              style={{ marginBottom: 0, tableLayout: 'fixed', width: '95%' }}
+                            >
+                              <thead>
+                                <tr>
+                                  <th style={{ width: '10%' }}>Group ID</th>
+                                  <th style={{ width: '20%' }}>Name</th>
+                                  <th style={{ width: '20%' }}>Email</th>
+                                  <th style={{ width: '10%' }}>Applicants</th>
+                                  <th style={{ width: '10%' }}>Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>{group_id}</td>
+                                  <td>{firstApp.first_name || 'N/A'}</td>
+                                  <td>{firstApp.merchant_email_id || 'N/A'}</td>
+                                  <td>{totalApps}</td>
+                                  <td>{firstApp.flight_status || 'N/A'}</td>
+                                </tr>
+                              </tbody>
+                            </Table>
+                          </Accordion.Header>
+
+                            <Accordion.Body>
+                              <Table striped bordered hover responsive>
+                                <thead>
+                                  <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Contact</th>
+                                    <th>Amount</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {applications.map((app) => (
+                                    <tr key={app._id}>
+                                      <td>{app.first_name}</td>
+                                      <td>{app.merchant_email_id}</td>
+                                      <td>{app.merchant_phone_number}</td>
+                                      <td>{app.flight_amount}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </Table>
+                            </Accordion.Body>
+                          </Accordion.Item>
+                        )
+                      })}
+                    </Accordion>
+                  )}
+                </div>
               </div>
+            </section>
+          )}
           {/* end::Table */}
         </div>
         {/* end::Table container */}

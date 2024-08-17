@@ -566,7 +566,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
               <ul style={{listStyle: 'none', paddingLeft: 0}}>
               {selectedRow && selectedRow.length > 0 ? (
                 selectedRow.map((app) => (
-                  <li key={app._id}>
+                  <li style={{display:"flex", alignItems:"center", gap:"15px"}} key={app._id}>
                     <input
                       type='checkbox'
                       checked={selectedApplicants.includes(app._id)}

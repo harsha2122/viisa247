@@ -111,6 +111,8 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
     }
   }
 
+  console.log("defg", data)
+
   const handleStatusChange = async (row: any, selectedStatus: string) => {
     setSelectedRow(row);
     if (selectedStatus === 'Reject') {

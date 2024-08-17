@@ -173,6 +173,7 @@ const VisaInprocess: React.FC<Props> = ({ className, title, data,loading }) => {
       setissueVisaLoader(false);
     }
   };
+  
   return (
     <div style={{boxShadow:"none"}} className={`card ${className}`}>
       <Toaster />

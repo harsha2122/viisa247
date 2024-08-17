@@ -570,10 +570,10 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
                 placeholder='Enter your remark'
               ></textarea>
 
-              <h3>Select Applicants</h3>
+              <h3 className='mt-4'>Select Applicants</h3>
               <ul style={{listStyle: 'none', paddingLeft: 0}}>
                 {selectedRows.map((app) => (
-                  <li key={app._id}>
+                  <li style={{display:"flex", alignItems:"center", gap:"15px"}} key={app._id}>
                     <input
                       type='checkbox'
                       checked={selectedApplicants.includes(app._id)}

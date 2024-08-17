@@ -10,8 +10,7 @@ import Cookies from 'js-cookie';
 import toast, { Toaster } from 'react-hot-toast';
 import bgl from '../../_metronic/assets/card/asd.png';
 import not from '../../_metronic/assets/card/3dnot.webp';
-import { GiCommercialAirplane } from 'react-icons/gi';
-import { Dropdown1, Dropdown2 } from '../../_metronic/partials';
+import moment from 'moment';
 
 type Props = {
   show: (value: boolean) => void;
@@ -95,7 +94,21 @@ const CustomerApplyHotel: React.FC<Props> = ({ show, visaList, onApiDataReceived
 
   const [selectedFromCountry, setSelectedFromCountry] = useState('');
   const [selectedToCountry, setSelectedToCountry] = useState('');
-  const currentDate = new Date();
+  const [issueDay, setIssueDay] = useState('');
+  const [expiryDay, setExpiryDay] = useState('');
+  const currentDate = new Date()
+
+  const handleDateChange = (date, setDate, setDay) => {
+    if (date) {
+      const formattedDate = date.toDate();
+      const dayOfWeek = moment(formattedDate).format('ddd');
+      setDate(moment(formattedDate).format('YYYY-MM-DD'));
+      setDay(dayOfWeek);
+    } else {
+      setDate('');
+      setDay('');
+    }
+  };
 
   const disabledDate = (current) => {
     return current && current < currentDate;
@@ -104,68 +117,112 @@ const CustomerApplyHotel: React.FC<Props> = ({ show, visaList, onApiDataReceived
 
   return (
     <>
-      <Toaster />
-      <div className='d-flex flex-row' >
-        <div>
-          <img style={{width:"100%"}} src={bgl} alt="" />
-        </div>
-        <Formik validationSchema={null} initialValues={initValues} onSubmit={onSubmit}>
-          {({ handleSubmit }) => (
-            <Form
-              className='w-100'
-              noValidate
-              id='kt_create_account_form'
-              onSubmit={handleSubmit}
-              style={{marginLeft:"-70px"}}
-            >
-          <div style={{justifyContent:"center", alignItems:"center"}} className='d-flex flex-column mx-auto'>
-            <h1 className='px-9 mt-25' style={{fontSize: 50 }}>
-              Get Dummy Hotel Tickets
-            </h1>
-
-            <h3
-              className='mx-9 mb-10 mt-5 px-5 pb-3'
+    <Toaster />
+    <div className='d-flex flex-column justify-content-center gap-8'>
+      <Formik validationSchema={null} initialValues={initValues} onSubmit={onSubmit}>
+        {({handleSubmit}) => (
+          <div className='d-flex flex-column justify-content-center gap-8'>
+          
+          <Form className='w-100' noValidate id='kt_create_account_form' onSubmit={handleSubmit}>
+            <div
+              className='d-flex flex-column align-items-center'
               style={{
-                fontSize: 20,
-                borderBottomWidth: 1,
-                borderBottom: '3px solid',
-                borderColor: '#327113',
-                width: 220,
+                background: '#fff',
+                padding: '50px 20px',
+                borderRadius: '15px',
+                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+                border: '0.5px solid #e5e5e5',
+                maxWidth: '1200px',
+                width: '100%',
               }}
             >
-              Dummy Hotel
-              <GiCommercialAirplane style={{ marginLeft: '7px' }} />
-            </h3>
-          </div>
-              <div className='d-flex flex-row justify-content-between'>
-                <div className='fv-row mb-10 w-100'>
-                  <RoomIcon style={{ marginRight: '3px' }} />
-                  <label className='form-label fs-4'>From</label>
+              <h1 style={{fontSize:"30px"}} className='mb-20'>Get dummy hotel tickets</h1>
+              {/* From Country */}
+              <div className='d-flex flex-row w-100 align-items-center'>
+              <div
+                className='d-flex flex-column position-relative'
+                style={{
+                  flex: '1 1 18%',
+                  paddingRight: '10px',
+                  borderRight: '0.5px solid #E5E5E5',
+                  minWidth: '150px',
+                }}
+              >
+                <label
+                  className='position-absolute'
+                  style={{
+                    top: '-10px',
+                    left: '40px',
+                    background: '#fff',
+                    padding: '0 5px',
+                    fontSize: '12px',
+                    color: '#327113',
+                    zIndex: '1',
+                    fontWeight: '600',
+                  }}
+                >
+                  FROM
+                </label>
+                <div className='d-flex align-items-center w-100'>
+                  <RoomIcon style={{marginRight: '10px', color: '#327113'}} />
                   <Field
                     as='select'
                     name='fromCountry'
                     defaultValue={selectedFromCountry}
-                    // onChange={handleFromCountryChange}
-                    className='form-select form-select-lg form-select-solid border border-2  border-secondary rounded-4 mt-2'
-                    style={{ background: '#fff' }}
+                    className='form-select border border-1 rounded'
+                    style={{
+                      background: '#fff',
+                      color: '#000',
+                      width: '100%',
+                      padding: '10px 15px',
+                      fontSize: '16px',
+                    }}
                   >
-                    <option value=''>Select a Country...</option>
                     <option value='IN'>India</option>
                   </Field>
-                  <div className='text-danger mt-2'>
-                    <ErrorMessage name='businessType' />
-                  </div>
                 </div>
-                <div className='fv-row mb-10 w-100' style={{ marginLeft: '5%' }}>
-                  <FlightIcon style={{ marginRight: '3px' }} />
-                  <label className='form-label fs-4'>To</label>
+              </div>
 
+              {/* To Country */}
+              <div
+                className='d-flex flex-column position-relative'
+                style={{
+                  flex: '1 1 22%',
+                  paddingLeft: '10px',
+                  paddingRight: '10px',
+                  borderRight: '0.5px solid #E5E5E5',
+                  minWidth: '150px',
+                }}
+              >
+                <label
+                  className='position-absolute'
+                  style={{
+                    top: '-10px',
+                    left: '50px',
+                    background: '#fff',
+                    padding: '0 5px',
+                    fontSize: '12px',
+                    color: '#327113',
+                    zIndex: '1',
+                    fontWeight: '600',
+                  }}
+                >
+                  TO
+                </label>
+                <div className='d-flex align-items-center w-100'>
+                  <FlightIcon style={{marginRight: '10px', color: '#327113'}} />
                   <Field
                     as='select'
                     name='toCountry'
                     defaultValue={selectedToCountry}
-                    className='form-select form-select-lg form-select-solid border border-2  border-secondary rounded-4 mt-2'
-                    style={{ background: '#fff' }}
+                    className='form-select border border-1 rounded'
+                    style={{
+                      background: '#fff',
+                      color: '#000',
+                      width: '100%',
+                      padding: '10px 15px',
+                      fontSize: '14px',
+                    }}
                   >
                     <option value=''>Select a Country...</option>
                     <option value='AF'>Afghanistan</option>
@@ -416,49 +473,127 @@ const CustomerApplyHotel: React.FC<Props> = ({ show, visaList, onApiDataReceived
                     <option value='ZM'>Zambia</option>
                     <option value='ZW'>Zimbabwe</option>
                   </Field>
-                  <div className='text-danger mt-2'>
-                    <ErrorMessage name='businessType' />
-                  </div>
                 </div>
-              </div>
-              <div className='fv-row mb-10 w-50 mx-auto'>
-                <DatePicker.RangePicker 
-                  style={{backgroundClip:'#fff',color:"#686868",width:400,marginTop:8,border:'2px solid #e5e5e5',borderRadius:10,padding:10,marginLeft:-20}}
-                  onChange={(value)=>{
-                    if (value && value.length === 2) {
-                      var x = value[0]?.format('YYYY-MM-DD');
-                      var y = value[1]?.format('YYYY-MM-DD');
-                      setIssueDate(x);
-                      setExpiryDate(y);
-                    }
-                  }}
-                  disabledDate={disabledDate}
-                />
               </div>
 
-              {!visaList && (
-                <div className='d-flex flex-row justify-content-center mt-5'>
-                  <button
-                    type='submit'
+              {/* Start Date */}
+              <div
+                className='d-flex flex-column position-relative'
+                style={{
+                  flex: '1 1 22%',
+                  paddingLeft: '10px',
+                  paddingRight: '10px',
+                  borderRight: '0.5px solid #E5E5E5',
+                  minWidth: '200px',
+                }}
+              >
+                <label
+                  className='position-absolute'
+                  style={{
+                    top: '-10px',
+                    left: '20px',
+                    background: '#fff',
+                    padding: '0 5px',
+                    fontSize: '12px',
+                    color: '#327113',
+                    zIndex: '1',
+                    fontWeight: '600',
+                  }}
+                >
+                  START DATE
+                </label>
+                <div className='d-flex align-items-center w-100'>
+                  <DatePicker
                     style={{
-                      borderRadius: 5,
-                      backgroundColor: '#327113',
-                      border:"none",
-                      color:"white",
-                      height:"40px",
-                      width:"100px",
-                      fontSize:"16px",
+                      background: '#fff',
+                      color: '#686868',
+                      border: '1px solid #e5e5e5',
+                      borderRadius: '5px',
+                      width: '100%',
+                      padding: '10px 15px',
+                      fontSize: '16px',
                     }}
-                  >
-                    Search
-                  </button>
+                    disabledDate={disabledDate}
+                    onChange={(date) => handleDateChange(date, setIssueDate, setIssueDay)}
+                  />
+                  <span style={{color: '#686868', marginLeft: '10px'}}>{issueDay ? issueDay : 'Day'}</span>
                 </div>
-              )}
-            </Form>
-          )}
-        </Formik>
-      </div>
-    </>
+              </div>
+
+              {/* End Date */}
+              <div
+                className='d-flex flex-column position-relative'
+                style={{
+                  flex: '1 1 22%',
+                  paddingLeft: '10px',
+                  paddingRight: '10px',
+                  minWidth: '200px',
+                }}
+              >
+                <label
+                  className='position-absolute'
+                  style={{
+                    top: '-10px',
+                    left: '20px',
+                    background: '#fff',
+                    padding: '0 5px',
+                    fontSize: '12px',
+                    color: '#327113',
+                    zIndex: '1',
+                    fontWeight: '600',
+                  }}
+                >
+                  END DATE
+                </label>
+                <div className='d-flex align-items-center w-100'>
+                  <DatePicker
+                    style={{
+                      background: '#fff',
+                      color: '#686868',
+                      border: '1px solid #e5e5e5',
+                      borderRadius: '5px',
+                      width: '100%',
+                      padding: '10px 15px',
+                      fontSize: '16px',
+                    }}
+                    disabledDate={disabledDate}
+                    onChange={(date) => handleDateChange(date, setExpiryDate, setExpiryDay)}
+                  />
+                  <span style={{color: '#686868', marginLeft: '10px'}}>{expiryDay ? expiryDay : 'Day'}</span>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div
+                className='d-flex align-items-center justify-content-center'
+                style={{flex: '1 1 18%', paddingLeft: '10px', minWidth: '150px'}}
+              >
+                <button
+                  type='submit'
+                  style={{
+                    borderRadius: '5px',
+                    backgroundColor: '#327113',
+                    border: 'none',
+                    color: 'white',
+                    height: '50px',
+                    width: '100%',
+                    fontSize: '16px',
+                  }}
+                >
+                  <span style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                    Search
+                    {/* <SearchIcon style={{ marginLeft: '8px', fontSize: '20px' }} /> */}
+                  </span>
+                </button>
+              </div>
+              </div>
+            </div>
+          </Form>
+          </div>
+        )}
+      </Formik>
+    </div>
+  </>
   )
 }
 

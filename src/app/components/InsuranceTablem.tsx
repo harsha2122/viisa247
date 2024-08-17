@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toAbsoluteUrl } from '../../_metronic/helpers';
 import Cookies from 'js-cookie';
 
+
 type Plan = {
   age_group: string;
   description: string;
@@ -26,6 +27,25 @@ type InsuranceData = {
   insurance_per_day_price: string;
 };
 
+type OnSelectClickData = {
+  id: string;
+  issueDate: string;
+  expiryDate: string;
+  country_code: string;
+  nationality_code: string;
+  age_groups: {
+    id: string;
+    issueDate: string;
+    expiryDate: string;
+    country_code: string;
+    nationality_code: string;
+    benefits: string[];
+    description: string;
+    age_group: string;
+  }[];
+};
+
+
 type Props = {
   className: string;
   title: string;
@@ -38,20 +58,9 @@ type Props = {
     insuranceData: InsuranceData[];
   };
   manualValue: any;
-  onSelectClick: (entryData: {
-    id: string;
-    totalAmount: number;
-    issueDate: string;
-    expiryDate: string;
-    country_code: string;
-    nationality_code: string;
-    insurance_original_amount: number;
-    age_group: string;
-    benefits: string[];
-    description: string;
-    merchant_insurance_amount: number; // new property for amount with markup
-  }) => void;
+  onSelectClick: (entryData: OnSelectClickData) => void;  // Updated type
 };
+
 
 const InsuranceTablem: React.FC<Props> = ({
   className,
@@ -83,54 +92,48 @@ const InsuranceTablem: React.FC<Props> = ({
   };
 
   const handleProceed = () => {
-    if (selectedPlanId) {
-      const selectedPlan = insurancePlans.find(plan => plan.customer._id === selectedPlanId);
-      if (selectedPlan) {
-        const selectedInsurance = apiData.insuranceData.find(insurance =>
-          insurance.plans[activeTab as keyof typeof insurance.plans]?.age_groups.some(plan => plan.customer._id === selectedPlanId)
-        );
-
-        if (selectedInsurance) {
-          const { totalPrice } = calculatePrice(
-            parseFloat(selectedPlan.customer.base_price),
-            parseFloat(selectedPlan.customer.price_per_day),
-            apiData.issue_date,
-            apiData.expiry_date
-          );
-
-          const { totalPrice1 } = calculatePrice1(
-            parseFloat(selectedInsurance.insurance_base_price),
-            parseFloat(selectedInsurance.insurance_per_day_price),
-            apiData.issue_date,
-            apiData.expiry_date
-          );
-
-          const totalPriceWithMarkup = calculateretailerPrice(totalPrice);
-
-          onSelectClick({
-            id: selectedPlanId,
-            totalAmount: totalPrice,
-            merchant_insurance_amount: totalPriceWithMarkup,
-            issueDate: apiData.issue_date,
-            expiryDate: apiData.expiry_date,
-            country_code: selectedInsurance.country_code.join(', '),
-            nationality_code: selectedInsurance.nationality_code,
-            benefits: selectedPlan.benefits,
-            description: selectedPlan.description,
-            insurance_original_amount: totalPrice1, // Modify if needed
-            age_group: selectedPlan.age_group,
-          });
-        }
-      }
+    const selectedInsurance = apiData.insuranceData.find(insurance =>
+      insurance.plans[activeTab as keyof typeof insurance.plans]?.age_groups
+    );
+  
+    if (selectedInsurance) {
+      const selectedPlanData = selectedInsurance.plans[activeTab as keyof typeof selectedInsurance.plans].age_groups.map(plan => {
+        const basePrice = parseFloat(plan.customer.base_price);
+        const pricePerDay = parseFloat(plan.customer.price_per_day);
+        const { totalPrice } = calculatePrice(basePrice, pricePerDay, apiData.issue_date, apiData.expiry_date);
+        const insuranceBasePrice = parseFloat(selectedInsurance.insurance_base_price);
+        const insurancePerDayPrice = parseFloat(selectedInsurance.insurance_per_day_price);
+        const { totalPrice1: insuranceOriginalAmount } = calculatePrice1(insuranceBasePrice, insurancePerDayPrice, apiData.issue_date, apiData.expiry_date);
+        const merchantOriginalAmount = calculateretailerPrice(totalPrice);
+  
+        return {
+          id: plan.customer._id,
+          issueDate: apiData.issue_date,
+          expiryDate: apiData.expiry_date,
+          country_code: selectedInsurance.country_code.join(', '),
+          nationality_code: selectedInsurance.nationality_code,
+          benefits: plan.benefits,
+          description: plan.description,
+          age_group: plan.age_group,
+          insurance_amount: totalPrice,
+          merchant_insurance_amount: merchantOriginalAmount,
+          insurance_original_amount: insuranceOriginalAmount
+        };
+      });
+  
+      onSelectClick({
+        id: selectedInsurance._id,
+        issueDate: apiData.issue_date,
+        expiryDate: apiData.expiry_date,
+        country_code: selectedInsurance.country_code.join(', '),
+        nationality_code: selectedInsurance.nationality_code,
+        age_groups: selectedPlanData,
+      });
     } else {
       console.warn("No insurance plan selected!");
     }
   };
-
-  const getRandomBackgroundImage = () => {
-    const randomIndex = Math.floor(Math.random() * backgroundImages.length);
-    return backgroundImages[randomIndex];
-  };
+  
 
   useEffect(() => {
     if (apiData.insuranceData.length > 0) {
@@ -194,129 +197,146 @@ const InsuranceTablem: React.FC<Props> = ({
   };
 
   return (
-    <div className='pb-8'>
-      <div className="container">
-        {apiData.insuranceData.map((insurance: InsuranceData, index) => (
-          <div key={index}>
-            <div className="age-group-tabs">
-              <h1>
-                {`Insurance Plan: ${index + 1}`}
-              </h1>
-            </div>
-            <div className="d-flex best-tab justify-content-center my-8 gap-4">
-              {Object.keys(insurance.plans).map((planType: string) => {
-                  if (['platinum', 'gold', 'silver'].includes(planType)) {
-                    return (
-                      <button
-                        key={planType}
-                        className={`age-group-tab capitalize ${activeTab === planType ? 'active' : ''}`}
-                        onClick={() => handleTabChange(planType)}
-                      >
-                        {insurance.plans[planType as keyof typeof insurance.plans].plan_name}
-                      </button>
-                    );
-                  }
-                  return null;
-                })}
-            </div>
-            <div className="row">
-              {(insurance.plans[activeTab as keyof typeof insurance.plans]?.age_groups || []).map((plan: Plan, index: number) => (
-                <div key={`${insurance._id}-${activeTab}-${index}`} className="col-md-4">
-                  <div
-                    style={{
-                      backgroundPosition: 'right top',
-                      backgroundSize: '30% auto',
-                      backgroundRepeat: 'no-repeat',
-                      backgroundImage: `url(${toAbsoluteUrl(getRandomBackgroundImage())})`,
-                      border: selectedPlanId === plan.customer._id ? '3px solid #327113' : '0.5px solid #dadada',
-                    }}
-                    className={`mb-xl-8 pricing-table purple ${activeTab} ${selectedPlanId === plan.customer._id ? 'selected' : ''}`}
+    <div className="pb-8">
+    <div className="container">
+      {apiData.insuranceData.map((insurance: InsuranceData, index) => (
+        <div key={index}>
+          <div className="d-flex best-tab justify-content-center my-8 gap-4">
+            {Object.keys(insurance.plans).map((planType: string) => {
+              if (['platinum', 'gold', 'silver'].includes(planType)) {
+                return (
+                  <button
+                    key={planType}
+                    className={`age-group-tab capitalize ${activeTab === planType ? 'active' : ''}`}
+                    onClick={() => handleTabChange(planType)}
                   >
-                    <div className="pricing-label">{plan.description}</div>
-                    <div className="pricing-details">
-                      <h2>{plan.age_group}</h2>
-                      <div className="pricing-features">
-                        {plan.customer && (
-                          <>
-                            <div className="feature">
-                              Total Price: <span>₹{Cookies.get('user_type') === 'merchant'
-                            ? Math.round(calculateretailerPrice(
-                              calculatePrice(
-                                parseFloat(plan.customer.base_price),
-                                parseFloat(plan.customer.price_per_day),
-                                apiData.issue_date,
-                                apiData.expiry_date
-                              ).totalPrice
-                            ))
-                            : calculatePrice(
-                                parseFloat(plan.customer.base_price),
-                                parseFloat(plan.customer.price_per_day),
-                                apiData.issue_date,
-                                apiData.expiry_date
-                              ).totalPrice}</span>
-                            </div>
-                            <div className="feature">
-                              Days: <span>{calculatePrice(
-                                parseFloat(plan.customer.base_price),
-                                parseFloat(plan.customer.price_per_day),
-                                apiData.issue_date,
-                                apiData.expiry_date
-                              ).days}</span>
-                            </div>
-                            <hr className='aahr' />
-                            <div className="feature">
-                              <h4>Benefits:</h4>
-                              <ul className='d-flex flex-column'>
-                                {plan.benefits.map((benefit, index) => (
-                                  <li key={index}>
-                                    <h6>{benefit}</h6>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      <div className="price-tag">
-                        <span className="symbol">₹</span>
-                        <span className="amount">
-                          {Cookies.get('user_type') === 'merchant'
-                            ? Math.round(calculateretailerPrice(
-                                calculatePrice(
-                                  parseFloat(plan.customer.base_price),
-                                  parseFloat(plan.customer.price_per_day),
-                                  apiData.issue_date,
-                                  apiData.expiry_date
-                                ).totalPrice
-                              ))
-                            : calculatePrice(
-                                parseFloat(plan.customer.base_price),
-                                parseFloat(plan.customer.price_per_day),
-                                apiData.issue_date,
-                                apiData.expiry_date
-                              ).totalPrice}
-                        </span>
-                      </div>
+                    {insurance.plans[planType as keyof typeof insurance.plans].plan_name}
+                  </button>
+                );
+              }
+              return null;
+            })}
+          </div>
+          <div className="row my-20">
+            {(insurance.plans[activeTab as keyof typeof insurance.plans]?.age_groups || []).map((plan: Plan, index: number) => (
+              <div key={`${insurance._id}-${activeTab}-${index}`} className="col-md-4">
+                <div
+                  style={{
+                    borderRadius: '40px',
+                    padding: '20px',
+                    boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.1)',
+                    border: selectedPlanId === plan.customer._id ? '3px solid #327113' : '1px solid #dadada',
+                    backgroundColor: '#fff',
+                    position: 'relative',
+                  }}
+                  className={`mb-xl-8 pricing-table ${activeTab} ${selectedPlanId === plan.customer._id ? 'selected' : ''}`}
+                >
+                  <div className='yop' style={{
+                    position: 'absolute',
+                    top: '-18px',
+                    right: '20px',
+                    backgroundColor: '#F1F1F1',
+                    padding: '10px',
+                    borderRadius: '3px',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                  }}>
+                    {plan.description}
+                  </div>
+                  <div className="pricing-details" style={{ marginTop: '20px' }}>
+                    <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '15px' }}>
+                      {plan.age_group}
+                    </h2>
+                    <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#000', margin: '30px 0' }}>
+                      ₹{Cookies.get('user_type') === 'merchant'
+                        ? Math.round((
+                          calculatePrice(
+                            parseFloat(plan.customer.base_price),
+                            parseFloat(plan.customer.price_per_day),
+                            apiData.issue_date,
+                            apiData.expiry_date
+                          ).totalPrice
+                        ))
+                        : calculatePrice(
+                          parseFloat(plan.customer.base_price),
+                          parseFloat(plan.customer.price_per_day),
+                          apiData.issue_date,
+                          apiData.expiry_date
+                        ).totalPrice}
+                    </h2>
+                    <div className="feature" style={{ fontSize: '16px', marginBottom: '5px' }}>
+                      <h3>
+                        Total Price:
+                      </h3> 
+                      <span>₹{Cookies.get('user_type') === 'merchant'
+                        ? Math.round((
+                          calculatePrice(
+                            parseFloat(plan.customer.base_price),
+                            parseFloat(plan.customer.price_per_day),
+                            apiData.issue_date,
+                            apiData.expiry_date
+                          ).totalPrice
+                        ))
+                        : calculatePrice(
+                          parseFloat(plan.customer.base_price),
+                          parseFloat(plan.customer.price_per_day),
+                          apiData.issue_date,
+                          apiData.expiry_date
+                        ).totalPrice}
+                      </span>
                     </div>
-                    <div className="card-footer d-flex justify-content-center mt-4">
-                      <button
-                        className={`btn btn-primary btn-block`}
-                        onClick={() => {
-                          handleSelectInsurance(plan.customer._id); // Set selected plan ID
-                          handleProceed(); // Proceed to select the plan
-                        }}
-                      >
-                        Proceed
-                      </button>
+                    <hr 
+                      style={{width:"100%", margin:"10px 0px"}}
+                    />
+                    <div className="feature" style={{ fontSize: '16px', marginBottom: '15px' }}>
+                      <h3>Days:</h3> 
+                      <span>{calculatePrice(
+                        parseFloat(plan.customer.base_price),
+                        parseFloat(plan.customer.price_per_day),
+                        apiData.issue_date,
+                        apiData.expiry_date
+                        ).days}
+                      </span>
                     </div>
+                    <hr 
+                      style={{width:"100%", margin:"10px 0px"}}
+                    />
+                    <div style={{ fontSize: '16px', fontWeight: 'bold', margin: '20px 0px' }}>
+                      Benefits:
+                    </div>
+                    <ul style={{ padding: '0', listStyle: 'none' }}>
+                      {plan.benefits.map((benefit, index) => (
+                        <li key={index} style={{ fontSize: '14px', marginBottom: '5px' }}>
+                          {benefit}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
+            <button
+              className="btn btn-success btn-block"
+              style={{
+                backgroundColor: '#3B873E',
+                color: '#fff',
+                borderRadius: '8px',
+                padding: '10px',
+                marginTop: '20px',
+                fontSize: '16px',
+                fontWeight: 'bold',
+              }}
+              onClick={handleProceed}
+            >
+              Proceed
+            </button>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
+  </div>
+
+
   );
 };
 

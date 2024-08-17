@@ -30,13 +30,7 @@ const Verticali: React.FC<VerticalProps> = ({
   visaListLoader,
   show,
 }) => {
-  const handleTravelerDataChange = (data, travelerIndex) => {
-    setTravelerForms((prevForms) => {
-      const updatedData = [...prevForms]
-      updatedData[travelerIndex] = data
-      return updatedData
-    })
-  }
+
   const [initValues] = useState<ICreateAccount>(inits)
   const [applicantForms, setApplicantForms] = useState<any[]>([])
   const [currentStep, setCurrentStep] = useState(0)
@@ -88,6 +82,104 @@ const Verticali: React.FC<VerticalProps> = ({
     passport_back: false,
     photo: false,
   });
+  const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [totalAmounta, setTotalAmounta] = useState<number>(0);
+
+  const calculateAge = (birthDate: string) => {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const getMerchantInsuranceAmount = (age: number, ageGroups: any[]) => {
+    const ageGroup = ageGroups.find(group => {
+      const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
+        const ageRangeParts = ageRange.split(' ');
+        return ageRangeParts[0] === 'mths' ? 0 : parseInt(ageRangeParts[0], 10);
+      });
+      return age >= minAge && age <= maxAge;
+    });
+    return ageGroup ? ageGroup.merchant_insurance_amount : 0;
+  };
+  useEffect(() => {
+    const calculateTotalAmount = () => {
+      let totalAmount = 0;
+      travelerForms.forEach(form => {
+        if (form.birthDetail) {
+          const age = calculateAge(form.birthDetail);
+          const amount = getMerchantInsuranceAmount(age, selectedEntry.age_groups);
+          totalAmount += amount;
+        }
+      });
+      setTotalAmounta(totalAmount);
+    };
+
+    calculateTotalAmount();
+  }, [travelerForms, selectedEntry.age_groups]);
+
+  const handleTravelerDataChange = (newData, index) => {
+    setTravelerForms(prevForms => {
+      const updatedForms = [...prevForms];
+      if (newData.birthDetail) {
+        const age = calculateAge(newData.birthDetail);
+        updatedForms[index] = { ...updatedForms[index], ...newData, age };
+      } else {
+        updatedForms[index] = { ...updatedForms[index], ...newData };
+      }
+      return updatedForms;
+    });
+  };
+
+  const getInsuranceAmountForAge = (age: number, ageGroups: any[]) => {
+    const ageGroup = ageGroups.find(group => {
+      const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
+        const ageRangeParts = ageRange.split(' ');
+        return ageRangeParts[0] === 'mths' ? 0 : parseInt(ageRangeParts[0], 10);
+      });
+  
+      return age >= minAge && age <= maxAge;
+    });
+    return ageGroup ? ageGroup.merchant_insurance_amount : 0;
+  };
+
+  const getInsuranceAmounts = (age, ageGroups) => {
+    const ageGroup = ageGroups.find(group => {
+      const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
+        const ageRangeParts = ageRange.split(' ');
+        return ageRangeParts[0] === 'mths' ? 0 : parseInt(ageRangeParts[0], 10);
+      });
+      return age >= minAge && age <= maxAge;
+    });
+    if (ageGroup) {
+      return {
+        insurance_amount: ageGroup.insurance_amount,
+        insurance_original_amount: ageGroup.insurance_original_amount,
+        merchant_insurance_amount: ageGroup.merchant_insurance_amount,
+      };
+    }
+    return {
+      insurance_amount: 0,
+      insurance_original_amount: 0,
+      merchant_insurance_amount: 0,
+    };
+  };
+  
+  
+
+  useEffect(() => {
+    const totalAmount = travelerForms.reduce((acc, form) => {
+      const age = calculateAge(form.birthDetail);
+      const amount = getInsuranceAmountForAge(age, selectedEntry.age_groups);
+      return acc + amount;
+    }, 0);
+  
+    setTotalAmount(totalAmount);
+  }, [travelerForms, selectedEntry.age_groups]);
 
   const handleTravelFieldChange = (index: number, fieldName: string, value: string) => {
     setTravelerForms((prevForms) => {
@@ -175,8 +267,6 @@ const Verticali: React.FC<VerticalProps> = ({
       window.removeEventListener('scroll', handleScroll)
     }
   }, [])
-
-  const totalAmount = travelerForms.length * selectedEntry.totalAmount
 
   const addTravelerForm = () => {
     setTravelerForms((prevForms) => [...prevForms, {}])
@@ -365,19 +455,26 @@ const Verticali: React.FC<VerticalProps> = ({
       <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
       <div
           style={{
-            width: '20%',
+            width: '25%',
             padding: '16px',
             paddingLeft: '10px',
-            position: "sticky",
+            position: 'sticky',
             height: '100%',
             overflowY: 'auto',
-            paddingTop: 20,
-            top: '75px',
-            left: "10px",
+            paddingTop: 10,
+            top: '0px',
           }}
         >
            {travelerForms.map((form, index) => (
-            <>
+            <div style={{
+              borderRadius: 15,
+              borderColor: '#696969',
+              padding: '10px',
+              boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
+              backgroundColor: 'white',
+              marginBottom: '15px',
+              marginTop: '5px',
+            }}>
               <div onClick={() => {}} style={{ ...tabTextStyle }}>
                 <CheckCircleOutline style={{ color: '#327113', marginRight: 8 }} />
                 Traveller {index + 1}
@@ -395,12 +492,8 @@ const Verticali: React.FC<VerticalProps> = ({
                   Passport Front
                 </div>
               </div>
-            </>
+            </div>
           ))}
-          <div onClick={() => {}} style={{...tabTextStyle, color: '#696969'}}>
-            <CircleOutlined style={{color: '#327113', marginRight: 10}} />
-            Submit
-          </div>
         </div>
         <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
           {travelerForms.map((_, index) => (
@@ -624,7 +717,7 @@ const Verticali: React.FC<VerticalProps> = ({
                   >
                     <h5>Traveler {index + 1}:</h5>
                     <h5>
-                      {selectedEntry.totalAmount.toFixed(0)}
+                    {getMerchantInsuranceAmount(calculateAge(traveler.birthDetail), selectedEntry.age_groups)}
                       /-
                     </h5>
                   </div>
@@ -632,7 +725,7 @@ const Verticali: React.FC<VerticalProps> = ({
 
                 <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
                   <h5>Total: </h5>
-                  <h5>{totalAmount.toFixed(0)}/-</h5>
+                  <h5>{totalAmounta}/-</h5>
                 </div>
                 <hr
                   style={{

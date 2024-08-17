@@ -2,25 +2,20 @@ import React, { useEffect, useState } from "react";
 import { VisaDetailCard } from "../../../components/VisaDetailCard";
 import axiosInstance from "../../../helpers/axiosInstance";
 import Cookies from 'js-cookie';
-import { MerchantAnaltytics } from "../../../components/MerchantAnalytics";
 import { TfiStatsUp } from "react-icons/tfi";
-import { MdOutlineAlignHorizontalLeft } from "react-icons/md";
-import { IoMdDoneAll } from "react-icons/io";
-import { GoStopwatch } from "react-icons/go";
-import { MdOutlineDoNotDisturb } from "react-icons/md";
-import { IoSettingsOutline } from "react-icons/io5";
-import { RxCross1 } from "react-icons/rx";
 import { GiAirplaneDeparture } from "react-icons/gi";
 import { useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import Loader from '../../../components/Loader';
-import { GoArrowLeft } from "react-icons/go";
-import { BsFillArrowRightCircleFill } from "react-icons/bs";
-import { GoArrowRight } from "react-icons/go";
+import { toAbsoluteUrl } from "../../../../_metronic/helpers";
+import { Link } from "react-router-dom";
 import logo from '../../../../_metronic/assets/favi.png'
-import CustomerApplyVisa from "../../../components/CustomerApplyVisa";
 import { FaShieldAlt } from "react-icons/fa";
 import { MdOutlineFlight } from "react-icons/md";
 import { FaHotel } from "react-icons/fa6";
+import CustomerNewVisaWrapper from "../apply-visa/CustomerNewVisaWrapper";
+import CustomerNewInsurance from "../apply-insurance/CustomerNewInsurance";
+import CustomerNewHotel from "../apply-others/CustomerNewHotel";
+import CustomerNewFlight from "../apply-others/CustomerNewFlight";
 
 const CustomerDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("All"); 
@@ -119,18 +114,18 @@ const CustomerDashboard: React.FC = () => {
           setFlightData(flightData);
         }
   
-        if (activeTab === 'ApplyVisa') {
-          navigate('/customer/apply-visa');
-        }
-        if (activeTab === 'ApplyInsurance') {
-          navigate('/customer/apply-insurance');
-        }
-        if (activeTab === 'ApplyHotel') {
-          navigate('/customer/apply-hotel');
-        }
-        if (activeTab === 'ApplyFlight') {
-          navigate('/customer/apply-flight');
-        }
+        // if (activeTab === 'ApplyVisa') {
+        //   navigate('/merchant/apply-visa');
+        // }
+        // if (activeTab === 'ApplyInsurance') {
+        //   navigate('/merchant/apply-insurance');
+        // }
+        // if (activeTab === 'ApplyHotel') {
+        //   navigate('/merchant/apply-hotel');
+        // }
+        // if (activeTab === 'ApplyFlight') {
+        //   navigate('/merchant/apply-flight');
+        // }
       }
       setLoading(false)
     } catch (error) {
@@ -142,10 +137,10 @@ const CustomerDashboard: React.FC = () => {
   const activeTabTextStyle = {
     color: '#000', 
     cursor: 'pointer',
-    backgroundColor:"#E2FDD5",
     fontSize: 16,
     fontWeight: 600,
     border: "none",
+    borderLeft:"4px solid #327113",
     paddingBottom: "20px",
     padding: '10px 0',
     marginTop: 20,
@@ -153,11 +148,11 @@ const CustomerDashboard: React.FC = () => {
     alignItems: 'center',
   };
 
+
   const activeTabBorderStyle = {
     padding: 7,
-    paddingLeft: 8,
-    marginTop: 5,
-    borderRadius:20,
+    paddingLeft: 20,
+    marginTop: 30,
     fontWeight:"500",
     color: '#327113', 
   };
@@ -168,7 +163,7 @@ const CustomerDashboard: React.FC = () => {
     fontSize: 16,
     paddingBottom: "25px",
     padding: '10px 0',
-    marginTop: 25,
+    marginTop: 45,
     display: 'flex',
     alignItems: 'center',
   };
@@ -186,11 +181,12 @@ const CustomerDashboard: React.FC = () => {
     cursor:"pointer"
   };
 
+
   const tabBorderStyle = { 
     padding: '8px',
-    marginTop: 5,
+    paddingLeft:"20px",
+    marginTop: 25,
   };
-
 
 
   return (
@@ -198,88 +194,73 @@ const CustomerDashboard: React.FC = () => {
       {/* Sidebar */}
       <div
         style={{
-          width: sidebarOpen ? '260px' : '80px', // Toggle sidebar width
+          width: sidebarOpen ? '240px' : '80px',
           backgroundColor: '#f8f8f8',
           padding: '12px',
           position: 'fixed',
           height: '100%',
           overflowY: 'auto',
+          zIndex:"101",
           paddingTop: 70,
+          top:"0",
+          paddingBottom: 100,
           left: 0,
-          transition: 'all 0.5s ease', // Add transition property
+          transition: 'all 0.5s ease',
         }}
       >
         {sidebarOpen ? (
           <>
-            <div
-              onClick={() => handleTabClick("ApplyVisa")}
-              style={activeTab === "ApplyVisa" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              {sidebarOpen && <><GiAirplaneDeparture style={iconStyle1} /> Apply Visa</>}
-            </div>
-            <div
-              onClick={() => handleTabClick("ApplyInsurance")}
-              style={activeTab === "ApplyInsurance" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              {sidebarOpen && <><FaShieldAlt style={iconStyle1} /> Apply Insurance</>}
-            </div>
-            <div
-              onClick={() => handleTabClick("ApplyHotel")}
-              style={activeTab === "ApplyHotel" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              {sidebarOpen && <><GiAirplaneDeparture style={iconStyle1} /> Apply Hotel</>}
-            </div>
-            <div
-              onClick={() => handleTabClick("ApplyFlight")}
-              style={activeTab === "ApplyFlight" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              {sidebarOpen && <><FaShieldAlt style={iconStyle1} /> Apply Flight</>}
-            </div>
-            <h5 className="py-7" style={{ padding: 8 }}>
-              {sidebarOpen && '─────VISA──────'}
-            </h5>
-            <div
-              onClick={() => handleTabClick("All")}
-              style={activeTab === "All" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              {sidebarOpen && <><MdOutlineAlignHorizontalLeft style={iconStyle} /> All</>}
-            </div>
-            <div
-              onClick={() => handleTabClick("Processed")}
-              style={activeTab === "Processed" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              {sidebarOpen && <><IoMdDoneAll style={iconStyle} />Processed</>}
-            </div>
-            <div
-              onClick={() => handleTabClick("In-Process")}
-              style={activeTab === "In-Process" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              {sidebarOpen && <><IoSettingsOutline style={iconStyle} />In-Process</>}
-            </div>
-            <div
-              onClick={() => handleTabClick("Waiting")}
-              style={activeTab === "Waiting" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              {sidebarOpen && <><GoStopwatch style={iconStyle} />Waiting</>}
-            </div>
-            <div
-              onClick={() => handleTabClick("Not Issued")}
-              style={activeTab === "Not Issued" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              {sidebarOpen && <><MdOutlineDoNotDisturb style={iconStyle} />Not Issued</>}
-            </div>
-            <div
-              onClick={() => handleTabClick("Rejected")}
-              style={activeTab === "Rejected" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              {sidebarOpen && <><RxCross1 style={iconStyle} />Rejected</>}
-            </div>
-          
-            </>
+          <div style={{position:"absolute", marginLeft:"10%", top:"35px"}} className='d-flex align-items-center flex-grow-1 flex-lg-grow-0 me-lg-15'>
+            <Link to='/customer/dashboard'>
+              <img
+                alt='Logo'
+                src={toAbsoluteUrl('/media/logos/logo.png')}
+                className='h-20px h-lg-30px app-sidebar-logo-default'
+              />
+            </Link>
+          </div>
+          <div
+            onClick={() => handleTabClick("ApplyVisa")}
+            className="mt-20"
+            style={activeTab === "ApplyVisa" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
+          >
+            {sidebarOpen && <> Visa</>}
+          </div>
+          <div
+            onClick={() => handleTabClick("ApplyInsurance")}
+            style={activeTab === "ApplyInsurance" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
+          >
+            {sidebarOpen && <> Insurance</>}
+          </div>
+          <div
+            onClick={() => handleTabClick("ApplyHotel")}
+            style={activeTab === "ApplyHotel" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
+          >
+            {sidebarOpen && <> Hotel</>}
+          </div>
+          <div
+            onClick={() => handleTabClick("ApplyFlight")}
+            style={activeTab === "ApplyFlight" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
+          >
+            {sidebarOpen && <> Flight</>}
+          </div>
+          <div
+            onClick={() => handleTabClick("All")}
+            style={activeTab === "All" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
+          >
+            {sidebarOpen && <> Applications</>}
+          </div>
+        </>
         ) : (
           <>
           <img style={{width:"35px", height:"35px", marginTop:"-75px", marginLeft:"10px"}} src={logo} alt="" />
-          <div
+            <div
+              onClick={() => handleTabClick("Analytics")}
+              style={activeTab === "Analytics" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
+            >
+              <TfiStatsUp style={iconStyle1} />
+            </div>
+            <div
               onClick={() => handleTabClick("ApplyVisa")}
               style={{ ...tabBorderStyle }}
             >
@@ -303,50 +284,11 @@ const CustomerDashboard: React.FC = () => {
             >
               <MdOutlineFlight style={iconStyle1} />
             </div>
-            <h5 className="py-7" style={{ padding: 8 }}>
-              VISA
-            </h5>
-            <div
-              onClick={() => handleTabClick("All")}
-              style={activeTab === "All" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              <MdOutlineAlignHorizontalLeft style={iconStyle1} />
-            </div>
-            <div
-              onClick={() => handleTabClick("Processed")}
-              style={activeTab === "Processed" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              <IoMdDoneAll style={iconStyle1} />
-            </div>
-            <div
-              onClick={() => handleTabClick("In-Process")}
-              style={activeTab === "In-Process" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-             <IoSettingsOutline style={iconStyle1} />
-            </div>
-            <div
-              onClick={() => handleTabClick("Waiting")}
-              style={activeTab === "Waiting" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              <GoStopwatch style={iconStyle1} />
-            </div>
-            <div
-              onClick={() => handleTabClick("Not Issued")}
-              style={activeTab === "Not Issued" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              <MdOutlineDoNotDisturb style={iconStyle1} />
-            </div>
-            <div
-              onClick={() => handleTabClick("Rejected")}
-              style={activeTab === "Rejected" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-            >
-              <RxCross1 style={iconStyle1} />
-            </div>
           </>
         )}
       </div>
 
-      <div style={{ marginLeft: sidebarOpen ? '20%' : '80px', width: sidebarOpen ? '80%' : '100%', overflowY: 'auto', padding: '16px' }}>
+      <div style={{ marginLeft: sidebarOpen ? '18%' : '80px', width: sidebarOpen ? '80%' : '100%', overflowY: 'auto', padding: '16px' }}>
         {activeTab === "Analytics" ?
             <div>
               yoyyoyoyoyo
@@ -355,12 +297,23 @@ const CustomerDashboard: React.FC = () => {
           <>
             <Loader loading={loading} />
             {!loading && (
-              <VisaDetailCard visaData={visaData} insuranceData={insuranceData} hotelData={hotelData} flightData={flightData} />
+              <>
+              <Loader loading={loading} />
+              {!loading && (
+                <div className="pt-12">
+                  {activeTab === "All" && <VisaDetailCard visaData={[]} insuranceData={[]} hotelData={[]} flightData={[]} />}
+                  {activeTab === "ApplyVisa" && <CustomerNewVisaWrapper />}
+                  {activeTab === "ApplyInsurance" && <CustomerNewInsurance />}
+                  {activeTab === "ApplyHotel" && <CustomerNewHotel />}
+                  {activeTab === "ApplyFlight" && <CustomerNewFlight />}
+                </div>
+              )}
+            </>
             )}
           </>
         }
       </div>
-      <button
+      {/* <button
         onClick={toggleSidebar}
         style={{
           position: "fixed",
@@ -380,7 +333,7 @@ const CustomerDashboard: React.FC = () => {
         }}
       >
         {sidebarOpen ? <GoArrowLeft /> : <GoArrowRight />}
-      </button>
+      </button> */}
     </div>
   );
 };

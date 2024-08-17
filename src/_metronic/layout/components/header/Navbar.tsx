@@ -80,6 +80,10 @@ const Navbar = () => {
   }, [isRefreshing]);
 
   useEffect(() => {
+    refreshWalletBalance();
+  }, []);
+
+  useEffect(() => {
     const walletBalance = Cookies.get('walletBalance');
     if (walletBalance) {
       setCurrentWallet(parseFloat(walletBalance));

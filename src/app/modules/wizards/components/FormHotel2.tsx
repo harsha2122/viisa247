@@ -335,11 +335,12 @@ const FormHotel2: React.FC<VerticalProps> = ({
             width: '25%',
             padding: '16px',
             paddingLeft: '10px',
-            position: 'sticky',
+            position: "sticky",
             height: '100%',
             overflowY: 'auto',
-            paddingTop: 10,
-            top: '0px',
+            paddingTop: 20,
+            top: '75px',
+            left: "10px",
           }}
         >
           {travelerForms.map((_, index) => (
@@ -365,7 +366,7 @@ const FormHotel2: React.FC<VerticalProps> = ({
           </div>
           ))}
         </div>
-        <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
+        <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%', marginTop:"4%"}}>
           {travelerForms.map((_, index) => (
             <div key={index}>
               <HotelForm1
