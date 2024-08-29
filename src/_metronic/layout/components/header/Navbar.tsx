@@ -210,6 +210,11 @@ const Navbar = () => {
         <div style={{ marginTop: '-10px' }} className={clsx('app-navbar-item', itemClass)}>
           <div className='d-flex align-items-center flex-grow-1 flex-lg-grow-0' style={{ backgroundColor: '#f5f5f5', padding: 10, borderRadius: 10, marginRight: 30 }}>
             <KTIcon iconName='wallet' className={btnIconClass} />
+            <span className='menu-title' style={{ marginLeft: 5 }}>Add Balance</span>
+          </div>
+
+          <div className='d-flex align-items-center flex-grow-1 flex-lg-grow-0' style={{ backgroundColor: '#f5f5f5', padding: 10, borderRadius: 10, marginRight: 30 }}>
+            <KTIcon iconName='wallet' className={btnIconClass} />
             <span className='menu-title' style={{ fontWeight: 'bold', marginLeft: 5 }}>{currentWallet} /-</span>
           </div>
         </div>

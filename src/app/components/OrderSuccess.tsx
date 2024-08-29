@@ -22,6 +22,9 @@ const OrderSuccess: React.FC<OrderSuccessModalProps> = ({
   name, 
   amount 
 }) => {
+  const handleDashboardRedirect = () => {
+    window.location.reload();
+  };
   const user_type = Cookies.get('user_type');
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -64,33 +67,23 @@ const OrderSuccess: React.FC<OrderSuccessModalProps> = ({
         <p>Your order request has been successfully placed.</p>
         {/* <div className="withdrawal-amount display-4">₹ {amount.toLocaleString()}</div> */}
         <div className="mt-4 d-flex flex-column gap-3">
-          {/* <div className="d-flex justify-content-between">
-            <span className="font-weight-bold">Order Name</span>
-            <span>{orderId}</span>
-          </div>
-          <div className="d-flex justify-content-between">
-            <span className="font-weight-bold">Order Time</span>
-            <span>{orderTime}</span>
-          </div>
-          <div className="d-flex justify-content-between">
-            <span className="font-weight-bold">Ins. ID</span>
-            <span>{account}</span>
-          </div>
-          <div className="d-flex justify-content-between">
-            <span className="font-weight-bold">Name</span>
-            <span>{name}</span>
-          </div> */}
           <div className="d-flex justify-content-center mt-4">
-            {user_type === "merchant" && (
-                <Link style={{width:"90%", background:"#327113", justifyContent:"center", alignItems:"center", color:"#fff", borderRadius:"15px", border:"none", padding:"15px 10px"}} to={'/merchant/dashboard'} className='menu-link px-5'>
-                    Go To Dashboard
-                </Link>
-            )}
-            {user_type === "customer" && (
-                <Link style={{width:"90%", background:"#327113", justifyContent:"center", alignItems:"center", color:"#fff", borderRadius:"15px", border:"none", padding:"15px 10px"}} to={'/customer/dashboard'} className='menu-link px-5'>
-                    Go To Dashboard
-                </Link>
-            )}
+            <div
+              onClick={handleDashboardRedirect}
+              style={{
+                width: "90%", 
+                background: "#327113", 
+                justifyContent: "center", 
+                alignItems: "center", 
+                color: "#fff", 
+                borderRadius: "15px", 
+                border: "none", 
+                padding: "15px 10px",
+                cursor: "pointer"
+              }}
+            >
+              Go To Dashboard
+            </div>
           </div>
         </div>
       </Modal.Body>

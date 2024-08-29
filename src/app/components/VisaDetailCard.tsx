@@ -512,6 +512,8 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
     setViewApplication(null)
   }
 
+  console.log("gcghvhv", visaData)
+
   if (visaData === null || visaData.length === 0) {
     return (
       <div className='  d-flex align-items-center justify-content-center'>
@@ -873,8 +875,6 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
       toast.error('Error updating data: ')
     }
   }
-
-  console.log("frg", insuranceData)
 
   return (
     <div>

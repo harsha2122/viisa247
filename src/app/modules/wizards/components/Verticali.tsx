@@ -31,8 +31,13 @@ const Verticali: React.FC<VerticalProps> = ({
   show,
 }) => {
 
+  const generateGroupId = () => {
+    return Math.random().toString(36).substring(2, 12);
+  };
+
   const [initValues] = useState<ICreateAccount>(inits)
   const [applicantForms, setApplicantForms] = useState<any[]>([])
+  const [groupId, setGroupId] = useState<string>('');
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [loadingg, setLoadingg] = useState(false)
@@ -52,10 +57,17 @@ const Verticali: React.FC<VerticalProps> = ({
 
   const [modalShow, setModalShow] = useState(false);
 
+  useEffect(() => {
+    const newGroupId = generateGroupId();
+    setGroupId(newGroupId);
+  }, []);
+
   const handleShow = () => setModalShow(true);
   const handleClose = () => {
     setModalShow(false);
-    navigate('/customer/dashboard');
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   };
 
   const handleReviewModal = () => {
@@ -88,24 +100,39 @@ const Verticali: React.FC<VerticalProps> = ({
   const calculateAge = (birthDate: string) => {
     const today = new Date();
     const birth = new Date(birthDate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
+    
+    // Calculate age in months
+    let ageInMonths = (today.getFullYear() - birth.getFullYear()) * 12 + (today.getMonth() - birth.getMonth());
+    const dayDiff = today.getDate() - birth.getDate();
+    if (dayDiff < 0) {
+      ageInMonths--;
     }
-    return age;
+  
+    // Convert age in months into years and remaining months
+    const ageInYears = Math.floor(ageInMonths / 12);
+    const remainingMonths = ageInMonths % 12;
+  
+    return { ageInYears, remainingMonths, ageInMonths };
   };
-
-  const getMerchantInsuranceAmount = (age: number, ageGroups: any[]) => {
+  
+  const getMerchantInsuranceAmount = ({ ageInMonths }, ageGroups: any[]) => {
     const ageGroup = ageGroups.find(group => {
       const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
         const ageRangeParts = ageRange.split(' ');
-        return ageRangeParts[0] === 'mths' ? 0 : parseInt(ageRangeParts[0], 10);
+  
+        if (ageRangeParts[1] === 'mths') {
+          return parseInt(ageRangeParts[0], 10);
+        } else {
+          return parseInt(ageRangeParts[0], 10) * 12; // Convert years to months
+        }
       });
-      return age >= minAge && age <= maxAge;
+  
+      return ageInMonths >= minAge && ageInMonths <= maxAge;
     });
+  
     return ageGroup ? ageGroup.merchant_insurance_amount : 0;
   };
+  
   useEffect(() => {
     const calculateTotalAmount = () => {
       let totalAmount = 0;
@@ -118,10 +145,10 @@ const Verticali: React.FC<VerticalProps> = ({
       });
       setTotalAmounta(totalAmount);
     };
-
+  
     calculateTotalAmount();
   }, [travelerForms, selectedEntry.age_groups]);
-
+  
   const handleTravelerDataChange = (newData, index) => {
     setTravelerForms(prevForms => {
       const updatedForms = [...prevForms];
@@ -134,19 +161,25 @@ const Verticali: React.FC<VerticalProps> = ({
       return updatedForms;
     });
   };
-
-  const getInsuranceAmountForAge = (age: number, ageGroups: any[]) => {
+  
+  const getInsuranceAmountForAge = ({ ageInMonths }, ageGroups: any[]) => {
     const ageGroup = ageGroups.find(group => {
       const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
         const ageRangeParts = ageRange.split(' ');
-        return ageRangeParts[0] === 'mths' ? 0 : parseInt(ageRangeParts[0], 10);
+  
+        if (ageRangeParts[1] === 'mths') {
+          return parseInt(ageRangeParts[0], 10);
+        } else {
+          return parseInt(ageRangeParts[0], 10) * 12; // Convert years to months
+        }
       });
   
-      return age >= minAge && age <= maxAge;
+      return ageInMonths >= minAge && ageInMonths <= maxAge;
     });
+  
     return ageGroup ? ageGroup.merchant_insurance_amount : 0;
   };
-
+  
   const getInsuranceAmounts = (age, ageGroups) => {
     const ageGroup = ageGroups.find(group => {
       const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
@@ -338,6 +371,7 @@ const Verticali: React.FC<VerticalProps> = ({
           first_name: travelerForm.firstName,
           last_name: travelerForm.lastName,
           birth_place: travelerForm.birthPlace,
+          group_id: groupId,
           birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
           nationality: selectedEntry.nationality_code,
           passport_number: travelerForm.passportNumber,

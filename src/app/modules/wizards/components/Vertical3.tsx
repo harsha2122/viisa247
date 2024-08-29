@@ -35,6 +35,9 @@ const Vertical3: React.FC<VerticalProps> = ({
       return updatedData
     })
   }
+  const generateGroupId = () => {
+    return Math.random().toString(36).substring(2, 12);
+  };
   const [applicantForms, setApplicantForms] = useState<any[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -42,6 +45,7 @@ const Vertical3: React.FC<VerticalProps> = ({
   const recieptFileInputRef = useRef<HTMLInputElement | null>(null)
   const [reciept, setReciept] = useState('')
   const maxSize = 1024 * 1024
+  const [groupId, setGroupId] = useState<string>('');
   const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null);
   const [confetti, setConfetti] = useState(false)
   const navigate = useNavigate()
@@ -49,7 +53,9 @@ const Vertical3: React.FC<VerticalProps> = ({
   const handleShow = () => setModalShow(true);
   const handleClose = () => {
     setModalShow(false);
-    navigate('/customer/dashboard');
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   };
   const [isFixed, setIsFixed] = useState(false)
 
@@ -64,6 +70,11 @@ const Vertical3: React.FC<VerticalProps> = ({
       window.removeEventListener('scroll', handleScroll)
     }
   }, [])
+
+  useEffect(() => {
+    const newGroupId = generateGroupId();
+    setGroupId(newGroupId);
+  }, []);
 
   const [travelerForms, setTravelerForms] = useState<any[]>([{ passport_front: '', passport_back: '', photo: '' }]);
   const [isFieldFilled, setIsFieldFilled] = useState({
@@ -255,6 +266,7 @@ const Vertical3: React.FC<VerticalProps> = ({
             birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
             nationality: selectedEntry.nationality_code,
             passport_number: travelerForm.passportNumber,
+            group_id: groupId,
             passport_issue_date: formatDateWithTimezoneToYMD(travelerForm.passportIssueDate),
             passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
             gender: travelerForm.gender,

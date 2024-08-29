@@ -16,7 +16,7 @@ function Waiting() {
         const filteredData = response.data.data.filter((item: any) => item.group_id !== null);
 
         // Define the type of visaData explicitly
-        const visaData: any[] = [];
+        let visaData: any[] = [];
         filteredData.forEach((group: any) => {
           // Filter applications within the group
           const filteredApplications = group.applications.filter((application: any) => 
@@ -30,6 +30,13 @@ function Waiting() {
               applications: filteredApplications,
             });
           }
+        });
+
+        // Sort visaData by the created_at date of the first application in each group
+        visaData = visaData.sort((a, b) => {
+          const dateA = new Date(a.applications[0].created_at).getTime();
+          const dateB = new Date(b.applications[0].created_at).getTime();
+          return dateB - dateA;  // Descending order (most recent first)
         });
 
         setVisasStatsData(visaData);

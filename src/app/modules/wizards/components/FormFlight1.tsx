@@ -37,11 +37,15 @@ const FormFlight1: React.FC<VerticalProps> = ({
       return updatedForms;
     });
   };
+  const generateGroupId = () => {
+    return Math.random().toString(36).substring(2, 12);
+  };
   
   const [applicantForms, setApplicantForms] = useState<any[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null);
+  const [groupId, setGroupId] = useState<string>('');
   const recieptFileInputRef = useRef<HTMLInputElement | null>(null);
   const [reciept, setReciept] = useState('');
   const maxSize = 1024 * 1024;
@@ -52,7 +56,9 @@ const FormFlight1: React.FC<VerticalProps> = ({
   const handleShow = () => setModalShow(true);
   const handleClose = () => {
     setModalShow(false);
-    navigate('/customer/dashboard');
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   };
   const handleReviewModal = () => {
     const formData = travelerForms.map((form) => ({
@@ -102,6 +108,11 @@ const FormFlight1: React.FC<VerticalProps> = ({
       [`${index}_${fieldName}`]: false,
     }));
   };
+
+  useEffect(() => {
+    const newGroupId = generateGroupId();
+    setGroupId(newGroupId);
+  }, []);
   
   
   const [insuranceFormData, setInsuranceFormData] = useState<any | null>(null);
@@ -177,7 +188,6 @@ const FormFlight1: React.FC<VerticalProps> = ({
 
   const totalAmount = travelerForms.length * selectedEntry.totalAmount
   const totalAmounta = selectedEntry.totalAmount
-console.log("sdf", selectedEntry)
   const addTravelerForm = () => {
     setTravelerForms((prevForms) => [...prevForms, {}])
   }
@@ -225,6 +235,7 @@ console.log("sdf", selectedEntry)
           first_name: travelerForm.fullName,
           gender: travelerForm.gender,
           age: travelerForm.age,
+          group_id: groupId,
           flight_id: selectedEntry.id,
           passport_front: travelerForm.passport_front,
           flight_amount: selectedEntry.totalAmount,

@@ -95,73 +95,92 @@ const Verticalii: React.FC<VerticalProps> = ({
   const calculateAge = (birthDate: string) => {
     const today = new Date();
     const birth = new Date(birthDate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
+    
+    const ageInMonths = (today.getFullYear() - birth.getFullYear()) * 12 + (today.getMonth() - birth.getMonth());
+    const dayDiff = today.getDate() - birth.getDate();
+    if (dayDiff < 0) {
+      return ageInMonths - 1;
     }
-    return age;
+    return ageInMonths;
   };
-
-  const getMerchantInsuranceAmount = (age: number, ageGroups: any[]) => {
+  
+  const getMerchantInsuranceAmount = (ageInMonths: number, ageGroups: any[]) => {
     const ageGroup = ageGroups.find(group => {
       const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
         const ageRangeParts = ageRange.split(' ');
-        return ageRangeParts[0] === 'mths' ? 0 : parseInt(ageRangeParts[0], 10);
+        
+        if (ageRangeParts[1] === 'mths') {
+          return parseInt(ageRangeParts[0], 10);
+        } else {
+          return parseInt(ageRangeParts[0], 10) * 12; // Convert years to months
+        }
       });
-      return age >= minAge && age <= maxAge;
+      return ageInMonths >= minAge && ageInMonths <= maxAge;
     });
+  
     return ageGroup ? ageGroup.merchant_insurance_amount : 0;
   };
+  
   useEffect(() => {
     const calculateTotalAmount = () => {
       let totalAmount = 0;
       travelerForms.forEach(form => {
         if (form.birthDetail) {
-          const age = calculateAge(form.birthDetail);
-          const amount = getMerchantInsuranceAmount(age, selectedEntry.age_groups);
+          const ageInMonths = calculateAge(form.birthDetail);
+          const amount = getMerchantInsuranceAmount(ageInMonths, selectedEntry.age_groups);
           totalAmount += amount;
         }
       });
       setTotalAmounta(totalAmount);
     };
-
+  
     calculateTotalAmount();
   }, [travelerForms, selectedEntry.age_groups]);
-
+  
   const handleTravelerDataChange = (newData, index) => {
     setTravelerForms(prevForms => {
       const updatedForms = [...prevForms];
       if (newData.birthDetail) {
-        const age = calculateAge(newData.birthDetail);
-        updatedForms[index] = { ...updatedForms[index], ...newData, age };
+        const ageInMonths = calculateAge(newData.birthDetail);
+        updatedForms[index] = { ...updatedForms[index], ...newData, age: ageInMonths };
       } else {
         updatedForms[index] = { ...updatedForms[index], ...newData };
       }
       return updatedForms;
     });
   };
-
-  const getInsuranceAmountForAge = (age: number, ageGroups: any[]) => {
+  
+  const getInsuranceAmountForAge = (ageInMonths: number, ageGroups: any[]) => {
     const ageGroup = ageGroups.find(group => {
       const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
         const ageRangeParts = ageRange.split(' ');
-        return ageRangeParts[0] === 'mths' ? 0 : parseInt(ageRangeParts[0], 10);
-      });
   
-      return age >= minAge && age <= maxAge;
+        if (ageRangeParts[1] === 'mths') {
+          return parseInt(ageRangeParts[0], 10);
+        } else {
+          return parseInt(ageRangeParts[0], 10) * 12; // Convert years to months
+        }
+      });
+      return ageInMonths >= minAge && ageInMonths <= maxAge;
     });
+  
     return ageGroup ? ageGroup.merchant_insurance_amount : 0;
   };
-
-  const getInsuranceAmounts = (age, ageGroups) => {
+  
+  const getInsuranceAmounts = (ageInMonths: number, ageGroups: any[]) => {
     const ageGroup = ageGroups.find(group => {
       const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
         const ageRangeParts = ageRange.split(' ');
-        return ageRangeParts[0] === 'mths' ? 0 : parseInt(ageRangeParts[0], 10);
+  
+        if (ageRangeParts[1] === 'mths') {
+          return parseInt(ageRangeParts[0], 10);
+        } else {
+          return parseInt(ageRangeParts[0], 10) * 12; // Convert years to months
+        }
       });
-      return age >= minAge && age <= maxAge;
+      return ageInMonths >= minAge && ageInMonths <= maxAge;
     });
+  
     if (ageGroup) {
       return {
         insurance_amount: ageGroup.insurance_amount,
@@ -169,6 +188,7 @@ const Verticalii: React.FC<VerticalProps> = ({
         merchant_insurance_amount: ageGroup.merchant_insurance_amount,
       };
     }
+  
     return {
       insurance_amount: 0,
       insurance_original_amount: 0,

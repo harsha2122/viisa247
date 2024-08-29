@@ -190,7 +190,7 @@ const CustomerDashboard: React.FC = () => {
 
 
   return (
-    <div style={{ display: 'flex', width: '100%', marginTop: -70, backgroundColor: '#fff' }}>
+    <div style={{ display: 'flex', width: '100%', marginTop: -70}}>
       {/* Sidebar */}
       <div
         style={{

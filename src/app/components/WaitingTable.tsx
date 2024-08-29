@@ -260,6 +260,22 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
     setVisible(false);
   };
 
+  const formatDate = (timestamp: string) => {
+    const date = new Date(timestamp)
+  
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    }
+  
+    const formattedDate = date.toLocaleDateString('en-US', options)
+    return formattedDate
+  }
+
   console.log("sdf", data)
 
   return (
@@ -385,7 +401,6 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
                                 <th>Contact</th>
                                 <th>Channel</th>
                                 <th className='text-center'>To</th>
-                                <th className='text-center'>Date</th>
                                 <th className='text-center'>Status</th>
                                 <th className='text-center'>Amount</th>
                                 <th className='text-center'>Actions</th>
@@ -432,14 +447,6 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
                                       className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
                                     >
                                       {app.application_destination}
-                                    </a>
-                                  </td>
-                                  <td>
-                                    <a
-                                      href='#'
-                                      className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
-                                    >
-                                      {app.application_departure_date}
                                     </a>
                                   </td>
                                   <td>
