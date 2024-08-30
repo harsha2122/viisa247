@@ -42,7 +42,7 @@ const MerchantApplyInsurance: React.FC<Props> = ({ show, visaList, onApiDataRece
   
     const postData = {
       country_code: values.toCountry,
-      nationality_code: values.fromCountry,
+      nationality_code: "IN",
       issue_date: issueDate, 
       expiry_date: expiryDate,
     };
