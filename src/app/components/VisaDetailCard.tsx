@@ -512,7 +512,10 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
     setViewApplication(null)
   }
 
-  console.log("gcghvhv", visaData)
+  console.log("visa", visaData)
+  console.log("hotel", insuranceData)
+  console.log("insurance", hotelData)
+  console.log("flight", flightData)
 
   if (visaData === null || visaData.length === 0) {
     return (
@@ -773,7 +776,6 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
   }
 
   const handleVisibilityClick1 = (entry) => {
-    console.log(entry)
     setSelectedItem(entry)
     setVisible1(true)
   }
@@ -808,7 +810,6 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
   }
 
   const handleTravelerDataChange = (newData, index) => {
-    console.log('Updated data:', newData)
     setSelectedItem(newData)
   }
 
@@ -922,9 +923,10 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
         </button>
       </div>
       <div>
-      {activeTab === 'visa' &&
+      {activeTab === 'visa' && (
+        visaData && visaData.length > 0 ? (
         visaData?.map((entry, index) => {
-            const hasReSubmit = entry.applications.some((app) => app.visa_status === 'Re-Submit');
+            const hasReSubmit = entry.applications?.some((app) => app.visa_status === 'Re-Submit');
 
             return (
               <div
@@ -1020,8 +1022,12 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                   )}
                 </div>
               </div>
-            )
-        })}
+              );
+              })
+              ) : (
+              <p>No data available</p>
+              )
+              )}
 
         {activeTab === 'insurance' &&
           insuranceData?.map((entry, index) => {

@@ -277,7 +277,7 @@ const Navbar = () => {
           <>
             <div className='d-flex flex-column mx-4'>
               <h5 style={{marginBottom:"0", marginTop:"5px"}}>{profile.merchant_name || profile.user_name}</h5>
-              <p className='text-muted'>Partner</p>
+              <p className='text-muted'>Merchant</p>
             </div>
             <img src={lgout} alt='logout' title='Logout' onClick={handleMerchantLogout} style={{width:"25px", marginTop:"-10px", cursor:"pointer", marginLeft:"10px"}} />
           </>

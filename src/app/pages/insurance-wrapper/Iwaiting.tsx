@@ -11,11 +11,28 @@ function Iwaiting() {
       setLoading(true);
       try {
         const response = await axiosInstance.get('/backend/super_admin/fetch_all_insurance');
-        console.log("sfdr", response.data.data)
-        const data = [...(response.data.data || []), ...(response.data.data1 || [])];
-        const filteredData = data.filter(item => ['Applied', 'Not Issued'].includes(item.insurance_status));
-        const sortedData = filteredData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-        setInsuranceData(sortedData);
+        const filteredData = response.data.data.filter((item: any) => item.group_id !== null);
+        let visaData: any[] = [];
+        filteredData.forEach((group: any) => {
+          const filteredApplications = group.applications.filter((application: any) => 
+            application.insurance_status === 'Not Issued' || application.insurance_status === 'Applied'
+          );
+
+          if (filteredApplications.length > 0) {
+            visaData.push({
+              ...group,
+              applications: filteredApplications,
+            });
+          }
+        });
+
+        visaData = visaData.sort((a, b) => {
+          const dateA = new Date(a.applications[0].created_at).getTime();
+          const dateB = new Date(b.applications[0].created_at).getTime();
+          return dateB - dateA;
+        });
+
+        setInsuranceData(visaData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {

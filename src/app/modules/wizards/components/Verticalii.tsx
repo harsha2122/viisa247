@@ -355,7 +355,7 @@ const Verticalii: React.FC<VerticalProps> = ({
             marital_status: travelerForm.maritalStatus,
             passport_front: travelerForm.passport_front,
             insurance_id: selectedEntry.id,
-            insurance_amount: insurance_amount,
+            insurance_amount: totalAmounta,
             insurance_original_amount: insurance_original_amount,
             insurance_benefit: selectedEntry.benefits,
             insurance_plan_type: selectedEntry.description,

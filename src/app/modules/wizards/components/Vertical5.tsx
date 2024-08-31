@@ -56,6 +56,10 @@ const Vertical5: React.FC<VerticalProps> = ({
       return updatedData
     })
   }
+  useEffect(() => {
+    const newGroupId = generateGroupId();
+    setGroupId(newGroupId);
+  }, []);
   const [formValues, setFormValues] = useState({
     name: '',
     email: '',
@@ -65,6 +69,9 @@ const Vertical5: React.FC<VerticalProps> = ({
   const handleFieldChange = (fieldName, value) => {
     setFormValues({...formValues, [fieldName]: value})
   }
+  const generateGroupId = () => {
+    return Math.random().toString(36).substring(2, 12);
+  };
   const [applicantForms, setApplicantForms] = useState<any[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -78,7 +85,7 @@ const Vertical5: React.FC<VerticalProps> = ({
   const navigate = useNavigate()
   const [selectedEntry, setSelectedEntry] = useState<SelectedEntry | null>(null)
   const [isFixed, setIsFixed] = useState(false)
-
+  const [groupId, setGroupId] = useState<string>('');
   const handleScroll = () => {
     const scrollY = window.scrollY || window.pageYOffset
     setIsFixed(scrollY >= 180)
@@ -319,6 +326,7 @@ const Vertical5: React.FC<VerticalProps> = ({
           passport_front: travelerForm.passFrontPhoto,
           passport_back: travelerForm.passBackPhoto,
           pan_card: travelerForm.panPhoto,
+          group_id: groupId,
           panNo: travelerForm.panNo,
           photo: travelerForm.travelerPhoto,
           itr: travelerForm.itr,

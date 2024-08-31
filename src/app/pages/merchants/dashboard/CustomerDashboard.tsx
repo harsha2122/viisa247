@@ -301,7 +301,7 @@ const CustomerDashboard: React.FC = () => {
               <Loader loading={loading} />
               {!loading && (
                 <div className="pt-12">
-                  {activeTab === "All" && <VisaDetailCard visaData={[]} insuranceData={[]} hotelData={[]} flightData={[]} />}
+                  {activeTab === "All" && <VisaDetailCard visaData={visaData} insuranceData={insuranceData} hotelData={hotelData} flightData={flightData} />}
                   {activeTab === "ApplyVisa" && <CustomerNewVisaWrapper />}
                   {activeTab === "ApplyInsurance" && <CustomerNewInsurance />}
                   {activeTab === "ApplyHotel" && <CustomerNewHotel />}

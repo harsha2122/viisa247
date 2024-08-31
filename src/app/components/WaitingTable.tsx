@@ -373,7 +373,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
                               <tr>
                                 <td>{group_id}</td>
                                 <td>{firstApp.first_name || 'N/A'}</td>
-                                <td>{firstApp.merchant_email_id || 'N/A'}</td>
+                                <td>{firstApp.merchant_email_id || firstApp.customer_email_id}</td>
                                 <td>{totalApps}</td>
                                 <td>
                                   <select
@@ -397,7 +397,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
                             <thead>
                               <tr>
                                 <th>Name</th>
-                                <th>Email</th>
+                                <th>Passport No</th>
                                 <th>Contact</th>
                                 <th>Channel</th>
                                 <th className='text-center'>To</th>
@@ -422,7 +422,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data,loading }) => {
                                       href='#'
                                       className='text-muted text-hover-primary d-block mb-1 fs-7'
                                     >
-                                      {app.merchant_email_id || app.customer_email_id}
+                                      {app.passport_number}
                                     </a>
                                   </td>
                                   <td>

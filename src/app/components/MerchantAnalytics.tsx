@@ -287,7 +287,7 @@ export function MerchantAnaltytics({dashboardData}) {
               </h6>
             )}
           </div>
-          <div
+          {/* <div
             style={{
               flex: '1',
               display: 'flex',
@@ -335,7 +335,7 @@ export function MerchantAnaltytics({dashboardData}) {
                 Download Visa
               </button>
             )}
-          </div>
+          </div> */}
         </div>
       ))}
     </div>

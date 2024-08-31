@@ -23,6 +23,7 @@ import HotelRevenueWrapper from "../others/HotelRevenueWrapper";
 import FlightRevenueWrapper from "../others/FlightRevenueWrapper";
 import toast, { Toaster } from 'react-hot-toast';
 import { Field } from 'formik';
+import TransactionWrapper from "../others/TransactionWrapper";
 
 const MerchantDashboard = () => {
   const [activeTab, setActiveTab] = useState("Analytics"); 
@@ -423,6 +424,9 @@ const MerchantDashboard = () => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
+              <Dropdown.Item onClick={() => handleTabClick("Transactions")}>
+                Transactions
+              </Dropdown.Item>
               <Dropdown.Item onClick={() => handleTabClick("Visa Revenue")}>
                 Visa Revenue
               </Dropdown.Item>
@@ -514,6 +518,7 @@ const MerchantDashboard = () => {
                   {activeTab === "ApplyInsurance" && <MerchantNewInsurance />}
                   {activeTab === "ApplyHotel" && <MerchantNewHotel />}
                   {activeTab === "ApplyFlight" && <MerchantNewFlight />}
+                  {activeTab === "Transactions" && <TransactionWrapper />}
                   {activeTab === "Visa Revenue" && <VisaRevenueWrapper />}
                   {activeTab === "Insurance Revenue" && <InsuranceRevenueWrapper/>}
                   {activeTab === "Hotel Revenue" && <HotelRevenueWrapper />}

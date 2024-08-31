@@ -2373,7 +2373,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
       }}
     >
       <Toaster />
-      <div className='d-flex' style={{ alignItems: 'center', paddingLeft:"1%" }}>
+      <div className='d-flex' style={{ alignItems: 'center', paddingLeft:"13%" }}>
         <img style={{borderRadius:"50%"}} src={formData2.merchant_profile_photo} alt='Profile photo' width={70} height={70} />
         <div className='px-10'>
           <h1 style={{ fontSize: 20 }}>Welcome {formData2.merchant_name}</h1>
@@ -2381,8 +2381,8 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
         </div>
       </div>
       {/* Left Side */}
-      <div className='d-flex'>
-        <div className='' style={{ width: '20%', padding: '20px' }}>
+      <div className='d-flex justify-content-center'>
+        <div className='' style={{ width: '20%', padding: '20px', display:"none" }}>
           {tabs.map((tab) => (
             <div
               key={tab.label}
