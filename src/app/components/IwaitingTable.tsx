@@ -116,36 +116,13 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
   }
 
 const handleStatusChange = async (applications, selectedStatus) => {
-    if (selectedStatus === 'Reject') {
-      setSelectedRow(applications)
-      setShowRejectModal(true);
-    } else if (selectedStatus === 'Re-Submit') {
-      setSelectedRow(applications)
-      setShowResubmitModal(true);
-    } else {
-      try {
-        const payload = applications.map(app => ({
-          id: app._id,
-          insurance_status: selectedStatus,
-        }));
-  
-        const response = await axiosInstance.post('/backend/upload_insurance_file', payload);
-  
-        if (response.status === 200) {
-          const updatedData = tableData.map(item => {
-            const app = payload.find(p => p.id === item._id);
-            return app ? { ...item, insurance_status: app.insurance_status } : item;
-          });
-          setTableData(updatedData);
-          toast.success('Status updated successfully');
-        } else {
-          toast.error('Failed to update status');
-        }
-      } catch (error) {
-        console.error('Error updating status:', error);
-        toast.error('Failed to update status');
-      }
-    }
+  if (selectedStatus === 'Reject') {
+    setShowRejectModal(true)
+  } else if (selectedStatus === 'Re-Submit') {
+    setShowResubmitModal(true)
+  } else if (selectedStatus === 'Issue') {
+    setShowIssueModal(true)
+  }
   };
 
   const handleResubmitSubmit = async () => {
@@ -159,10 +136,13 @@ const handleStatusChange = async (applications, selectedStatus) => {
       const response = await axiosInstance.post('/backend/upload_insurance_file', payload);
   
       if (response.data.success === 1) {
-        setShowRejectModal(false);
+        setShowResubmitModal(false);
         setSelectedApplicants([]);
         setRejectRemark('');
         toast.success('Applications resubmitted successfully');
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       } else {
         toast.error('Error resubmitting the applications');
       }
@@ -213,6 +193,67 @@ const handleStatusChange = async (applications, selectedStatus) => {
       toast.error('Failed to update status: Network error');
     }
   };
+
+  const handleIssueSubmit = async () => {
+    if (selectedRows.length > 0 && file) {
+      try {
+        const allIds = selectedRows.map((row) => row._id)
+        const payloads = selectedRows.map((row) => ({
+          ids: allIds,
+          insurance_status: 'Issued',
+          insurance_pdf: file,
+        }))
+
+        const promises = payloads.map((payload) =>
+          axiosInstance.post('/backend/upload_insurance_file', payload)
+        )
+
+        const responses = await Promise.all(promises)
+        const allSuccess = responses.every((response) => response.data.success === 1)
+
+        if (allSuccess) {
+          toast.success('Applications issued successfully')
+          handleCloseIssueModal()
+          setTimeout(() => {
+            window.location.reload()
+          }, 2500)
+        } else {
+          toast.error('Error issuing some applications')
+        }
+      } catch (error) {
+        console.error('Error submitting insurance:', error)
+        toast.error('Error submitting insurance')
+      }
+    } else {
+      toast.error('Please upload the insurance file before submitting')
+    }
+  }
+
+  const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+
+    if (file) {
+        const validFileTypes = ['application/zip', 'application/x-zip-compressed'];
+        if (!validFileTypes.includes(file.type)) {
+            toast.error('Only .zip files are allowed.', {position: 'top-center'});
+            return;
+        }
+
+        if (file.size > maxSize) {
+            toast.error('File size exceeds 300KB limit.', {position: 'top-center'});
+            return;
+        }
+
+        try {
+            const imageLink = await handleFileUpload(file);
+            setFile(imageLink);
+            toast.success('File uploaded successfully', {position: 'top-center'});
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            toast.error('Error uploading image. Please try again.', {position: 'top-center'});
+        }
+    }
+  }
 
   const [activePage, setActivePage] = useState(1);
   const itemsPerPage = 10;
@@ -275,11 +316,11 @@ const handleStatusChange = async (applications, selectedStatus) => {
     setVisible(true);
   };
   const handleVisibilityyClick = (item) => {
-    setSelectedItem(item); // Set the selected item
+    setSelectedItem(item);
     setShowRejectModal(true);
   };
   const handleCloseClick = () => {
-    setSelectedItem(null); // Set the selected item
+    setSelectedItem(null);
     setVisible(false);
   };
   
@@ -341,7 +382,7 @@ const handleStatusChange = async (applications, selectedStatus) => {
           </div>
           :
           <section style={{border:"1px solid #adc6a0"}} className='w-100 card my-5 '>
-          <div style={{borderBottom:"1.5px solid #327113"}} className='card-header'>
+          <div className='card-header'>
             <h3 className='card-title align-content-start flex-row'>
               <span className='card-label text-gray-600 fw-bold fs-3'>Recent Applications</span>
             </h3>
@@ -382,18 +423,19 @@ const handleStatusChange = async (applications, selectedStatus) => {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ width: '20%' }}>Group ID</th>
-                                  <th style={{ width: '20%' }}>Name</th>
+                                  <th style={{ width: '15%' }}>Group ID</th>
+                                  <th style={{ width: '15%' }}>Name</th>
                                   <th style={{ width: '20%' }}>Email</th>
-                              <th style={{ width: '20%' }}>Total Applications</th>
-                              <th style={{ width: '20%' }}>Status</th>
+                                  <th style={{ width: '10%' }}>Applicants</th>
+                                  <th style={{ width: '20%' }}>Status</th>
+                                  <th style={{ width: '20%' }}>Download Documents</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td>{group_id}</td>
                               <td>{firstApp.first_name || 'N/A'}</td>
-                              <td>{firstApp.merchant_email_id || 'N/A'}</td>
+                              <td>{firstApp.merchant_email_id || firstApp.customer_email_id}</td>
                               <td>{totalApps}</td>
                               <td>
                                 <select
@@ -408,6 +450,14 @@ const handleStatusChange = async (applications, selectedStatus) => {
                                   <option value='Re-Submit'>Re-Submit</option>
                                 </select>
                               </td>
+                              <td>
+                                    <button
+                                      className='btn btn-sm btn-primary'
+                                      // onClick={() => handleDownloadDocuments(group_id)}
+                                    >
+                                      Download
+                                    </button>
+                                  </td>
                             </tr>
                           </tbody>
                         </Table>
@@ -423,6 +473,7 @@ const handleStatusChange = async (applications, selectedStatus) => {
                               <th className='text-center'>To</th>
                               <th className='text-center'>Status</th>
                               <th className='text-center'>Amount</th>
+                              <th className='text-center'>Actions</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -441,7 +492,7 @@ const handleStatusChange = async (applications, selectedStatus) => {
                                     href='#'
                                     className='text-muted text-hover-primary d-block mb-1 fs-7'
                                   >
-                                    {app.merchant_email_id || app.customer_email_id}
+                                    {app.passport_number}
                                   </a>
                                 </td>
                                 <td>
@@ -487,6 +538,15 @@ const handleStatusChange = async (applications, selectedStatus) => {
                                     )}
                                   </a>
                                 </td>
+                                <td className='justify-content-center d-flex'>
+                                    <button
+                                      title='Edit'
+                                      onClick={() => handleVisibilityClick(app)}
+                                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
+                                    >
+                                      <KTIcon iconName='eye' className='fs-3' />
+                                    </button>
+                                  </td>
                               </tr>
                             ))}
                           </tbody>
@@ -609,7 +669,34 @@ const handleStatusChange = async (applications, selectedStatus) => {
           </div>
         </div>
       )}
-
+      {showIssueModal && (
+        <div style={{...overlayStyle, ...activeOverlayStyle}}>
+          <div style={contentStyle}>
+            <h4>Upload Documents</h4>
+            <input
+              type='file'
+              ref={insuranceFileInputRef}
+              className='form-control'
+              id='insurance_pdf'
+              name='insurance_pdf'
+              accept='.zip'
+              onChange={handleFileSelect}
+            />
+            <div style={{marginTop: '10px'}}>
+              <Button variant='primary' onClick={handleIssueSubmit}>
+                Submit
+              </Button>
+              <Button
+                variant='secondary'
+                onClick={handleCloseIssueModal}
+                style={{marginLeft: '10px'}}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

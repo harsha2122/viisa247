@@ -9,6 +9,7 @@ import axiosInstance from '../helpers/axiosInstance'
 import FlightFormView from './FlightFormView'
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import { KTIcon, toAbsoluteUrl } from '../../_metronic/helpers'
 
 interface InsurancePayload {
   id: string
@@ -145,6 +146,9 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
       if (response.data.success === 1) {
         toast.success('Applications rejected successfully')
         handleCloseRejectModal()
+        setTimeout(() => {
+          window.location.reload()
+        }, 2500)
       } else {
         toast.error('Error rejecting the applications')
       }
@@ -167,7 +171,10 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
 
       if (response.data.success === 1) {
         toast.success('Applications resubmitted successfully')
-        handleCloseRejectModal()
+        setShowResubmitModal(false)
+        setTimeout(() => {
+          window.location.reload()
+        }, 2500)
       } else {
         toast.error('Error resubmitting the applications')
       }
@@ -347,7 +354,7 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
             </div>
           ) : (
             <section style={{border: '1px solid #adc6a0'}} className='w-100 card my-5'>
-              <div style={{borderBottom: '1.5px solid #327113'}} className='card-header'>
+              <div className='card-header'>
                 <h3 className='card-title align-content-start flex-row'>
                   <span className='card-label text-gray-600 fw-bold fs-3'>Recent Applications</span>
                 </h3>
@@ -446,10 +453,14 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
                                       <td>{app.merchant_email_id}</td>
                                       <td>{app.merchant_phone_number}</td>
                                       <td>{app.flight_amount}</td>
-                                      <td className='text-center'>
-                                        <Button variant='link'>
-                                          <VisibilityIcon />
-                                        </Button>
+                                      <td className='justify-content-center d-flex'>
+                                        <button
+                                          title='Edit'
+                                          onClick={() => handleVisibilityClick(app)}
+                                          className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
+                                        >
+                                          <KTIcon iconName='eye' className='fs-3' />
+                                        </button>
                                       </td>
                                     </tr>
                                   ))}

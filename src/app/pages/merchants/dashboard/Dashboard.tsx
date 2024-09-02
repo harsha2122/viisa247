@@ -36,6 +36,8 @@ const MerchantDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [commission, setCommission] = useState(0);
   const [upperLimit, setUpperLimit] = useState(0);
+  const [issuedApiKey, setIssuedApiKey] = useState('');
+  const [showApiDropdown, setShowApiDropdown] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -208,13 +210,18 @@ const MerchantDashboard = () => {
       };
       const response = await axiosInstance.post('/backend/fetch_single_merchant_user', postData);
       console.log("Response Data:", response);
-      if (response.data.data.issued_api) {
+      
+      if (response.data.data.issued_api && response.data.data.issued_api.length > 0) {
         setIssuedApiKey(response.data.data.issued_api[0]);
+        setShowApiDropdown(true); // Issued API key exists, so show the API option
+      } else {
+        setShowApiDropdown(false); // No Issued API key, hide the API option
       }
     } catch (error) {
       console.error('Error fetching profile data:', error);
     }
   };
+  
 
   const copyApiKey = () => {
     navigator.clipboard.writeText(issuedApiKey);
@@ -223,7 +230,6 @@ const MerchantDashboard = () => {
 
   const [showCommissionModal, setShowCommissionModal] = useState(false);
   const [showApiModal, setShowApiModal] = useState(false);
-  const [issuedApiKey, setIssuedApiKey] = useState('');
 
   const handleCommissionClick = () => {
   setShowCommissionModal(true);
@@ -457,9 +463,12 @@ const MerchantDashboard = () => {
               <Dropdown.Item onClick={handleCommissionClick}>
                 Commission
               </Dropdown.Item>
-              <Dropdown.Item onClick={handleApiClick}>
-                API
-              </Dropdown.Item>
+              {showApiDropdown && (
+                <Dropdown.Item onClick={handleApiClick}>
+                  API
+                </Dropdown.Item>
+              )}
+
             </Dropdown.Menu>
           </Dropdown>
         </>

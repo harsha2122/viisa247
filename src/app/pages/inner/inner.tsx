@@ -75,7 +75,11 @@ const Inner: React.FC<Props> = ({
   }
 
   useEffect(() => {
-    // Set initial price when component mounts
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+  
+
+  useEffect(() => {
     handleTicketSelection(selectedTicket)
   }, [selectedTicket])
 

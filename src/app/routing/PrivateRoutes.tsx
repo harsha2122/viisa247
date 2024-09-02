@@ -66,6 +66,7 @@ import Freject from '../pages/flight-wrapper/Frejected';
 import RevenueHotel from '../pages/revenue/RevenueHotel';
 import RevenueFlight from '../pages/revenue/RevenueFlight';
 import UserWrapper from '../pages/users/UserWrapper';
+import Wallet from '../pages/merchants/profile/Wallet';
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'));
@@ -90,6 +91,7 @@ const PrivateRoutes = () => {
             <Route path='/merchant/apply-flight' element={<MerchantNewFlight />} />
             <Route path='/merchant/dashboard' element={<MerchantDashboard />} />
             <Route path='/merchant/profile' element={<MerchantProfile />} />
+            <Route path='/merchant/wallet' element={<Wallet />} />
             <Route path='/merchant/chat' element={<Chat />} />
           </>
         )}

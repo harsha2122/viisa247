@@ -48,8 +48,8 @@ interface Revenue {
 const itemsPerPage = 10;
 const MAX_VISIBLE_PAGES = 5;
 
-function MerchantProfile() {
-  const [activeTab, setActiveTab] = useState('Profile')
+function Wallet() {
+  const [activeTab, setActiveTab] = useState('Load Wallet')
   const maxSize = 1024 * 1024;
   const [formData, setFormData] = useState({
     upi_ref_id: '',
@@ -1422,12 +1422,12 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
     {
       label: 'Bank Transfer (0% Fee)',
       content: bankContent,
-      icon: <img src={bank} style={{ width: 25, height: 25 }} />,
+      icon: <img src={bank} style={{ width: 35, height: 35 }} />,
     },
-    { label: 'UPI (0% Fee)', icon: <img src={upi} style={{ width: 25, height: 25 }} />, content: upiContent },
+    { label: 'UPI (0% Fee)', icon: <img src={upi} style={{ width: 35, height: 35 }} />, content: upiContent },
     {
       label: 'Upload Receipt',
-      icon: <img src={rec} style={{ width: 25, height: 25 }} />,
+      icon: <img src={rec} style={{ width: 35, height: 35 }} />,
       content: uploadReciept,
     },
   ]
@@ -2373,13 +2373,6 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
       }}
     >
       <Toaster />
-      <div className='d-flex' style={{ alignItems: 'center', paddingLeft:"13%" }}>
-        <img style={{borderRadius:"50%"}} src={formData2.merchant_profile_photo} alt='Profile photo' width={70} height={70} />
-        <div className='px-10'>
-          <h1 style={{ fontSize: 20 }}>Welcome {formData2.merchant_name}</h1>
-          <h5 style={{ fontSize: 15 }}>{formData2.merchant_email_id}</h5>
-        </div>
-      </div>
       {/* Left Side */}
       <div className='d-flex justify-content-center'>
         <div className='' style={{ width: '20%', padding: '20px', display:"none" }}>
@@ -2419,4 +2412,4 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
   )
 }
 
-export default MerchantProfile
+export default Wallet

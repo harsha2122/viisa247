@@ -288,7 +288,7 @@ const HomeApply: React.FC<Props> = ({
     setSelectedToCountry(values.toCountry);
     const postData = {
       country_code: values.toCountry,
-      nationality_code: values.fromCountry,
+      nationality_code: "IN",
     };
   
     axiosInstance

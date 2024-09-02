@@ -15,7 +15,7 @@ import Cookies from 'js-cookie';
 const MasterLayout = () => {
   const location = useLocation();
   const [formData2, setFormData2] = useState({
-    issued_api: [] // Initialize with an appropriate structure
+    issued_api: []
   });
 
   const user_type = Cookies.get('user_type');

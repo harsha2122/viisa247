@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { KTIcon, toAbsoluteUrl } from '../../../helpers';
 import { HeaderNotificationsMenu, HeaderUserMenu, Search, ThemeModeSwitcher } from '../../../partials';
 import { useLayout } from '../../core';
-import { FcExport } from "react-icons/fc";
+import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import toast, { Toaster } from 'react-hot-toast';
 import axiosInstance from '../../../../app/helpers/axiosInstance';
@@ -33,7 +33,7 @@ const Navbar = () => {
     user_name: '',
     user_email_id: ''
   });
-
+  const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isChatContainerOpen, setIsChatContainerOpen] = useState(false);
 
@@ -203,14 +203,18 @@ const Navbar = () => {
     }
   };
 
+  const handleNavigate = () => {
+    navigate('/merchant/wallet'); 
+  };
+
   return (
     <div className='app-navbar flex-shrink-0'>
       <Toaster />
       {user_type === 'merchant' ? (
         <div style={{ marginTop: '-10px' }} className={clsx('app-navbar-item', itemClass)}>
-          <div className='d-flex align-items-center flex-grow-1 flex-lg-grow-0' style={{ backgroundColor: '#f5f5f5', padding: 10, borderRadius: 10, marginRight: 30 }}>
+          <div onClick={handleNavigate} className='d-flex align-items-center flex-grow-1 flex-lg-grow-0 cursor-pointer' style={{ backgroundColor: '#f5f5f5', padding: 10, borderRadius: 10, marginRight: 30 }}>
             <KTIcon iconName='wallet' className={btnIconClass} />
-            <span className='menu-title' style={{ marginLeft: 5 }}>Add Balance</span>
+            <span className='menu-title' style={{ fontWeight: 'bold', marginLeft: 5 }}>Add Balance</span>
           </div>
 
           <div className='d-flex align-items-center flex-grow-1 flex-lg-grow-0' style={{ backgroundColor: '#f5f5f5', padding: 10, borderRadius: 10, marginRight: 30 }}>
