@@ -62,10 +62,11 @@ const CustomerVisaTable: React.FC<Props> = ({
   };
   
 
-  const handleApplyNowClick = () => {
-    onSelectClick(sortedData[selectedTicket]);
+  const handleApplyNowClick = (index) => {
+    setSelectedTicket(index);
+    setSelectedTicketPrice(calculateTotalPrice(sortedData[index]));
+    onSelectClick(sortedData[index]); // Call the function to pass selected ticket data to the parent component
   };
-
   const markup_percentage = localStorage.getItem('markup_percentage')??'1';
 
   const [expandedCardIndex, setExpandedCardIndex] = useState(-1)
@@ -134,15 +135,10 @@ const CustomerVisaTable: React.FC<Props> = ({
                         </div>
                         <button 
                           className="choose-button" 
-                          onClick={() => {
-                            setSelectedTicket(index);
-                            setSelectedTicketPrice(calculateTotalPrice(entry));
-                            handleApplyNowClick(); // Call the function to pass selected ticket data to the parent component
-                          }}
+                          onClick={() => handleApplyNowClick(index)}
                         >
                           Choose
                         </button>
-
                     </div>
                   </div>
                 </div>

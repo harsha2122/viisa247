@@ -219,6 +219,34 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
     }
   }
 
+  const handleDownloadDocuments = async (applications) => {
+    const zip = new JSZip();
+  
+    for (const app of applications) {
+      const fileFields = ['letter', 'pan_card', 'itr', 'passport_front', 'passport_back'];
+  
+      for (const field of fileFields) {
+        if (app[field]) {
+          try {
+            const response = await fetch(app[field]);
+            const blob = await response.blob();
+            const fileName = `${app.application_id}_${field}.jpeg`;
+            zip.file(fileName, blob);
+          } catch (error) {
+            console.error(`Error downloading ${field} from application ID: ${app.application_id}`, error);
+          }
+        } else {
+          console.log(`${field} is not available for application ID: ${app.application_id}`);
+        }
+      }
+    }
+
+    zip.generateAsync({ type: 'blob' }).then((blob) => {
+      saveAs(blob, 'documents.zip');
+      console.log('ZIP file has been generated and download started.');
+    });
+  };
+
   const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
 
@@ -270,6 +298,11 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
   }
   const handleCloseRejectModal = () => {
     setShowRejectModal(false)
+    setRejectRemark('')
+  }
+
+  const handleCloseResubmitModal = () => {
+    setShowResubmitModal(false)
     setRejectRemark('')
   }
 
@@ -425,7 +458,7 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
                                   <td>
                                     <button
                                       className='btn btn-sm btn-primary'
-                                      // onClick={() => handleDownloadDocuments(group_id)}
+                                      onClick={() => handleDownloadDocuments(applications)}
                                     >
                                       Download
                                     </button>
@@ -556,7 +589,7 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
         >
           <div style={contentStyle}>
             <div
-              onClick={handleCloseRejectModal}
+              onClick={handleCloseResubmitModal}
               style={{
                 backgroundColor: '#d3d3d3',
                 padding: 10,

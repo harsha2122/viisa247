@@ -7,6 +7,8 @@ import toast, { Toaster } from 'react-hot-toast';
 import { Accordion, Button, Table } from 'react-bootstrap';
 import Loader from './Loader'
 import axiosInstance from '../helpers/axiosInstance'
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 import Pagination from 'react-bootstrap/Pagination';
 
 type Props = {
@@ -105,6 +107,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
   }
 
   const handleStatusChange = async (applications, selectedStatus) => {
+    setSelectedRows(applications)
     if (selectedStatus === 'Reject') {
       setShowRejectModal(true)
     } else if (selectedStatus === 'Re-Submit') {
@@ -126,8 +129,9 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
   
   const handleResubmitSubmit = async () => {
     try {
+      const selectedIds = selectedApplicants
       const payload = {
-        ids: selectedApplicants,
+        ids: selectedIds,
         visa_status: 'Re-Submit',
         visa_remark: rejectRemark,
       };
@@ -258,6 +262,34 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
         }
     }
   }
+
+  const handleDownloadDocuments = async (applications) => {
+    const zip = new JSZip();
+  
+    for (const app of applications) {
+      const fileFields = ['letter', 'pan_card', 'itr', 'passport_front', 'passport_back'];
+  
+      for (const field of fileFields) {
+        if (app[field]) {
+          try {
+            const response = await fetch(app[field]);
+            const blob = await response.blob();
+            const fileName = `${app.application_id}_${field}.jpeg`;
+            zip.file(fileName, blob);
+          } catch (error) {
+            console.error(`Error downloading ${field} from application ID: ${app.application_id}`, error);
+          }
+        } else {
+          console.log(`${field} is not available for application ID: ${app.application_id}`);
+        }
+      }
+    }
+
+    zip.generateAsync({ type: 'blob' }).then((blob) => {
+      saveAs(blob, 'documents.zip');
+      console.log('ZIP file has been generated and download started.');
+    });
+  };
 
   const [activePage, setActivePage] = useState(1);
   const itemsPerPage = 10;
@@ -458,7 +490,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
                                 <td>
                                     <button
                                       className='btn btn-sm btn-primary'
-                                      // onClick={() => handleDownloadDocuments(group_id)}
+                                      onClick={() => handleDownloadDocuments(applications)}
                                     >
                                       Download
                                     </button>
@@ -646,8 +678,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
 
               <h3>Select Applicants</h3>
               <ul style={{listStyle: 'none', paddingLeft: 0}}>
-              {selectedRow && selectedRow.length > 0 ? (
-                selectedRow.map((app) => (
+              {selectedRows.map((app) => (
                   <li style={{display:"flex", alignItems:"center", gap:"15px"}} key={app._id}>
                     <input
                       type='checkbox'
@@ -656,10 +687,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
                     />
                     {app.first_name}
                   </li>
-                ))
-              ) : (
-                <p>No Applicants Found</p>
-              )}
+                ))}
             </ul>
 
 

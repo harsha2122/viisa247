@@ -7,6 +7,7 @@ import toast, {Toaster} from 'react-hot-toast'
 import ClearIcon from '@mui/icons-material/Delete'
 import axiosInstance from '../../../helpers/axiosInstance'
 import {DatePicker} from 'antd'
+import moment from 'moment';
 import * as Yup from 'yup'
 import 'react-datepicker/dist/react-datepicker.css'
 function TravelerForm2({ onDataChange, ind, onFieldChange, onFileDelete }) {
@@ -271,6 +272,15 @@ function TravelerForm2({ onDataChange, ind, onFieldChange, onFileDelete }) {
   const [expiryDate, setExpiryDate] = useState<string | undefined>('')
   const [dob, setDob] = useState<string | undefined>('')
 
+  const disabledDate = (current) => {
+    return current && current > moment().endOf('day');
+  };
+
+  const disabledDates = (current) => {
+    return current && current < moment().endOf('day');
+  };
+
+
   return (
     <div
       className='py-10 px-20'
@@ -467,6 +477,7 @@ function TravelerForm2({ onDataChange, ind, onFieldChange, onFileDelete }) {
                           borderRadius: 10,
                           padding: 10,
                         }}
+                        disabledDate={disabledDate}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('birthDetail', value.format('YYYY-MM-DD'))
@@ -494,6 +505,7 @@ function TravelerForm2({ onDataChange, ind, onFieldChange, onFileDelete }) {
                           borderRadius: 10,
                           padding: 10,
                         }}
+                        disabledDate={disabledDate}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('passportIssueDate', value.format('YYYY-MM-DD'))
@@ -519,6 +531,7 @@ function TravelerForm2({ onDataChange, ind, onFieldChange, onFileDelete }) {
                           borderRadius: 10,
                           padding: 10,
                         }}
+                        disabledDate={disabledDates}
                         onChange={(value) => {
                           if (value) {
                             handleFieldChange('passPortExpiryDate', value.format('YYYY-MM-DD'))

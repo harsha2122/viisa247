@@ -263,27 +263,6 @@ const Verticalii: React.FC<VerticalProps> = ({
     }
     return null
   }
-  const formatDate1 = (dateString) => {
-    const date = new Date(dateString)
-    const monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ]
-    const month = monthNames[date.getMonth()]
-    const day = date.getDate()
-    const year = date.getFullYear()
-    return `${month} ${day}, ${year}`
-  }
 
   const fetchwallet = async () => {
     try {
@@ -355,7 +334,7 @@ const Verticalii: React.FC<VerticalProps> = ({
             marital_status: travelerForm.maritalStatus,
             passport_front: travelerForm.passport_front,
             insurance_id: selectedEntry.id,
-            insurance_amount: totalAmounta,
+            insurance_amount: insurance_amount,
             insurance_original_amount: insurance_original_amount,
             insurance_benefit: selectedEntry.benefits,
             insurance_plan_type: selectedEntry.description,

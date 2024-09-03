@@ -488,52 +488,58 @@ const Vertical5: React.FC<VerticalProps> = ({
           }}
         >
            {travelerForms.map((form, index) => (
-            <>
-              <div onClick={() => {}} style={{ ...tabTextStyle }}>
-                <CheckCircleOutline style={{ color: '#327113', marginRight: 8 }} />
-                Traveller {index + 1}
+            <div
+            style={{
+              borderRadius: 15,
+              borderColor: '#696969',
+              padding: '10px',
+              boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
+              backgroundColor: 'white',
+              marginBottom: '15px',
+              marginTop: '5px',
+            }}
+          >
+            <div onClick={() => {}} style={{...tabTextStyle}}>
+              <CheckCircleOutline style={{color: '#327113', marginRight: 8}} />
+              Traveller {index + 1}
+            </div>
+            <div style={{marginLeft: 20}}>
+              <div onClick={() => {}} style={{...tabTextStyle}}>
+                {form.passFrontPhoto ? (
+                  <CheckCircleOutline
+                    style={{color: '#327113', marginRight: 10}}
+                    onClick={() => handleFileDelete(index, 'passFrontPhoto')}
+                  />
+                ) : (
+                  <CircleOutlined style={{color: '#327113', marginRight: 10}} />
+                )}
+                Passport Front
               </div>
-              <div style={{ marginLeft: 20 }}>
-                <div onClick={() => {}} style={{ ...tabTextStyle }}>
-                  {form.passFrontPhoto ? (
-                    <CheckCircleOutline 
-                      style={{ color: '#327113', marginRight: 10 }} 
-                      onClick={() => handleFileDelete(index, 'passFrontPhoto')} 
-                    />
-                  ) : (
-                    <CircleOutlined style={{ color: '#327113', marginRight: 10 }} />
-                  )}
-                  Passport Front
-                </div>
-                <div onClick={() => {}} style={{ ...tabTextStyle }}>
-                  {form.passBackPhoto ? (
-                    <CheckCircleOutline 
-                      style={{ color: '#327113', marginRight: 10 }} 
-                      onClick={() => handleFileDelete(index, 'passBackPhoto')} 
-                    />
-                  ) : (
-                    <CircleOutlined style={{ color: '#327113', marginRight: 10 }} />
-                  )}
-                  Passport Back
-                </div>
-                <div onClick={() => {}} style={{ ...tabTextStyle }}>
-                  {form.travelerPhoto ? (
-                    <CheckCircleOutline 
-                      style={{ color: '#327113', marginRight: 10 }} 
-                      onClick={() => handleFileDelete(index, 'travelerPhoto')} 
-                    />
-                  ) : (
-                    <CircleOutlined style={{ color: '#327113', marginRight: 10 }} />
-                  )}
-                  Traveller Photo
-                </div>
+              <div onClick={() => {}} style={{...tabTextStyle}}>
+                {form.passBackPhoto ? (
+                  <CheckCircleOutline
+                    style={{color: '#327113', marginRight: 10}}
+                    onClick={() => handleFileDelete(index, 'passBackPhoto')}
+                  />
+                ) : (
+                  <CircleOutlined style={{color: '#327113', marginRight: 10}} />
+                )}
+                Passport Back
               </div>
-            </>
-          ))}
-          <div onClick={() => {}} style={{...tabTextStyle, color: '#696969'}}>
-            <CircleOutlined style={{color: '#327113', marginRight: 10}} />
-            Submit
+              <div onClick={() => {}} style={{...tabTextStyle}}>
+                {form.travelerPhoto ? (
+                  <CheckCircleOutline
+                    style={{color: '#327113', marginRight: 10}}
+                    onClick={() => handleFileDelete(index, 'travelerPhoto')}
+                  />
+                ) : (
+                  <CircleOutlined style={{color: '#327113', marginRight: 10}} />
+                )}
+                Traveller Photo
+              </div>
+            </div>
           </div>
+          ))}
         </div>
 
         <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
