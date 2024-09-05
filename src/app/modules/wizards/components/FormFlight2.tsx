@@ -211,9 +211,9 @@ const FormFlight2: React.FC<VerticalProps> = ({
           group_id: groupId,
           passport_front: travelerForm.passport_front,
           flight_id: selectedEntry.id,
-          flight_amount: travelerForms.length * selectedEntry.totalAmount,
-          flight_original_amount: travelerForms.length * selectedEntry.flight_original_amount,
-          merchant_flight_amount: travelerForms.length * selectedEntry.merchant_flight_amount,
+          flight_amount: selectedEntry.totalAmount,
+          flight_original_amount: selectedEntry.flight_original_amount,
+          merchant_flight_amount: selectedEntry.merchant_flight_amount,
         };
   
         try {

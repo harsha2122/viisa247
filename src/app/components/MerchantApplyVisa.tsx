@@ -379,7 +379,7 @@ const MerchantApplyVisa: React.FC<Props> = ({
             receipt: receipt,
             value: apiData.value,
             country_code: values.toCountry,
-            nationality_code: values.fromCountry,
+            nationality_code: selectedFromCountry || values.fromCountry,
             application_arrival_date: issueDate,
             application_departure_date: expiryDate,
             pan_doc: apiData.pan_doc,

@@ -13,7 +13,7 @@ type OrderSuccessModalProps = {
   amount: number;
 };
 
-const OrderSuccess: React.FC<OrderSuccessModalProps> = ({ 
+const OrderSuccessI: React.FC<OrderSuccessModalProps> = ({ 
   show, 
   handleClose, 
   orderId, 
@@ -23,7 +23,7 @@ const OrderSuccess: React.FC<OrderSuccessModalProps> = ({
   amount 
 }) => {
   const handleDashboardRedirect = () => {
-    window.location.href = '/merchant/dashboard';
+    window.location.reload();
   };
   const user_type = Cookies.get('user_type');
   return (
@@ -82,6 +82,24 @@ const OrderSuccess: React.FC<OrderSuccessModalProps> = ({
                 cursor: "pointer"
               }}
             >
+              Apply For Insurance
+            </div>
+          </div>
+          <div className="d-flex justify-content-center mt-4">
+            <div
+              onClick={handleDashboardRedirect}
+              style={{
+                width: "90%", 
+                background: "#327113", 
+                justifyContent: "center", 
+                alignItems: "center", 
+                color: "#fff", 
+                borderRadius: "15px", 
+                border: "none", 
+                padding: "15px 10px",
+                cursor: "pointer"
+              }}
+            >
               Go To Dashboard
             </div>
           </div>
@@ -91,4 +109,4 @@ const OrderSuccess: React.FC<OrderSuccessModalProps> = ({
   );
 };
 
-export default OrderSuccess;
+export default OrderSuccessI;

@@ -82,6 +82,7 @@ const VisaTable: React.FC<Props> = ({
 
   const [selectedQuantity, setSelectedQuantity] = useState(1);  
 
+  console.log("asd", apiData)
 
   return (
     <div className='choice-maini'>

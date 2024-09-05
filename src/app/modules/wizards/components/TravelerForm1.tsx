@@ -1291,7 +1291,7 @@ function TravelerForm1({ onDataChange, ind, selectedEntry, onFieldChange, onFile
               <h4 className='mx-10 mt-10'>Tickets</h4>
               <button
                   type='button'
-                  onClick={handleItrUpload}
+                  onClick={handleTicketsUpload}
                   className='btn btn-lg btn-success me-3 mt-7'
                   style={{ justifyContent: 'flex-end', backgroundColor: '#327113' }}
                 >

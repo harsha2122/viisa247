@@ -118,7 +118,7 @@ const Navbar = () => {
     if (user_type === 'merchant') {
       fetchwallet();
       fetchProfileData();
-      const intervalId = setInterval(fetchwallet, 60000);
+      const intervalId = setInterval(fetchwallet, 5000);
       return () => {
         clearInterval(intervalId);
       };

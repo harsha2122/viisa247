@@ -46,8 +46,7 @@ const MerchantApplyInsurance: React.FC<Props> = ({ show, visaList, onApiDataRece
       issue_date: issueDate, 
       expiry_date: expiryDate,
     };
-  
-    // Check if all fields in postData are present
+
     if (!validatePostData(postData)) {
       toast.error('All fields are required.');
       visaListLoader(false);
