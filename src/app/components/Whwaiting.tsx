@@ -15,7 +15,7 @@ import InsuranceFormView from './InsuranceFormView'
 import HotelFormView from './HotelFormView'
 
 interface InsurancePayload {
-  id: string;
+  ids: any[];
   hotel_status: string;
   hotel_remark?: string;
   hotel_pdf?: string;
@@ -125,7 +125,7 @@ const Whwaiting: React.FC<Props> = ({ className, title, data}) => {
       if (selectedRow) {
           try {
               const payload: InsurancePayload = {
-                  id: selectedRow._id,
+                  ids: [selectedRow._id],
                   hotel_status: 'Rejected',
                   hotel_remark: rejectRemark,
               };
@@ -151,7 +151,7 @@ const Whwaiting: React.FC<Props> = ({ className, title, data}) => {
     if (selectedRow && selectedRow.hotel_pdf) {
       try {
         const payload: InsurancePayload = {
-          id: selectedRow._id,
+          ids: [selectedRow._id],
           hotel_status: 'Issued',
           hotel_pdf: selectedRow.hotel_pdf,
         };

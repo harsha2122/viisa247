@@ -1,13 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { FC } from 'react'
 import { useIntl } from 'react-intl'
-import { toAbsoluteUrl } from '../../../_metronic/helpers'
-import { PageTitle } from '../../../_metronic/layout/core'
 import {
-  ChartsWidget1,
   ChartsWidget3,
-  StatisticsWidget4,
-  StatisticsWidget6,
 } from '../../../_metronic/partials/widgets'
 import React, { useState, useEffect } from 'react';
 import icustomer from '../../../_metronic/assets/card/va.svg'

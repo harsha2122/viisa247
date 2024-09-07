@@ -38,21 +38,19 @@ const VisaTable: React.FC<Props> = ({
       return priceA - priceB;
     });
 
-    // Initialize selected ticket and its price when the page loads
+
     const initialSelectedTicket = 0;
     const initialPrice = calculateTotalPrice(tempSortedData[initialSelectedTicket]);
 
     setSelectedTicket(initialSelectedTicket);
     setSelectedTicketPrice(initialPrice);
 
-    // Set sortedData state
     setSortedData(tempSortedData);
   }, [apiData]);
 
   const calculateTotalPrice = (entry) => {
     if (!entry || !entry.receipt) {
-      // Handle the case where entry or entry.receipt is undefined
-      return 0; // or any default value you want to set
+      return 0; 
     }
   
     const visaFees = entry.receipt['Visa Fees'] || 0;
@@ -67,7 +65,7 @@ const VisaTable: React.FC<Props> = ({
   const handleApplyNowClick = (index) => {
     setSelectedTicket(index);
     setSelectedTicketPrice(calculateTotalPrice(sortedData[index]));
-    onSelectClick(sortedData[index]); // Call the function to pass selected ticket data to the parent component
+    onSelectClick(sortedData[index]);
   };
 
   const markup_percentage = localStorage.getItem('markup_percentage')??'1';
@@ -81,8 +79,6 @@ const VisaTable: React.FC<Props> = ({
   const [selectedTicketPrice, setSelectedTicketPrice] = useState(0);
 
   const [selectedQuantity, setSelectedQuantity] = useState(1);  
-
-  console.log("asd", apiData)
 
   return (
     <div className='choice-maini'>

@@ -261,7 +261,17 @@ const getStepStatuses = (visa_status) => {
 }
 
 const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props) => {
+  
   function generateDynamicInvoice(data) {
+    // Extract the first application data
+    const firstEntry = data.applications[0];
+
+    // Calculate total markup_visa_amount from all applications
+    const totalVisaAmount = data.applications.reduce((total, app) => total + parseFloat(app.markup_visa_amount), 0);
+
+    // Count number of applications
+    const totalApplicants = data.applications.length;
+
     return `<!DOCTYPE html>
         <html>
             <head>
@@ -387,8 +397,8 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                                         </td>
         
                                         <td>
-                                            Invoice #: #${data._id}<br />
-                                            Issue: ${formatDate(data.created_at)}<br />
+                                            Invoice #: #${firstEntry._id}<br />
+                                            Issue: ${formatDate(firstEntry.created_at)}<br />
                                         </td>
                                     </tr>
                                 </table>
@@ -406,9 +416,9 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                                         </td>
         
                                         <td>
-                                            ${data.first_name} ${data.last_name}.<br />
-                                            ${data.passport_number}<br />
-                                            ${data.birth_place}
+                                            ${firstEntry.first_name} ${firstEntry.last_name}.<br />
+                                            ${firstEntry.passport_number}<br />
+                                            ${firstEntry.birth_place}
                                         </td>
                                     </tr>
                                 </table>
@@ -434,31 +444,30 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                         </tr>
         
                         <tr class="item">
-                            <td>${data.visa_description}</td>
+                            <td>${firstEntry.visa_description}</td>
                             
-                            <td>₹ ${data.markup_visa_amount - 50}</td>
+                            <td>₹ ${firstEntry.markup_visa_amount - 50} x ${totalApplicants} applicants</td> <!-- Showing price per applicant and number of applicants -->
                         </tr>
                         <tr class="item">
-                            <td>Service fee .</td>
+                            <td>Service fee</td>
         
-                            <td>₹ 50</td>
+                            <td>₹ 50 x ${totalApplicants}</td>
                         </tr>
         
                         <tr class="total">
                             <td></td>
         
-                            <td>Total: ₹${data.markup_visa_amount}</td>
+                            <td>Total: ₹${totalVisaAmount}</td> <!-- Total from all applications -->
                         </tr>
-                                        <tr class="item">
+                        <tr class="item">
                             <td></td>
-        
                             <td>inclusive of all taxes</td>
                         </tr>
                     </table>
                 </div>
             </body>
         </html>
-        `
+        `;
   }
 
   const generateAndDownloadPDF = (data) => {
@@ -1059,8 +1068,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                   </p>
                 </div>
                 <div style={{flex: '1', borderRight: '1px solid #DFDFDF'}} className='p-10'>
-                  <h2>{entry.applications[0]?.insurance_plan_type}</h2>
-                  <h6>{entry.applications[0]?.insurance_age_group}</h6>
+                  <h2>Applicants: {entry.applications.length}</h2>
                   <br />
                   <h6 style={{color: 'red'}}>{entry.applications[0]?.insurance_status}</h6>
                   <br />

@@ -63,6 +63,8 @@ const handleDownload2 = () => {
   document.body.removeChild(link);
 };
 
+console.log("ds", viewApplication)
+
   return (
     <div
       className='py-10 px-20'

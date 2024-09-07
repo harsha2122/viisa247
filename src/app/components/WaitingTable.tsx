@@ -172,8 +172,9 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
 
   const handleReject = async (selectedItem) => {
     try {
+      const allIds = selectedRows.map((row) => row._id);
       const response = await axiosInstance.post('/backend/update_application_status', {
-        id: selectedItem._id,
+        ids: allIds,
         visa_status: 'Reject',
         visa_remark: rejectRemark,
       });
@@ -203,39 +204,32 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
   };
 
   const handleIssueSubmit = async () => {
-    if (selectedRows.length > 0 && file) {
-      try {
-        const allIds = selectedRows.map((row) => row._id)
-        const payloads = selectedRows.map((row) => ({
-          ids: allIds,
-          visa_status: 'Issued',
-          visa_pdf: file,
-        }))
-
-        const promises = payloads.map((payload) =>
-          axiosInstance.post('/backend/upload_flight_file', payload)
-        )
-
-        const responses = await Promise.all(promises)
-        const allSuccess = responses.every((response) => response.data.success === 1)
-
-        if (allSuccess) {
-          toast.success('Applications issued successfully')
-          handleCloseIssueModal()
-          setTimeout(() => {
-            window.location.reload()
-          }, 2500)
-        } else {
-          toast.error('Error issuing some applications')
-        }
-      } catch (error) {
-        console.error('Error submitting visa:', error)
-        toast.error('Error submitting visa')
+    try {
+      const allIds = selectedRows.map((row) => row._id);
+  
+      const payload = {
+        ids: allIds,
+        visa_status: 'Issued',
+        visa_pdf: file,
+      };
+  
+      const response = await axiosInstance.post('/backend/upload_visa_file', payload);
+  
+      if (response.data.success === 1) {
+        toast.success('Applications issued successfully');
+        handleCloseIssueModal();
+        setTimeout(() => {
+          window.location.reload();
+        }, 2500);
+      } else {
+        toast.error('Error issuing some applications');
       }
-    } else {
-      toast.error('Please upload the visa file before submitting')
+    } catch (error) {
+      console.error('Error submitting visa:', error);
+      toast.error('Error submitting visa');
     }
-  }
+  };
+  
 
   const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]

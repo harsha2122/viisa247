@@ -68,6 +68,7 @@ import RevenueFlight from '../pages/revenue/RevenueFlight';
 import UserWrapper from '../pages/users/UserWrapper';
 import Wallet from '../pages/merchants/profile/Wallet';
 import MerchantDirectInsurance from '../pages/merchants/apply-insurance/MerchantDirectInsurance';
+import CustomerDirectInsurance from '../pages/merchants/apply-insurance/CustomerDirectInsurance';
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'));
@@ -104,6 +105,7 @@ const PrivateRoutes = () => {
             <Route path='/customer/dashboard' element={<CustomerDashboard />} />
             <Route path='/customer/apply-visa' element={<CustomerNewVisaWrapper />} />
             <Route path='/customer/apply-insurance' element={<CustomerNewInsurance />} />
+            <Route path='/customer/directinsurance' element={<CustomerDirectInsurance />} />
             <Route path='/customer/apply-hotel' element={<CustomerNewHotel />} />
             <Route path='/customer/apply-flight' element={<CustomerNewFlight />} />
           </>

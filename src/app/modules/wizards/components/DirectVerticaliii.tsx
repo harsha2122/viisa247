@@ -10,6 +10,7 @@ import InsuranceForm from './InsuranceForm'
 import Confetti from 'react-confetti';
 import { Modal, Button } from 'react-bootstrap';
 import OrderSuccess from '../../../components/OrderSuccess'
+import DirectInsurance from './DirectInsurance'
 
 interface VerticalProps {
   selectedEntry: any
@@ -17,14 +18,16 @@ interface VerticalProps {
   visaList: boolean
   visaListLoader: (value: boolean) => void
   showfinalSubmitLoader: (value: boolean) => void
+  combinedData: any; 
 }
 
-const Verticalii: React.FC<VerticalProps> = ({
+const DirectVerticaliii: React.FC<VerticalProps> = ({
   selectedEntry,
   showfinalSubmitLoader,
   visaList,
   visaListLoader,
   show,
+  combinedData, 
 }) => {
   
 
@@ -41,14 +44,14 @@ const Verticalii: React.FC<VerticalProps> = ({
   const recieptFileInputRef = useRef<HTMLInputElement | null>(null);
   const [reciept, setReciept] = useState('');
   const maxSize = 1024 * 1024;
-  // const [travelerForms, setTravelerForms] = useState([<TravelerForm key={0} onDataChange={handleTravelerDataChange} />]);
+  const [travelerForms, setTravelerForms] = useState(combinedData.applications.map(() => ({})));;
   const navigate = useNavigate()
   const [confetti, setConfetti] = useState(false);
   const [modalShow, setModalShow] = useState(false);
   const handleShow = () => setModalShow(true);
   const handleClose = () => {
     setModalShow(false);
-    navigate('/merchant/dashboard');
+    window.location.href = '/customer/dashboard';
   };
   const handleReviewModal = () => {
     const formData = travelerForms.map((form) => ({
@@ -66,7 +69,10 @@ const Verticalii: React.FC<VerticalProps> = ({
     setInsuranceFormData(formData);
     handleShowReviewModal();
   };
-  
+
+  useEffect(() => {
+    setTravelerForms(combinedData.applications.map(() => ({})));
+  }, [combinedData.applications]);
   
   const [insuranceFormData, setInsuranceFormData] = useState<any | null>(null);
   const [isReviewModal, setIsReviewModal] = useState<boolean>(false);  
@@ -80,7 +86,6 @@ const Verticalii: React.FC<VerticalProps> = ({
     setIsFixed(scrollY >= 180)
   }
 
-  const [travelerForms, setTravelerForms] = useState<any[]>([{ passport_front: ''}]);
   const [isFieldFilled, setIsFieldFilled] = useState({
     passport_front: false,
     passport_back: false,
@@ -110,7 +115,7 @@ const Verticalii: React.FC<VerticalProps> = ({
         if (ageRangeParts[1] === 'mths') {
           return parseInt(ageRangeParts[0], 10);
         } else {
-          return parseInt(ageRangeParts[0], 10) * 12; // Convert years to months
+          return parseInt(ageRangeParts[0], 10) * 12;
         }
       });
       return ageInMonths >= minAge && ageInMonths <= maxAge;
@@ -119,13 +124,12 @@ const Verticalii: React.FC<VerticalProps> = ({
     return ageGroup ? ageGroup.merchant_insurance_amount : 0;
   };
   
-  
   useEffect(() => {
     const calculateTotalAmount = () => {
       let totalAmount = 0;
-      travelerForms.forEach(form => {
-        if (form.birthDetail) {
-          const ageInMonths = calculateAge(form.birthDetail);
+      combinedData.applications.forEach(form => {
+        if (form.birthday_date) {
+          const ageInMonths = calculateAge(form.birthday_date);
           const amount = getMerchantInsuranceAmount(ageInMonths, selectedEntry.age_groups);
           totalAmount += amount;
         }
@@ -134,13 +138,13 @@ const Verticalii: React.FC<VerticalProps> = ({
     };
   
     calculateTotalAmount();
-  }, [travelerForms, selectedEntry.age_groups]);
+  }, [combinedData.applications, selectedEntry.age_groups]);
   
   const handleTravelerDataChange = (newData, index) => {
     setTravelerForms(prevForms => {
       const updatedForms = [...prevForms];
-      if (newData.birthDetail) {
-        const ageInMonths = calculateAge(newData.birthDetail);
+      if (newData.birthday_date) {
+        const ageInMonths = calculateAge(newData.birthday_date);
         updatedForms[index] = { ...updatedForms[index], ...newData, age: ageInMonths };
       } else {
         updatedForms[index] = { ...updatedForms[index], ...newData };
@@ -157,7 +161,7 @@ const Verticalii: React.FC<VerticalProps> = ({
         if (ageRangeParts[1] === 'mths') {
           return parseInt(ageRangeParts[0], 10);
         } else {
-          return parseInt(ageRangeParts[0], 10) * 12; // Convert years to months
+          return parseInt(ageRangeParts[0], 10) * 12;
         }
       });
       return ageInMonths >= minAge && ageInMonths <= maxAge;
@@ -198,14 +202,14 @@ const Verticalii: React.FC<VerticalProps> = ({
   
 
   useEffect(() => {
-    const totalAmount = travelerForms.reduce((acc, form) => {
-      const age = calculateAge(form.birthDetail);
+    const totalAmount = combinedData.applications.reduce((acc, form) => {
+      const age = calculateAge(form.birthday_date);
       const amount = getInsuranceAmountForAge(age, selectedEntry.age_groups);
       return acc + amount;
     }, 0);
   
     setTotalAmount(totalAmount);
-  }, [travelerForms, selectedEntry.age_groups]);
+  }, [combinedData.applications, selectedEntry.age_groups]);
   
 
   const handleTravelFieldChange = (index: number, fieldName: string, value: string) => {
@@ -235,7 +239,6 @@ const Verticalii: React.FC<VerticalProps> = ({
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll)
-    fetchwallet();
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
@@ -263,49 +266,24 @@ const Verticalii: React.FC<VerticalProps> = ({
     return null
   }
 
-  const fetchwallet = async () => {
-    try {
-      const user_id = Cookies.get('user_id');
-      const postData = {
-        id: user_id
-      }
-      const response = await axiosInstance.post("/backend/fetch_single_merchant_user", postData);
-      if (response.status == 203) {
-        toast.error("Please Logout And Login Again", {
-          position: 'top-center'
-        });
-      }
-      setCurrentWallet(response.data.data.wallet_balance);
-    } catch (error) {
-      console.error("Error fetching profile data:", error);
-    }
-  };
   const handleReviewAndSave = async () => {
     try {
-      const totalPrice = parseFloat(totalAmount.toFixed(0));
-      const walletBalance = parseFloat(currentWallet);
-  
-      if (totalPrice > walletBalance) {
-        toast.error('Insufficient Balance!', {
-          position: 'top-center',
-        });
-      } else {
         setLoading(true);
         let allFieldsFilled = true;
   
-        for (const travelerForm of travelerForms) {
+        for (const application of combinedData.applications) {
           const missingFields: string[] = [];
   
-          if (!travelerForm.firstName) missingFields.push('First Name');
-          if (!travelerForm.lastName) missingFields.push('Last Name');
-          if (!travelerForm.birthPlace) missingFields.push('Birth Place');
-          if (!travelerForm.birthDetail) missingFields.push('Birth Detail');
-          if (!travelerForm.passportNumber) missingFields.push('Passport Number');
-          if (!travelerForm.passportIssueDate) missingFields.push('Passport Issue Date');
-          if (!travelerForm.passPortExpiryDate) missingFields.push('Passport Expiry Date');
-          if (!travelerForm.gender) missingFields.push('Gender');
-          if (!travelerForm.maritalStatus) missingFields.push('Marital Status');
-          if (!travelerForm.passport_front) missingFields.push('Passport Front');
+          if (!application.first_name) missingFields.push('First Name');
+          if (!application.last_name) missingFields.push('Last Name');
+          if (!application.birth_place) missingFields.push('Birth Place');
+          if (!application.birthday_date) missingFields.push('Birth Detail');
+          if (!application.passport_number) missingFields.push('Passport Number');
+          if (!application.passport_issue_date) missingFields.push('Passport Issue Date');
+          if (!application.passport_expiry_date) missingFields.push('Passport Expiry Date');
+          if (!application.gender) missingFields.push('Gender');
+          if (!application.marital_status) missingFields.push('Marital Status');
+          if (!application.passport_front) missingFields.push('Passport Front');
   
           if (missingFields.length > 0) {
             toast.error(`Missing fields: ${missingFields.join(', ')}`, {
@@ -315,28 +293,33 @@ const Verticalii: React.FC<VerticalProps> = ({
             allFieldsFilled = false;
             break;
           }
-          const ageInMonths = calculateAge(travelerForm.birthDetail);
-          const { insurance_amount, insurance_original_amount, merchant_insurance_amount } = getInsuranceAmounts(ageInMonths, selectedEntry.age_groups);
+  
+          const age = calculateAge(application.birthday_date);
+          const { insurance_amount, insurance_original_amount, merchant_insurance_amount } = getInsuranceAmounts(age, selectedEntry.age_groups);
   
           const postData = {
             country_code: selectedEntry.country_code,
             nationality_code: selectedEntry.nationality_code,
-            first_name: travelerForm.firstName,
-            last_name: travelerForm.lastName,
-            birth_place: travelerForm.birthPlace,
-            birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
+            first_name: application.first_name,
+            last_name: application.last_name,
+            birth_place: application.birth_place,
+            birthday_date: formatDateWithTimezoneToYMD(application.birthday_date),
             nationality: selectedEntry.nationality_code,
-            passport_number: travelerForm.passportNumber,
-            passport_issue_date: formatDateWithTimezoneToYMD(travelerForm.passportIssueDate),
-            passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
-            gender: travelerForm.gender,
+            passport_number: application.passport_number,
+            passport_issue_date: formatDateWithTimezoneToYMD(application.passport_issue_date),
+            passport_expiry_date: formatDateWithTimezoneToYMD(application.passport_expiry_date),
+            gender: application.gender,
             group_id: groupId,
-            marital_status: travelerForm.maritalStatus,
-            passport_front: travelerForm.passport_front,
+            marital_status: application.marital_status,
+            passport_front: application.passport_front,
             insurance_id: selectedEntry.id,
             insurance_amount: insurance_amount,
             insurance_original_amount: insurance_original_amount,
+            insurance_benefit: selectedEntry.benefits,
+            insurance_plan_type: selectedEntry.description,
+            insurance_age_group: selectedEntry.age_group,
             merchant_insurance_amount: merchant_insurance_amount,
+            receipt_url: reciept
           };
   
           try {
@@ -345,11 +328,11 @@ const Verticalii: React.FC<VerticalProps> = ({
   
             const user_id = Cookies.get('user_id');
             const data = {
-              merchant_id: user_id,
+              user_id: user_id,
               insurance_application_id: createApplicationResponse.data.data._id,
             };
   
-            const addApplicantResponse = await axiosInstance.post('/backend/add_insurance_applicant', data);
+            const addApplicantResponse = await axiosInstance.post('/backend/add_user_insurance_applicant', data);
   
             if (addApplicantResponse.status === 200) {
               setIsReviewModal(false);
@@ -367,9 +350,7 @@ const Verticalii: React.FC<VerticalProps> = ({
             });
             setLoading(false);
             return;
-          }
-        }
-  
+          }  
         setLoading(false);
       }
     } catch (error) {
@@ -377,14 +358,7 @@ const Verticalii: React.FC<VerticalProps> = ({
     }
   };
   
-  
-  const handleDeleteForm = (index) => {
-    setTravelerForms((prevForms) => {
-      const updatedData = [...prevForms]
-      updatedData.splice(index, 1)
-      return updatedData
-    })
-  }
+  console.log("df", combinedData)
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -425,7 +399,6 @@ const Verticalii: React.FC<VerticalProps> = ({
     fontSize: 16,
     fontWeight: 'bold',
   }
-console.log("sadf", selectedEntry)
   return (
     <div style={{backgroundColor: '#fff'}} className='w-full'>
       {confetti && <Confetti />}
@@ -440,105 +413,20 @@ console.log("sadf", selectedEntry)
         amount={insuranceResponse ? Number(insuranceResponse.merchant_insurance_amount) * travelerForms.length : 0} 
       />
 
-      <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
-      <div
-          style={{
-            width: '25%',
-            padding: '16px',
-            paddingLeft: '10px',
-            position: 'sticky',
-            height: '100%',
-            overflowY: 'auto',
-            paddingTop: 10,
-            top: '0px',
-          }}
-        >
-           {travelerForms.map((form, index) => (
-            <div style={{
-              borderRadius: 15,
-              borderColor: '#696969',
-              padding: '10px',
-              boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
-              backgroundColor: 'white',
-              marginBottom: '15px',
-              marginTop: '5px',
-            }}>
-              <div onClick={() => {}} style={{ ...tabTextStyle }}>
-                <CheckCircleOutline style={{ color: '#327113', marginRight: 8 }} />
-                Traveller {index + 1}
-              </div>
-              <div style={{ marginLeft: 20 }}>
-                <div onClick={() => {}} style={{ ...tabTextStyle }}>
-                  {form.passFrontPhoto ? (
-                    <CheckCircleOutline 
-                      style={{ color: '#327113', marginRight: 10 }} 
-                      onClick={() => handleFileDelete(index, 'passFrontPhoto')} 
-                    />
-                  ) : (
-                    <CircleOutlined style={{ color: '#327113', marginRight: 10 }} />
-                  )}
-                  Passport Front
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className='d-flex' style={{justifyContent: 'center', width: '100%'}}>
         <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
-          {travelerForms.map((_, index) => (
-            <div key={index}>
-              <InsuranceForm
-                ind={index}
-                onDataChange={(newData) => handleTravelerDataChange(newData, index)}
-                onFieldChange={handleTravelFieldChange}
-                onFileDelete={handleFileDelete}
-              />
-              {travelerForms.length > 1 && index !== 0 && (
-                <div className='d-flex justify-content-end w-100'>
-                <button
-                  onClick={() => handleDeleteForm(index)}
-                  style={{
-                    color: '#ffffff',
-                    padding: '7px 10px',
-                    border: 'none',
-                    backgroundColor: 'red',
-                    width: '100px',
-                    borderRadius: '5px',
-                    marginLeft: '20px',
-                    marginTop: '20px',
-                    fontSize: '16px',
-                  }}
-                >
-                  Delete
-                </button>
-                </div>
-
-              )}
-            </div>
-          ))}
-          
-          <div className='d-flex my-10' style={{justifyContent: 'flex-end', display: 'flex'}}>
-            <div
-              onClick={addTravelerForm}
-              style={{
-                height: 40,
-                paddingLeft: 15,
-                paddingRight: 15,
-                border: '1px solid',
-                borderColor: '#696969',
-                borderRadius: 10,
-                alignItems: 'center',
-                display: 'flex',
-                justifyContent: 'center',
-                backgroundColor: '#327113',
-                cursor: 'pointer',
-              }}
-            >
-              <h6 className='fs-4' style={{color: '#fff', paddingTop: 5, fontSize: 10}}>
-                + Add Another Applicant
-              </h6>
-            </div>
+        {combinedData.applications.map((application, index) => (
+          <div key={index}>
+            <DirectInsurance
+              ind={index}
+              onDataChange={(newData) => handleTravelerDataChange(newData, index)}
+              onFieldChange={handleTravelFieldChange}
+              onFileDelete={(fileKey) => handleFileDelete(index, fileKey)}
+              combinedData={application}
+            />
           </div>
-          <div className='d-flex'>
+        ))}
+          <div className='d-flex mt-12'>
             <div
               className='py-10 px-20'
               style={{
@@ -600,14 +488,14 @@ console.log("sadf", selectedEntry)
                   paddingTop: 30,
                 }}
               >
-                {travelerForms.map((traveler, index) => (
+                {combinedData.applications.map((traveler, index) => (
                   <div
                     key={index}
                     className='d-flex'
                     style={{ justifyContent: 'space-between', width: '100%' }}
                   >
                     <h5>Traveler {index + 1}:</h5>
-                    <h5>{getMerchantInsuranceAmount(calculateAge(traveler.birthDetail), selectedEntry.age_groups)}/-</h5>
+                    <h5>{getMerchantInsuranceAmount(calculateAge(traveler.birthday_date), selectedEntry.age_groups)}/-</h5>
                   </div>
                 ))}
 
@@ -625,10 +513,6 @@ console.log("sadf", selectedEntry)
                       'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0))',
                   }}
                 />
-                <div className='d-flex' style={{justifyContent: 'space-between', width: '100%'}}>
-                  <p>Wallet</p>
-                  <p>{currentWallet}/-</p>
-                </div>
               </div>
               <div
                 onClick={handleReviewModal}
@@ -649,7 +533,7 @@ console.log("sadf", selectedEntry)
                 }}
               >
                 <h6 className='fs-4' style={{color: 'white', paddingTop: 7}}>
-                  Review and Save
+                  Submit Application
                 </h6>
               </div>
             </div>
@@ -666,21 +550,7 @@ console.log("sadf", selectedEntry)
           <Modal.Title>Review Insurance Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {insuranceFormData && insuranceFormData.map((data, index) => (
-            <div key={index}>
-              <hr className='ahr' />
-              <p><strong>First Name:</strong> {data.firstName}</p>
-              <p><strong>Last Name:</strong> {data.lastName}</p>
-              <p><strong>Birth Place:</strong> {data.birthPlace}</p>
-              <p><strong>Birth Detail:</strong> {data.birthDetail}</p>
-              <p><strong>Passport Number:</strong> {data.passportNumber}</p>
-              <p><strong>Passport Issue Date:</strong> {data.passportIssueDate}</p>
-              <p><strong>Passport Expiry Date:</strong> {data.passPortExpiryDate}</p>
-              <p><strong>Gender:</strong> {data.gender}</p>
-              <p><strong>Marital Status:</strong> {data.maritalStatus}</p>
-              <p><strong>Passport Front:</strong> {data.passportFront}</p>
-            </div>
-          ))}
+          <p>Are you sure you want to proceed with the application?</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setIsReviewModal(false)}>
@@ -695,4 +565,4 @@ console.log("sadf", selectedEntry)
   )
 }
 
-export {Verticalii}
+export {DirectVerticaliii}

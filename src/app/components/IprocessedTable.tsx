@@ -327,7 +327,6 @@ const IprocessedTable: React.FC<Props> = ({ className, title, data,loading }) =>
                                 <th>Passport No</th>
                                 <th>Contact</th>
                                 <th>Channel</th>
-                                <th className='text-center'>To</th>
                                 <th className='text-center'>Status</th>
                                 <th className='text-center'>Amount</th>
                                 <th className='text-center'>Actions</th>
@@ -373,15 +372,7 @@ const IprocessedTable: React.FC<Props> = ({ className, title, data,loading }) =>
                                       href='#'
                                       className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
                                     >
-                                      {app.application_destination}
-                                    </a>
-                                  </td>
-                                  <td>
-                                    <a
-                                      href='#'
-                                      className='text-center text-muted text-hover-primary d-block mb-1 fs-7'
-                                    >
-                                      {app.visa_status}
+                                      {app.insurance_status}
                                     </a>
                                   </td>
                                   <td>
@@ -391,11 +382,11 @@ const IprocessedTable: React.FC<Props> = ({ className, title, data,loading }) =>
                                     >
                                       ₹{' '}
                                       {new Intl.NumberFormat('en-IN').format(
-                                        Number(app.visa_amount)
+                                        Number(app.insurance_amount)
                                       )}
                                     </a>
                                   </td>
-                                  <td className='text-end d-flex'>
+                                  <td className='justify-content-center d-flex'>
                                     <button
                                       title='Edit'
                                       onClick={() => handleVisibilityClick(app)}

@@ -315,27 +315,8 @@ const Verticali: React.FC<VerticalProps> = ({
     }
     return null
   }
-  const formatDate1 = (dateString) => {
-    const date = new Date(dateString)
-    const monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ]
-    const month = monthNames[date.getMonth()]
-    const day = date.getDate()
-    const year = date.getFullYear()
-    return `${month} ${day}, ${year}`
-  }
+
+  console.log("asd", selectedEntry)
 
   const handleReviewAndSave = async () => {
     try {
@@ -365,29 +346,30 @@ const Verticali: React.FC<VerticalProps> = ({
           allFieldsFilled = false;
           break;
         }
-        const postData = {
-          country_code: selectedEntry.country_code,
-          nationality_code: selectedEntry.nationality_code,
-          first_name: travelerForm.firstName,
-          last_name: travelerForm.lastName,
-          birth_place: travelerForm.birthPlace,
-          group_id: groupId,
-          birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
-          nationality: selectedEntry.nationality_code,
-          passport_number: travelerForm.passportNumber,
-          passport_issue_date: formatDateWithTimezoneToYMD(travelerForm.passportIssueDate),
-          passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
-          gender: travelerForm.gender,
-          marital_status: travelerForm.maritalStatus,
-          passport_front: travelerForm.passport_front,
-          receipt_url: recieptUrl,
-          insurance_id: selectedEntry.id,
-          insurance_amount: selectedEntry.totalAmount,
-          insurance_original_amount: selectedEntry.insurance_original_amount,
-          insurance_benefit: selectedEntry.benefits,
-          insurance_plan_type: selectedEntry.description,
-          insurance_age_group: selectedEntry.age_group
-        };
+          const ageInMonths = calculateAge(travelerForm.birthDetail);
+          const { insurance_amount, insurance_original_amount, merchant_insurance_amount } = getInsuranceAmounts(ageInMonths, selectedEntry.age_groups);
+  
+          const postData = {
+            country_code: selectedEntry.country_code,
+            nationality_code: selectedEntry.nationality_code,
+            first_name: travelerForm.firstName,
+            last_name: travelerForm.lastName,
+            birth_place: travelerForm.birthPlace,
+            birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
+            nationality: selectedEntry.nationality_code,
+            passport_number: travelerForm.passportNumber,
+            passport_issue_date: formatDateWithTimezoneToYMD(travelerForm.passportIssueDate),
+            passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
+            gender: travelerForm.gender,
+            group_id: groupId,
+            marital_status: travelerForm.maritalStatus,
+            passport_front: travelerForm.passport_front,
+            insurance_id: selectedEntry.id,
+            insurance_amount: insurance_amount,
+            insurance_original_amount: insurance_original_amount,
+            merchant_insurance_amount: merchant_insurance_amount,
+            reciept: recieptUrl
+          };
   
         try {
           const response = await axiosInstance.post('/backend/create_insurance_application', postData);

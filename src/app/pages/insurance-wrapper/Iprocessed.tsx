@@ -15,7 +15,7 @@ function Iprocessed() {
         let visaData: any[] = [];
         filteredData.forEach((group: any) => {
           const filteredApplications = group.applications.filter((application: any) => 
-            application.insurance_status === 'Issue' || application.insurance_status === 'Processed'
+            application.insurance_status === 'Issued' || application.insurance_status === 'Processed'
           );
 
           if (filteredApplications.length > 0) {

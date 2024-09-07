@@ -187,37 +187,34 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
   const handleIssueSubmit = async () => {
     if (selectedRows.length > 0 && file) {
       try {
-        const allIds = selectedRows.map((row) => row._id)
-        const payloads = selectedRows.map((row) => ({
-          ids: allIds,
+        const selectedIds = selectedRows.map((row) => row._id); 
+        const payload = {
+          ids: selectedIds, 
           flight_status: 'Issued',
-          flight_pdf: file, // Upload the same file for all rows
-        }))
-
-        const promises = payloads.map((payload) =>
-          axiosInstance.post('/backend/upload_flight_file', payload)
-        )
-
-        const responses = await Promise.all(promises)
-        const allSuccess = responses.every((response) => response.data.success === 1)
-
-        if (allSuccess) {
-          toast.success('Applications issued successfully')
-          handleCloseIssueModal()
+          flight_pdf: file,
+        };
+  
+        const response = await axiosInstance.post('/backend/upload_flight_file', payload); 
+    
+        if (response.data.success === 1) {
+          toast.success('Applications issued successfully');
+          handleCloseIssueModal();
           setTimeout(() => {
-            window.location.reload()
-          }, 2500)
+            window.location.reload(); 
+          }, 2500);
         } else {
-          toast.error('Error issuing some applications')
+          toast.error('Error issuing applications');
         }
       } catch (error) {
-        console.error('Error submitting flight:', error)
-        toast.error('Error submitting flight')
+        console.error('Error submitting flight:', error);
+        toast.error('Error submitting flight');
       }
     } else {
-      toast.error('Please upload the flight file before submitting')
+      toast.error('Please upload the flight file before submitting'); 
     }
-  }
+  };
+  
+  
 
   const handleDownloadDocuments = async (applications) => {
     const zip = new JSZip();
@@ -440,7 +437,7 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
                                 <tr>
                                   <td>{group_id}</td>
                                   <td>{firstApp.first_name || 'N/A'}</td>
-                                  <td>{firstApp.merchant_email_id || 'N/A'}</td>
+                                  <td>{firstApp.merchant_email_id || firstApp.customer_email_id}</td>
                                   <td>{totalApps}</td>
                                   <td>
                                     <select
@@ -483,8 +480,8 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
                                   {applications.map((app) => (
                                     <tr key={app._id}>
                                       <td>{app.first_name}</td>
-                                      <td>{app.merchant_email_id}</td>
-                                      <td>{app.merchant_phone_number}</td>
+                                      <td>{app.merchant_email_id || app.customer_email_id}</td>
+                                      <td>{app.merchant_phone_number || app.customer_phone_number}</td>
                                       <td>{app.flight_amount}</td>
                                       <td className='justify-content-center d-flex'>
                                         <button

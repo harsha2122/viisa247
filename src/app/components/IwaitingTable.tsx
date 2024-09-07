@@ -163,8 +163,9 @@ const handleStatusChange = async (applications, selectedStatus) => {
 
   const handleReject = async (selectedItem) => {
     try {
+      const allIds = selectedRows.map((row) => row._id)
       const response = await axiosInstance.post('/backend/upload_insurance_file', {
-        id: selectedItem._id,
+        ids: allIds,
         insurance_status: 'Reject',
         insurance_remark: rejectRemark,
       });
@@ -194,39 +195,30 @@ const handleStatusChange = async (applications, selectedStatus) => {
   };
 
   const handleIssueSubmit = async () => {
-    if (selectedRows.length > 0 && file) {
-      try {
-        const allIds = selectedRows.map((row) => row._id)
-        const payloads = selectedRows.map((row) => ({
-          ids: allIds,
-          insurance_status: 'Issued',
-          insurance_pdf: file,
-        }))
+    try {
+      const allIds = selectedRows.map((row) => row._id);
+      const payload = {
+        ids: allIds,
+        insurance_status: 'Issued',
+        insurance_pdf: file,
+      };
 
-        const promises = payloads.map((payload) =>
-          axiosInstance.post('/backend/upload_insurance_file', payload)
-        )
-
-        const responses = await Promise.all(promises)
-        const allSuccess = responses.every((response) => response.data.success === 1)
-
-        if (allSuccess) {
-          toast.success('Applications issued successfully')
-          handleCloseIssueModal()
-          setTimeout(() => {
-            window.location.reload()
-          }, 2500)
-        } else {
-          toast.error('Error issuing some applications')
-        }
-      } catch (error) {
-        console.error('Error submitting insurance:', error)
-        toast.error('Error submitting insurance')
+      const response = await axiosInstance.post('/backend/upload_insurance_file', payload);
+      if (response.data.success === 1) {
+        toast.success('Applications issued successfully');
+        handleCloseIssueModal();
+        setTimeout(() => {
+          window.location.reload()
+        }, 2500);
+      } else {
+        toast.error('Error issuing applications');
       }
-    } else {
-      toast.error('Please upload the insurance file before submitting')
+    } catch (error) {
+      console.error('Error submitting insurance:', error);
+      toast.error('Error submitting insurance');
     }
-  }
+  };
+  
 
   const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -494,7 +486,7 @@ const handleStatusChange = async (applications, selectedStatus) => {
                           <thead>
                             <tr>
                               <th>Name</th>
-                              <th>Email</th>
+                              <th>Passport</th>
                               <th>Contact</th>
                               <th>Channel</th>
                               <th className='text-center'>To</th>

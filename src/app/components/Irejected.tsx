@@ -215,6 +215,7 @@ const IrejectTable: React.FC<Props> = ({ className, title, data, loading }) => {
       setissueVisaLoader(false);
     }
   };
+  console.log("df", data)
   return (
     <div style={{boxShadow:"none"}} className={`card ${className}`}>
       <Toaster />

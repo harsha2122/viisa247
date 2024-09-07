@@ -45,6 +45,13 @@ type OnSelectClickData = {
   }[];
 };
 
+type CombinedDataType = {
+    issue_date: string;
+    expiry_date: string;
+    insuranceData: InsuranceData[];
+  };
+  
+
 
 type Props = {
   className: string;
@@ -58,11 +65,12 @@ type Props = {
     insuranceData: InsuranceData[];
   };
   manualValue: any;
-  onSelectClick: (entryData: OnSelectClickData) => void;  // Updated type
+  onSelectClick: (entryData: OnSelectClickData) => void;
+  combinedData: CombinedDataType[] | null;
 };
 
 
-const InsuranceTablem: React.FC<Props> = ({
+const InsuranceTablee: React.FC<Props> = ({
   className,
   title,
   show,
@@ -70,6 +78,7 @@ const InsuranceTablem: React.FC<Props> = ({
   visaListLoader,
   apiData,
   manualValue,
+  combinedData,
   onSelectClick,
 }) => {
   const [activeTab, setActiveTab] = useState<string>('platinum');
@@ -190,6 +199,13 @@ const InsuranceTablem: React.FC<Props> = ({
     }
   };
 
+  console.log("df", apiData)
+
+  useEffect(() => {
+    if (combinedData) {
+      console.log("Combined Data:", combinedData);
+    }
+  }, [combinedData]);
 
   return (
     <div className="pb-8">
@@ -244,14 +260,14 @@ const InsuranceTablem: React.FC<Props> = ({
                     </h2>
                     <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#000', margin: '30px 0' }}>
                       ₹{Cookies.get('user_type') === 'merchant'
-                        ? Math.round((
+                        ? Math.round(
                           calculatePrice(
                             parseFloat(plan.customer.base_price),
                             parseFloat(plan.customer.price_per_day),
                             apiData.issue_date,
                             apiData.expiry_date
                           ).totalPrice
-                        ))
+                        )
                         : calculatePrice(
                           parseFloat(plan.customer.base_price),
                           parseFloat(plan.customer.price_per_day),
@@ -264,14 +280,14 @@ const InsuranceTablem: React.FC<Props> = ({
                         Total Price:
                       </h3> 
                       <span>₹{Cookies.get('user_type') === 'merchant'
-                        ? Math.round((
+                        ? Math.round(
                           calculatePrice(
                             parseFloat(plan.customer.base_price),
                             parseFloat(plan.customer.price_per_day),
                             apiData.issue_date,
                             apiData.expiry_date
                           ).totalPrice
-                        ))
+                        )
                         : calculatePrice(
                           parseFloat(plan.customer.base_price),
                           parseFloat(plan.customer.price_per_day),
@@ -335,4 +351,4 @@ const InsuranceTablem: React.FC<Props> = ({
   );
 };
 
-export { InsuranceTablem };
+export { InsuranceTablee };

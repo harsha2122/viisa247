@@ -41,7 +41,7 @@ const Vertical3: React.FC<VerticalProps> = ({
   const [applicantForms, setApplicantForms] = useState<any[]>([])
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
-  // const [travelerForms, setTravelerForms] = useState([<TravelerForm key={0} onDataChange={handleTravelerDataChange} />]);
+  const [combinedData, setCombinedData] = useState<any>(null);
   const recieptFileInputRef = useRef<HTMLInputElement | null>(null)
   const [reciept, setReciept] = useState('')
   const maxSize = 1024 * 1024
@@ -49,6 +49,7 @@ const Vertical3: React.FC<VerticalProps> = ({
   const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null);
   const [confetti, setConfetti] = useState(false)
   const navigate = useNavigate()
+  const [isSuccessModal, setIsSuccessModal] = useState<boolean>(false)
   const [modalShow, setModalShow] = useState(false);
   const handleShow = () => setModalShow(true);
   const handleClose = () => {
@@ -300,6 +301,34 @@ const Vertical3: React.FC<VerticalProps> = ({
             original_visa_amount: selectedEntry.visa_actual_price,
           }
 
+          const allPostData = travelerForms.map((travelerForm) => ({
+            country_code: selectedEntry.country_code,
+            nationality_code: selectedEntry.nationality_code,
+            first_name: travelerForm.firstName,
+            last_name: travelerForm.lastName,
+            birth_place: travelerForm.birthPlace,
+            panNo: travelerForm.panNo,
+            group_id: groupId,
+            birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
+            nationality: selectedEntry.nationality_code,
+            passport_number: travelerForm.passportNumber,
+            passport_issue_date: formatDateWithTimezoneToYMD(travelerForm.passportIssueDate),
+            passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
+            gender: travelerForm.gender,
+            marital_status: travelerForm.maritalStatus,
+            application_arrival_date: formatDateWithTimezoneToYMD(selectedEntry.application_arrival_date),
+            application_departure_date: formatDateWithTimezoneToYMD(selectedEntry.application_departure_date),
+            application_destination: selectedEntry.country_code,
+            fathers_name: travelerForm.fatherName,
+            passport_front: travelerForm.passFrontPhoto,
+          }));
+          const combinedData = {
+            selectedEntry,
+            applications: allPostData
+          };
+  
+          setCombinedData(combinedData);
+
           axiosInstance
             .post('/backend/create_manual_user_application', postData)
             .then((response) => {
@@ -314,8 +343,8 @@ const Vertical3: React.FC<VerticalProps> = ({
                 .then((response) => {
                   if (response.status === 200) {
                     setIsReviewModal(false)
-                    setConfetti(true);
-                    setModalShow(true); 
+                    setConfetti(true)
+                    setIsSuccessModal(true)
                   } else {
                     toast.error(response.data.msg, {
                       position: 'top-center',
@@ -396,6 +425,14 @@ const Vertical3: React.FC<VerticalProps> = ({
     fontSize: 16,
     fontWeight: 'bold',
   }
+
+  const handleDashboardRedirect = () => {
+    window.location.reload();
+  };
+
+  const handleDirectInsurance = () => {
+    navigate('/customer/directinsurance', { state: { combinedData: combinedData } });
+  };
 
 
   return (
@@ -884,6 +921,85 @@ const Vertical3: React.FC<VerticalProps> = ({
           </Button>
         </Modal.Footer>
       </Modal>
+      <Modal show={isSuccessModal} onHide={handleClose} centered>
+      <Modal.Body className="text-center px-8 py-16">
+        <div className="checkmark">
+            <svg className="star" height="19" viewBox="0 0 19 19" width="19" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.296.747c.532-.972 1.393-.973 1.925 0l2.665 4.872 4.876 2.66c.974.532.975 1.393 0 1.926l-4.875 2.666-2.664 4.876c-.53.972-1.39.973-1.924 0l-2.664-4.876L.76 10.206c-.972-.532-.973-1.393 0-1.925l4.872-2.66L8.296.746z" >
+                </path>
+            </svg>
+            <svg className="star" height="19" viewBox="0 0 19 19" width="19" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.296.747c.532-.972 1.393-.973 1.925 0l2.665 4.872 4.876 2.66c.974.532.975 1.393 0 1.926l-4.875 2.666-2.664 4.876c-.53.972-1.39.973-1.924 0l-2.664-4.876L.76 10.206c-.972-.532-.973-1.393 0-1.925l4.872-2.66L8.296.746z" >
+                </path>
+            </svg>
+            <svg className="star" height="19" viewBox="0 0 19 19" width="19" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.296.747c.532-.972 1.393-.973 1.925 0l2.665 4.872 4.876 2.66c.974.532.975 1.393 0 1.926l-4.875 2.666-2.664 4.876c-.53.972-1.39.973-1.924 0l-2.664-4.876L.76 10.206c-.972-.532-.973-1.393 0-1.925l4.872-2.66L8.296.746z" >
+                </path>
+            </svg>
+            <svg className="star" height="19" viewBox="0 0 19 19" width="19" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.296.747c.532-.972 1.393-.973 1.925 0l2.665 4.872 4.876 2.66c.974.532.975 1.393 0 1.926l-4.875 2.666-2.664 4.876c-.53.972-1.39.973-1.924 0l-2.664-4.876L.76 10.206c-.972-.532-.973-1.393 0-1.925l4.872-2.66L8.296.746z" >
+                </path>
+            </svg>
+            <svg className="star" height="19" viewBox="0 0 19 19" width="19" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.296.747c.532-.972 1.393-.973 1.925 0l2.665 4.872 4.876 2.66c.974.532.975 1.393 0 1.926l-4.875 2.666-2.664 4.876c-.53.972-1.39.973-1.924 0l-2.664-4.876L.76 10.206c-.972-.532-.973-1.393 0-1.925l4.872-2.66L8.296.746z" >
+                </path>
+            </svg>
+            <svg className="star" height="19" viewBox="0 0 19 19" width="19" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.296.747c.532-.972 1.393-.973 1.925 0l2.665 4.872 4.876 2.66c.974.532.975 1.393 0 1.926l-4.875 2.666-2.664 4.876c-.53.972-1.39.973-1.924 0l-2.664-4.876L.76 10.206c-.972-.532-.973-1.393 0-1.925l4.872-2.66L8.296.746z" >
+                </path>
+            </svg>
+            <svg className="checkmark__check" height="36" viewBox="0 0 48 36" width="48" xmlns="http://www.w3.org/2000/svg">
+                <path d="M47.248 3.9L43.906.667a2.428 2.428 0 0 0-3.344 0l-23.63 23.09-9.554-9.338a2.432 2.432 0 0 0-3.345 0L.692 17.654a2.236 2.236 0 0 0 .002 3.233l14.567 14.175c.926.894 2.42.894 3.342.01L47.248 7.128c.922-.89.922-2.34 0-3.23">
+                </path>
+            </svg>
+            <svg className="checkmark__background" height="115" viewBox="0 0 120 115" width="120" xmlns="http://www.w3.org/2000/svg">
+                <path d="M107.332 72.938c-1.798 5.557 4.564 15.334 1.21 19.96-3.387 4.674-14.646 1.605-19.298 5.003-4.61 3.368-5.163 15.074-10.695 16.878-5.344 1.743-12.628-7.35-18.545-7.35-5.922 0-13.206 9.088-18.543 7.345-5.538-1.804-6.09-13.515-10.696-16.877-4.657-3.398-15.91-.334-19.297-5.002-3.356-4.627 3.006-14.404 1.208-19.962C10.93 67.576 0 63.442 0 57.5c0-5.943 10.93-10.076 12.668-15.438 1.798-5.557-4.564-15.334-1.21-19.96 3.387-4.674 14.646-1.605 19.298-5.003C35.366 13.73 35.92 2.025 41.45.22c5.344-1.743 12.628 7.35 18.545 7.35 5.922 0 13.206-9.088 18.543-7.345 5.538 1.804 6.09 13.515 10.696 16.877 4.657 3.398 15.91.334 19.297 5.002 3.356 4.627-3.006 14.404-1.208 19.962C109.07 47.424 120 51.562 120 57.5c0 5.943-10.93 10.076-12.668 15.438z" >
+                </path>
+            </svg>
+        </div>
+        <h4 className="font-weight-bold">Order Success!</h4>
+        <p>Your order request has been successfully placed.</p>
+        {/* <div className="withdrawal-amount display-4">₹ {amount.toLocaleString()}</div> */}
+        <div className="mt-4 d-flex flex-column gap-3">
+          <div className="d-flex justify-content-center mt-4">
+            <div
+              onClick={handleDirectInsurance}
+              style={{
+                width: "90%", 
+                background: "#327113", 
+                justifyContent: "center", 
+                alignItems: "center", 
+                color: "#fff", 
+                borderRadius: "15px", 
+                border: "none", 
+                padding: "15px 10px",
+                cursor: "pointer"
+              }}
+            >
+              Apply For Insurance
+            </div>
+          </div>
+          <div className="d-flex justify-content-center mt-4">
+            <div
+              onClick={handleDashboardRedirect}
+              style={{
+                width: "90%", 
+                background: "#327113", 
+                justifyContent: "center", 
+                alignItems: "center", 
+                color: "#fff", 
+                borderRadius: "15px", 
+                border: "none", 
+                padding: "15px 10px",
+                cursor: "pointer"
+              }}
+            >
+              Go To Dashboard
+            </div>
+          </div>
+        </div>
+      </Modal.Body>
+    </Modal>
     </div>
   )
 }
