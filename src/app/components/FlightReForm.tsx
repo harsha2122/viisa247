@@ -93,6 +93,8 @@ const FlightReForm = ({ ind, onDataChange, selectedEntry }) => {
     }
   };
 
+  console.log("sdf", selectedEntry)
+
   return (
     <Container>
       <Toaster />

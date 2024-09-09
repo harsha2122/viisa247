@@ -8,9 +8,11 @@ import Loader from '../../../components/Loader'
 import {Box, Step, StepLabel, Stepper, Theme, Typography} from '@mui/material'
 import InsuranceForm from './InsuranceForm'
 import Confetti from 'react-confetti';
+import ClearIcon from '@mui/icons-material/Delete';
 import { Modal, Button } from 'react-bootstrap';
 import OrderSuccess from '../../../components/OrderSuccess'
 import DirectInsurance from './DirectInsurance'
+import qr from '../../../../_metronic/assets/card/qr.png'
 
 interface VerticalProps {
   selectedEntry: any
@@ -42,7 +44,7 @@ const DirectVerticaliii: React.FC<VerticalProps> = ({
   const [insuranceResponse, setInsuranceResponse] = useState<any | null>(null);
   const [travelerAge, setTravelerAge] = useState<number[]>([]);
   const recieptFileInputRef = useRef<HTMLInputElement | null>(null);
-  const [reciept, setReciept] = useState('');
+  const [recieptUrl, setRecieptUrl] = useState('');
   const maxSize = 1024 * 1024;
   const [travelerForms, setTravelerForms] = useState(combinedData.applications.map(() => ({})));;
   const navigate = useNavigate()
@@ -237,6 +239,56 @@ const DirectVerticaliii: React.FC<VerticalProps> = ({
     }));
   };
 
+  const handleFileUpload = async (file) => {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await axiosInstance.post('/backend/upload_image/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      const fileUrl = response.data.data;
+      setLoading(false);
+      return fileUrl;
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      setLoading(false);
+      return '';
+    }
+  }
+
+  const handleRecieptSelect = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > maxSize) {
+        toast.error('File size exceeds the limit of 1MB.', {
+          position: 'top-center',
+        });
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        if (e.target) {
+          try {
+            const imageLink = await handleFileUpload(file);
+            setRecieptUrl(imageLink);
+          } catch (error) {
+            console.error('Error uploading image:', error);
+          }
+        }
+      }
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRecieptUpload = () => {
+    if (recieptFileInputRef.current) {
+      recieptFileInputRef.current.click();
+    }
+  }
+
   useEffect(() => {
     window.addEventListener('scroll', handleScroll)
     return () => {
@@ -319,7 +371,7 @@ const DirectVerticaliii: React.FC<VerticalProps> = ({
             insurance_plan_type: selectedEntry.description,
             insurance_age_group: selectedEntry.age_group,
             merchant_insurance_amount: merchant_insurance_amount,
-            receipt_url: reciept
+            receipt_url: recieptUrl
           };
   
           try {
@@ -358,7 +410,6 @@ const DirectVerticaliii: React.FC<VerticalProps> = ({
     }
   };
   
-  console.log("df", combinedData)
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -426,6 +477,102 @@ const DirectVerticaliii: React.FC<VerticalProps> = ({
             />
           </div>
         ))}
+                  <div
+            className='py-10 px-20'
+            style={{
+              borderRadius: 20,
+              borderColor: '#f2f2f2',
+              boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+              marginLeft: 10,
+              marginTop: 10,
+              backgroundColor: 'white',
+            }}
+          >
+            <div className='d-flex ' style={{width: '100%'}}>
+              <div style={{width: '40%', marginLeft: '25px', marginTop: '30px'}}>
+                <h6>Receipt</h6>
+                {loading ? (
+                  <div style={{color: '#000'}}>Loading...</div>
+                ) : recieptUrl ? (
+                  <div
+                    style={{
+                      border: '4px dotted gray',
+                      width: '100%',
+                      height: 200,
+                      borderRadius: '10px',
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      marginTop: 20,
+                      position: 'relative',
+                    }}
+                  >
+                    <div
+                      onClick={() => setRecieptUrl('')}
+                      style={{
+                        justifyContent: 'flex-end',
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        padding: 7,
+                        borderRadius: '50%',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <ClearIcon style={{color: 'red'}} />
+                    </div>
+                    <img
+                      src={recieptUrl}
+                      alt='Uploaded Image'
+                      style={{
+                        maxWidth: '100%',
+                        maxHeight: '100%',
+                        marginTop: '15px',
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      border: '4px dotted gray',
+                      width: '100%',
+                      height: 200,
+                      borderRadius: '10px',
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      marginTop: 20,
+                    }}
+                  >
+                    <h4 className='mx-10 mt-10'>Receipt Photo</h4>
+                    <button
+                      type='button'
+                      onClick={handleRecieptUpload}
+                      className='btn btn-lg btn-success me-3 mt-7'
+                      style={{justifyContent: 'flex-end', backgroundColor: '#327113'}}
+                    >
+                      <span className='indicator-label'>Select Files</span>
+                    </button>
+                    <p className='text-bold pt-5 fs-9' style={{color: '#555555'}}>
+                      Supports Image only.
+                    </p>
+                    <input
+                      type='file'
+                      ref={recieptFileInputRef}
+                      style={{display: 'none'}}
+                      accept='image/*'
+                      onChange={handleRecieptSelect}
+                    />
+                  </div>
+                )}
+              </div>
+              <div style={{width: '60%', marginTop: 25, alignItems: 'center'}}>
+                <div className='d-flex flex-column align-items-center gap-4 w-100 '>
+                  <h1>Upload Reciept</h1>
+                  <img width='200px' src={qr} alt='qr-code' />
+                </div>
+              </div>
+            </div>
+          </div>
           <div className='d-flex mt-12'>
             <div
               className='py-10 px-20'

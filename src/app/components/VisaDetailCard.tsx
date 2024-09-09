@@ -784,10 +784,18 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
     setSelectedItem(reSubmitApplicants)
   }
 
-  const handleVisibilityClick1 = (entry) => {
-    setSelectedItem(entry)
+  const handleVisibilityClick1 = (selectedEntry) => {
+    const reSubmitApplicants = selectedEntry.applications.filter(
+      (app) => app.insurance_status === 'Re-Submit'
+    )
     setVisible1(true)
+    setSelectedItem(reSubmitApplicants)
   }
+
+  // const handleVisibilityClick1 = (entry) => {
+  //   setSelectedItem(entry)
+  //   setVisible1(true)
+  // }
 
   const handleVisibilityClick2 = (entry) => {
     setSelectedItem(entry)
@@ -1115,7 +1123,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                       type='submit'
                       id='kt_sign_in_submit'
                       className='btn btn-success'
-                      onClick={() => handleVisibilityClick(entry)}
+                      onClick={() => handleVisibilityClick1(entry)}
                       style={{backgroundColor: '#327113', marginTop: 20}}
                     >
                       Re - Submit Form
@@ -1370,11 +1378,15 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
               </div>
               <h1>Edit Application</h1>
               <hr className='ahr' />
-              <InsuranceReForm
-                ind={0}
-                onDataChange={handleTravelerDataChange}
-                selectedEntry={selectedItem}
-              />
+              {Array.isArray(selectedItem) &&
+                selectedItem.map((applicant, idx) => (
+                  <InsuranceReForm
+                    key={idx}
+                    ind={idx}
+                    onDataChange={(data) => handleTravelerDataChangee(data, idx)}
+                    selectedEntry={applicant}
+                  />
+              ))}
             </div>
           </div>
         )}
