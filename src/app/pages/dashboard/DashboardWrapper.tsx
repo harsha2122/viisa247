@@ -2,6 +2,7 @@
 import { FC } from 'react'
 import { useIntl } from 'react-intl'
 import {
+  CardsWidget20,
   ChartsWidget3,
 } from '../../../_metronic/partials/widgets'
 import React, { useState, useEffect } from 'react';
@@ -9,6 +10,11 @@ import icustomer from '../../../_metronic/assets/card/va.svg'
 import relations from '../../../_metronic/assets/card/tt.svg'
 import revenue from '../../../_metronic/assets/card/rg.svg'
 import customers from '../../../_metronic/assets/card/vip.svg'
+import visa from '../../../_metronic/assets/card/passport.png'
+import insurance from '../../../_metronic/assets/card/life-insurance.png'
+import flight from '../../../_metronic/assets/card/airplane.png'
+import hotel from '../../../_metronic/assets/card/hotels.png'
+import packagess from '../../../_metronic/assets/card/package-box.png'
 import { HomeMainCard } from '../../components/HomeMainCard'
 import Loader from '../../components/Loader'
 import axiosInstance from '../../helpers/axiosInstance'
@@ -19,24 +25,26 @@ type Props = {
   merchant_user: string | number
   in_process_visa: string | number
   not_applied: string | number
-  visa_rejected:string | number
-  api:string | number
-  processed:string | number
-  waiting:string | number
-  today_total_transactions:string | number
-  visa_processed_today:string | number
-  revenue:string |number
+  visa_rejected: string | number
+  api: string | number
+  processed: string | number
+  waiting: string | number
+  today_total_transactions: string | number
+  visa_processed_today: string | number
+  revenue: string | number
+  visa_count: number
+  insurance_count: number
+  package_count: number
+  hotel_count: number
+  flight_count: number
 }
 
-
 const DashboardPage: FC<Props> = (data) => (
-  
-  
   <>
     {/* begin::Row */}
     <div className='row gx-8 gy-5'>
-      {/* begin::Col */}
-      <div className=' col-md-6 col-lg-4 col-xl-3 col-xxl-3 '>
+      {/* Revenue */}
+      <div className='col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
         <HomeMainCard
           className='mb-5 mx-auto mb-xl-10'
           description='Revenue generated'
@@ -47,7 +55,8 @@ const DashboardPage: FC<Props> = (data) => (
           count={data.revenue}
         />
       </div>
-      <div className=' col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
+      {/* Partners */}
+      <div className='col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
         <HomeMainCard
           className='mb-6 mx-auto mb-xl-10'
           description='Total Partners'
@@ -58,7 +67,8 @@ const DashboardPage: FC<Props> = (data) => (
           count={data.api}
         />
       </div>
-      <div className=' col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
+      {/* Retailers */}
+      <div className='col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
         <HomeMainCard
           className='mb-6 mx-auto mb-xl-10'
           description='Total Retailers'
@@ -69,7 +79,8 @@ const DashboardPage: FC<Props> = (data) => (
           count={data.merchant_user}
         />
       </div>
-      <div className=' col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
+      {/* Customers */}
+      <div className='col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
         <HomeMainCard
           className='mb-6 mx-auto mb-xl-10'
           description='Individual Customers'
@@ -81,99 +92,70 @@ const DashboardPage: FC<Props> = (data) => (
         />
       </div>
     </div>
-    {/* <div className='row gx-1 gy-5'>
-    <div className=' col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
-        <HomeMainCard
-          className='mb-6 mx-auto mb-xl-10'
-          description='Visa Issued'
-          color='#fff'
-          too='/superadmin/processed'
-          icon={issued}
-          textColor='#071437'
-          count={data.processed}
+
+    {/* Status-based Counts */}
+    <div className='row justify-content-between gx-8 gy-5 px-4 mb-12'>
+      <div className='col-md-2'>
+        <CardsWidget20
+          className='my-custom-class'
+          description='Visa'
+          color='rgb(229, 255, 235)'  // Light Royal Blue
+          icon={visa}
+          textColor='black'
+          count={data.visa_count}
         />
       </div>
-      <div className=' col-md-6 col-lg-4 col-xl-3 col-xxl-3 '>
-        <HomeMainCard
-          className='mb-5 mx-auto mb-xl-10'
-          description='Waiting for Approval'
-          color='#fff'
-          too='/superadmin/in-process'
-          icon={waiting}
-          textColor='#071437'
-          count={data.waiting}
+      <div className='col-md-2'>
+        <CardsWidget20
+          className='my-custom-class'
+          description='Insurance'
+          color='rgb(235, 245, 255)'  // Light Lavender
+          icon={insurance}
+          textColor='black'
+          count={data.insurance_count}
         />
       </div>
-      <div className=' col-md-6 col-lg-4 col-xl-3 col-xxl-3 '>
-        <HomeMainCard
-          className='mb-5 mx-auto mb-xl-10'
-          description='Visa In-Process'
-          color='#fff'
-          too='/superadmin/waiting-for-approval'
-          icon={process}
-          textColor='#071437'
-          count={data.in_process_visa}
+      <div className='col-md-2'>
+        <CardsWidget20
+          className='my-custom-class'
+          description='Flight'
+          color='rgb(255, 245, 235)'  // Pale Aqua
+          icon={flight}
+          textColor='black'
+          count={data.insurance_count}
         />
       </div>
-      <div className=' col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
-        <HomeMainCard
-          className='mb-6 mx-auto mb-xl-10'
-          description='Visa Rejected'
-          color='#fff'
-          too='/superadmin/rejected'
-          icon={rejected}
-          textColor='#071437'
-          count={data.visa_rejected}
+      <div className='col-md-2'>
+        <CardsWidget20
+          className='my-custom-class'
+          description='Package'
+          color='rgb(255, 250, 240)'  // Light Rose
+          icon={packagess}
+          textColor='black'
+          count={data.insurance_count}
         />
       </div>
-    </div> */}
-    {/* <h1
-      style={{
-        marginTop:"-10px",
-        marginBottom:"30px",
-        fontSize:"19px"
-    }}
-    >Today's Statistics</h1>
-    <div className='row gx-1 gy-5'>
-      <div className=' col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
-          <HomeMainCard
-            className='mb-5 mx-auto mb-xl-10'
-            description='Total transactions'
-            color='#fff'
-            too='/superadmin/wallet'
-            icon={transaction}
-            textColor='#071437'
-            count={data.today_total_transactions}
-          />
+      <div className='col-md-2'>
+        <CardsWidget20
+          className='my-custom-class'
+          description='Hotel'
+          color='rgb(245, 235, 255)'  // Soft Mint Green
+          icon={hotel}
+          textColor='black'
+          count={data.insurance_count}
+        />
       </div>
-      <div className=' col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
-          <HomeMainCard
-            className='mb-5 mx-auto mb-xl-10'
-            description='Visa processed today'
-            color='#fff'
-            too='/superadmin/processed'
-            icon={done}
-            textColor='#071437'
-            count={data.visa_processed_today}
-          />
-      </div>
-    </div> */}
+    </div>
+
+    {/* Charts */}
     <div className='row gx-3 mb-3 gy-5'>
-      <div className=' col-md-5 col-lg-5 col-xl-5 col-xxl-5'>
+      <div className='col-md-5 col-lg-5 col-xl-5 col-xxl-5'>
         <ChartsWidget9 className='border' />
       </div>
-      <div className=' col-md-7 col-lg-7 col-xl-7 col-xxl-7'>
+      <div className='col-md-7 col-lg-7 col-xl-7 col-xxl-7'>
         <ChartsWidget3 className='border' />
       </div>
     </div>
-    {/* <div className='row gx-3 mb-3 gy-5'>
-      <div className=' col-md-6 col-lg-6 col-xl-6 col-xxl-6'>
-        <ChartsWidget3 className='border' />
-      </div>
-      <div className=' col-md-6 col-lg-6 col-xl-6 col-xxl-6'>
-        <ChartsWidget1 className='border' />
-      </div>
-    </div> */}
   </>
 )
 
@@ -185,44 +167,65 @@ const DashboardWrapper: FC = () => {
     in_process_visa: '',
     not_applied: '',
     visa_rejected: '',
-    api:'',
-    processed:'',
-    waiting:'',
-    today_total_transactions:'',
-    visa_processed_today:'',
-    revenue:'',
+    api: '',
+    processed: '',
+    waiting: '',
+    today_total_transactions: '',
+    visa_processed_today: '',
+    revenue: '',
+    visa_count: 0,
+    insurance_count: 0,
+    flight_count: 0,
+    hotel_count: 0,
+    package_count: 0,
   });
-  const [loading,setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Make a Get request to your API endpoint
-        axiosInstance.get('/backend/super_admin_dashboard')
-          .then((response) => {
-            setDashData(response.data.data);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.error('Error fetching Atlys data:', error);
-            setLoading(false);
-          });
+        const [dashboardResponse, visaResponse, insuranceResponse] = await Promise.all([
+          axiosInstance.get('/backend/super_admin_dashboard'),
+          axiosInstance.get('/backend/super_admin/fetch_all_visa'),
+          axiosInstance.get('/backend/super_admin/fetch_all_insurance'),
+        ]);
+
+        const visaFilteredData = visaResponse.data.data.filter((item: any) => {
+          const filteredApplications = item.applications.filter(
+            (application: any) => application.visa_status === 'Not Issued' || application.visa_status === 'Applied'
+          );
+          return filteredApplications.length > 0;
+        });
+        const visaCount = visaFilteredData.length;
+
+        const insuranceFilteredData = insuranceResponse.data.data.filter((item: any) => {
+          const filteredApplications = item.applications.filter(
+            (application: any) => application.insurance_status === 'Not Issued' || application.insurance_status === 'Applied'
+          );
+          return filteredApplications.length > 0;
+        });
+        const insuranceCount = insuranceFilteredData.length;
+
+        setDashData({
+          ...dashboardResponse.data.data,
+          visa_count: visaCount,
+          insurance_count: insuranceCount,
+        });
+        setLoading(false);
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching data:', error);
         setLoading(false);
       }
     };
 
     fetchData();
   }, []);
+
   return (
     <>
-      {loading ?
-      <Loader loading={loading} />
-      :
-      <DashboardPage {...dashData}/>
-}
+      {loading ? <Loader loading={loading} /> : <DashboardPage {...dashData} />}
     </>
-  )
+  );
 }
 
 export { DashboardWrapper }

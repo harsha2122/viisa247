@@ -354,21 +354,14 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
     setVisible(false);
   };
 
-  const formatDate = (timestamp: string) => {
-    const date = new Date(timestamp)
-  
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true,
-    }
-  
-    const formattedDate = date.toLocaleDateString('en-US', options)
-    return formattedDate
-  }
+  const formatDate1 = (dateString: string) => {
+    const date = new Date(dateString);
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month} ${day}, ${year}`;
+  };
 
   return (
     <div style={{boxShadow:"none"}} className={`card ${className}`}>
@@ -454,8 +447,8 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
                               >
                                 <thead>
                                   <tr>
-                                    <th style={{ width: '15%' }}>Group ID</th>
-                                    <th style={{ width: '15%' }}>Name</th>
+                                    <th style={{ width: '15%' }}>Visa</th>
+                                    <th style={{ width: '15%' }}>Updated At</th>
                                     <th style={{ width: '20%' }}>Email</th>
                                     <th style={{ width: '10%' }}>Applicants</th>
                                     <th style={{ width: '20%' }}>Status</th>
@@ -464,8 +457,8 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
                             </thead>
                             <tbody>
                               <tr>
-                                <td>{group_id}</td>
-                                <td>{firstApp.first_name || 'N/A'}</td>
+                                <td>{firstApp.visa_description}</td>
+                                <td>{formatDate1(firstApp.updated_at)}</td>
                                 <td>{firstApp.merchant_email_id || firstApp.customer_email_id}</td>
                                 <td>{totalApps}</td>
                                 <td>

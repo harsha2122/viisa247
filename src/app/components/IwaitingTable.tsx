@@ -112,15 +112,15 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
     }
   }
 
-const handleStatusChange = async (applications, selectedStatus) => {
-  setSelectedRows(applications)
-  if (selectedStatus === 'Reject') {
-    setShowRejectModal(true)
-  } else if (selectedStatus === 'Re-Submit') {
-    setShowResubmitModal(true)
-  } else if (selectedStatus === 'Issue') {
-    setShowIssueModal(true)
-  }
+  const handleStatusChange = async (applications, selectedStatus) => {
+    setSelectedRows(applications)
+    if (selectedStatus === 'Reject') {
+      setShowRejectModal(true)
+    } else if (selectedStatus === 'Re-Submit') {
+      setShowResubmitModal(true)
+    } else if (selectedStatus === 'Issue') {
+      setShowIssueModal(true)
+    }
   };
 
   const handleResubmitSubmit = async () => {
