@@ -33,6 +33,30 @@ type Props = {
   data: any[];
   loading:Boolean
 }
+
+interface Application {
+  _id: string;
+  insurance_description: string;
+  updated_at: string;
+  merchant_email_id?: string;
+  customer_email_id?: string;
+  merchant_phone_number?: string;
+  customer_phone_number?: string;
+  application_id: string;
+  insurance_status: string;
+  insurance_amount: number;
+  application_destination: string;
+  letter?: string;
+  pan_card?: string;
+  itr?: string;
+  passport_front?: string;
+  passport_back?: string;
+}
+
+interface Propss {
+  data: { group_id: string; applications: Application[] }[];
+}
+
 const overlayStyle: CSSProperties = {
   position: 'fixed',
   top: 0,
@@ -91,6 +115,7 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
   const [selectedRows, setSelectedRows] = useState<TableRow[]>([])
   const [selectedApplicants, setSelectedApplicants] = useState<string[]>([])
   const [showResubmitModal, setShowResubmitModal] = useState(false)
+  const [selectedApplications, setSelectedApplications] = useState<Application[]>([]);
 
   const handleFileUpload = async (file) => {
     try {
@@ -246,6 +271,44 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
     }
   }
 
+  const handleSelectApplication = (app: Application) => {
+    setSelectedApplications((prevSelected) => {
+      if (prevSelected.includes(app)) {
+        return prevSelected.filter((selectedApp) => selectedApp !== app);
+      } else {
+        return [...prevSelected, app];
+      }
+    });
+  };
+
+  const handleDownloadSelected = async () => {
+    const zip = new JSZip();
+
+    for (const app of selectedApplications) {
+      const fileFields = ['letter', 'pan_card', 'itr', 'passport_front', 'passport_back'];
+
+      for (const field of fileFields) {
+        if (app[field as keyof Application]) {
+          try {
+            const response = await fetch(app[field as keyof Application] as string);
+            const blob = await response.blob();
+            const fileName = `${app.application_id}_${field}.jpeg`;
+            zip.file(fileName, blob);
+          } catch (error) {
+            console.error(`Error downloading ${field} from application ID: ${app.application_id}`, error);
+          }
+        } else {
+          console.log(`${field} is not available for application ID: ${app.application_id}`);
+        }
+      }
+    }
+
+    zip.generateAsync({ type: 'blob' }).then((blob) => {
+      saveAs(blob, 'documents.zip');
+      console.log('ZIP file has been generated and download started.');
+    });
+  };
+
   const handleDownloadDocuments = async (applications) => {
     const zip = new JSZip();
   
@@ -367,24 +430,6 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
         <span className='card-label fw-bold fs-3 mb-1'>{title}</span>
         <span className='fs-6 text-gray-400 fw-bold'>{title == 'VISA' && '30 days'}</span>
       </h3>
-      {title == 'VISA' && (
-        <div className='d-flex flex-wrap my-2'>
-          <div className='me-4'>
-            <select
-              name='status'
-              data-control='select2'
-              data-hide-search='true'
-              className='form-select form-select-sm form-select-white w-125px'
-              defaultValue='30 Days'
-            >
-              <option value='30 Days'>30 Days</option>
-              <option value='Approved'>In Progress</option>
-              <option value='Declined'>To Do</option>
-              <option value='In Progress'>Completed</option>
-            </select>
-          </div>
-        </div>
-      )}
     </div>
     {/* end::Header */}
     {/* begin::Body */}
@@ -405,6 +450,14 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
             <h3 className='card-title align-content-start flex-row'>
               <span className='card-label text-gray-600 fw-bold fs-3'>Recent Applications</span>
             </h3>
+            {selectedApplications.length > 0 && (
+              <button
+                className='btn btn-primary mt-3'
+                onClick={handleDownloadSelected}
+              >
+                Download Selected Documents
+              </button>
+            )}
           </div>
           <div className='card-body py-3'>
           <div className='table-responsive'>
@@ -442,16 +495,24 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
                             >
                               <thead>
                                 <tr>
+                                  <th style={{ width: '5%' }}></th>
                                   <th style={{ width: '15%' }}>Group ID</th>
                                   <th style={{ width: '15%' }}>Name</th>
                                   <th style={{ width: '20%' }}>Email</th>
                                   <th style={{ width: '10%' }}>Applicants</th>
-                                  <th style={{ width: '20%' }}>Status</th>
+                                  <th style={{ width: '15%' }}>Status</th>
                                   <th style={{ width: '20%' }}>Download Documents</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
+                              <td className='text-center'>
+                                <input
+                                  type='checkbox'
+                                  onChange={() => handleSelectApplication(firstApp)}
+                                  checked={selectedApplications.includes(firstApp)}
+                                />
+                              </td>
                               <td>{group_id}</td>
                               <td>{firstApp.first_name || 'N/A'}</td>
                               <td>{firstApp.merchant_email_id || firstApp.customer_email_id}</td>

@@ -321,7 +321,7 @@ const HomeApply: React.FC<Props> = ({
         const description = manualFieldValue ? apiData.visa_description : apiData.description;
         const dayMatch = description.match(/\d+/);
         const day = dayMatch ? parseInt(dayMatch[0]) : null;
-  
+        const processingTime = apiData.visa_processing_time
         const countryTypeMatch = description.match(/(.+?)\s+\d+\s+Days/);
         const country = countryTypeMatch ? countryTypeMatch[1] : null;
         const entryTypeMatch = description.match(/Days\s+(\w+)/i);
@@ -334,6 +334,7 @@ const HomeApply: React.FC<Props> = ({
           entryType: entryType ? entryType : 'Single',
           country: country,
           description: description,
+          processTime: processingTime,
           original_visa_amount: apiData.visa_actual_price,
           receipt: receipt,
           value: apiData.value,

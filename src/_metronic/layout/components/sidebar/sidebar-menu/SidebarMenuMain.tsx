@@ -314,7 +314,7 @@ const SidebarMenuMain = () => {
           ───
           <span style={{fontWeight: '600'}} className='menu-section text-uppercase fs-7 ls-1'>
             {' '}
-            Transaction{' '}
+            Reports{' '}
           </span>
           ───
         </div>

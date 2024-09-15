@@ -340,7 +340,7 @@ const CustomerApplyVisa: React.FC<Props> = ({ show, visaList, onApiDataReceived,
           const entryTypeMatch = description.match(/Days\s+(\w+)/i);
           const entryType = entryTypeMatch ? entryTypeMatch[1] : null;
           const receipt = manualFieldValue ? { "Visa Fees": apiData.visa_price_b2c } : apiData.receipt;
-
+          const processingTime = apiData.visa_processing_time
   
           const extractedData = {
             day: manualFieldValue ? parseInt(apiData.visa_duration) : day,
@@ -349,6 +349,7 @@ const CustomerApplyVisa: React.FC<Props> = ({ show, visaList, onApiDataReceived,
             description: description,
             receipt: receipt,
             value: apiData.value,
+            processTime: processingTime,
             country_code: values.toCountry,
             nationality_code:  selectedFromCountry || values.fromCountry,
             application_arrival_date: issueDate,

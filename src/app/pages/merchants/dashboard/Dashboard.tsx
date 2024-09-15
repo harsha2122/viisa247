@@ -3,13 +3,7 @@ import { VisaDetailCard } from "../../../components/VisaDetailCard";
 import axiosInstance from "../../../helpers/axiosInstance";
 import Cookies from 'js-cookie';
 import { MerchantAnaltytics } from "../../../components/MerchantAnalytics";
-import { TfiStatsUp } from "react-icons/tfi";
-import { GiAirplaneDeparture } from "react-icons/gi";
 import Loader from '../../../components/Loader';
-import { FaShieldAlt } from "react-icons/fa";
-import logo from '../../../../_metronic/assets/favi.png'
-import { MdOutlineFlight } from "react-icons/md";
-import { FaHotel } from "react-icons/fa6";
 import { Dropdown, Modal, Button, Form } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import MerchantNewVisaWrapper from "../apply-visa/MerchantNewVisaWrapper";
@@ -38,6 +32,15 @@ const MerchantDashboard = () => {
   const [upperLimit, setUpperLimit] = useState(0);
   const [issuedApiKey, setIssuedApiKey] = useState('');
   const [showApiDropdown, setShowApiDropdown] = useState(false);
+  const [openRevenue, setOpenRevenue] = useState(false); 
+  const [revenueOpen, setRevenueOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const toggleRevenue = () => setRevenueOpen(!revenueOpen);
+  const toggleSettings = () => setSettingsOpen(!settingsOpen);
+
+  const toggleRevenueDropdown = () => {
+    setOpenRevenue(!openRevenue);
+  };
 
   useEffect(() => {
     fetchData();
@@ -271,7 +274,7 @@ const MerchantDashboard = () => {
     padding: '7px 0',
     display: 'flex',
     alignItems: 'center',
-    transition:"all 0.5s ease"
+    transition:"all 0.5s ease in out"
   };
 
 
@@ -301,6 +304,7 @@ const MerchantDashboard = () => {
     marginTop: 25,
     display: 'flex',
     alignItems: 'center',
+    transition:"all 0.5s ease in out"
   };
 
   const tabTextStyle1 = {
@@ -353,159 +357,131 @@ const MerchantDashboard = () => {
           padding: '12px',
           position: 'fixed',
           height: '100%',
-          // overflowY: 'auto',
+          overflowY: 'auto',
           zIndex:"101",
           paddingTop: 70,
           top:"0",
           paddingBottom: 100,
           left: 0,
-          transition: 'all 0.5s ease',
+          transition: 'all 0.5s ease in out',
         }}
       >
         {sidebarOpen ? (
           <>
-          <div style={{position:"absolute", marginLeft:"10%", top:"35px"}} className='d-flex align-items-center flex-grow-1 flex-lg-grow-0 me-lg-15'>
-            <Link to='/merchant/dashboard'>
-              <img
-                alt='Logo'
-                src={toAbsoluteUrl('/media/logos/logo.png')}
-                className='h-20px h-lg-30px app-sidebar-logo-default'
-              />
-            </Link>
-          </div>
-        
-          <div
-            onClick={() => handleTabClick("Analytics")}
-            className="mt-16"
-            style={activeTab === "Analytics" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-          >
-            {sidebarOpen && <> Dashboard</>}
-          </div>
-        
-          <div
-            onClick={() => handleTabClick("ApplyVisa")}
-            style={activeTab === "ApplyVisa" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-          >
-            {sidebarOpen && <> Visa</>}
-          </div>
-        
-          <div
-            onClick={() => handleTabClick("ApplyInsurance")}
-            style={activeTab === "ApplyInsurance" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-          >
-            {sidebarOpen && <> Insurance</>}
-          </div>
-        
-          <div
-            onClick={() => handleTabClick("ApplyHotel")}
-            style={activeTab === "ApplyHotel" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-          >
-            {sidebarOpen && <> Hotel</>}
-          </div>
-        
-          <div
-            onClick={() => handleTabClick("ApplyFlight")}
-            style={activeTab === "ApplyFlight" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-          >
-            {sidebarOpen && <> Flight</>}
-          </div>
-        
-          <div
-            onClick={() => handleTabClick("All")}
-            style={activeTab === "All" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-          >
-            {sidebarOpen && <> Applications</>}
-          </div>
+            {/* Logo section remains unchanged */}
+            <div style={{ position: "absolute", marginLeft: "10%", top: "35px" }} className='d-flex align-items-center flex-grow-1 flex-lg-grow-0 me-lg-15'>
+              <Link to='/merchant/dashboard'>
+                <img
+                  alt='Logo'
+                  src={toAbsoluteUrl('/media/logos/logo.png')}
+                  className='h-20px h-lg-30px app-sidebar-logo-default'
+                />
+              </Link>
+            </div>
 
-                  
-          <Dropdown style={{paddingLeft:"20px"}}>
-            <Dropdown.Toggle
-              variant="link"
-              
-              id="dropdown-revenue"
-              style={tabStyle(activeTab.includes("Revenue") ? activeTab : "")}
-              className="w-100 text-start"
+            {/* Dashboard section remains unchanged */}
+            <div
+              onClick={() => handleTabClick("Analytics")}
+              className="mt-16"
+              style={activeTab === "Analytics" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
             >
-              {sidebarOpen && <> Revenue</>}
-            </Dropdown.Toggle>
+              {sidebarOpen && <> Dashboard</>}
+            </div>
 
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => handleTabClick("Transactions")}>
-                Transactions
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => handleTabClick("Visa Revenue")}>
-                Visa Revenue
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => handleTabClick("Insurance Revenue")}>
-                Insurance Revenue
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => handleTabClick("Hotel Revenue")}>
-                Hotel Revenue
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => handleTabClick("Flight Revenue")}>
-                Flight Revenue
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-
-          <Dropdown style={{paddingLeft:"20px"}}>
-            <Dropdown.Toggle
-              variant="link"
-              
-              id="dropdown-settings"
-              style={tabStyle(activeTab.includes("Re") ? activeTab : "")}
-              className="w-100 text-start"
+            {/* Visa section */}
+            <div
+              onClick={() => handleTabClick("ApplyVisa")}
+              style={activeTab === "ApplyVisa" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
             >
-              {sidebarOpen && <> Settings </>}
-            </Dropdown.Toggle>
+              {sidebarOpen && <> Visa</>}
+            </div>
 
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={handleCommissionClick}>
-                Commission
-              </Dropdown.Item>
-              {showApiDropdown && (
-                <Dropdown.Item onClick={handleApiClick}>
-                  API
-                </Dropdown.Item>
+            {/* Insurance section */}
+            <div
+              onClick={() => handleTabClick("ApplyInsurance")}
+              style={activeTab === "ApplyInsurance" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
+            >
+              {sidebarOpen && <> Insurance</>}
+            </div>
+
+            {/* Hotel section */}
+            <div
+              onClick={() => handleTabClick("ApplyHotel")}
+              style={activeTab === "ApplyHotel" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
+            >
+              {sidebarOpen && <> Hotel</>}
+            </div>
+
+            {/* Flight section */}
+            <div
+              onClick={() => handleTabClick("ApplyFlight")}
+              style={activeTab === "ApplyFlight" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
+            >
+              {sidebarOpen && <> Flight</>}
+            </div>
+
+            {/* Applications section */}
+            <div
+              onClick={() => handleTabClick("All")}
+              style={activeTab === "All" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
+            >
+              {sidebarOpen && <> Applications</>}
+            </div>
+
+            {/* Revenue Section without changing activeTab */}
+            <div onClick={toggleRevenue} style={{ ...tabTextStyle, ...tabBorderStyle, cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+              <span>Revenue</span>
+              <span style={{ marginLeft: 'auto' }}>
+                {revenueOpen ? '▼' : '▶'}
+              </span>
+            </div>
+            <div
+              style={{
+                maxHeight: revenueOpen ? '300px' : '0',
+                overflow: 'hidden',
+                transition: 'max-height 0.3s ease-in-out',
+                marginLeft: '20px',
+              }}
+            >
+              {revenueOpen && (
+                <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
+                  <li onClick={() => handleTabClick("Transactions")} style={{ marginTop: '10px', cursor:"pointer" }}>Transactions</li>
+                  <li onClick={() => handleTabClick("Visa Revenue")} style={{ marginTop: '10px', cursor:"pointer" }}>Visa Revenue</li>
+                  <li onClick={() => handleTabClick("Insurance Revenue")} style={{ marginTop: '10px', cursor:"pointer" }}>Insurance Revenue</li>
+                  <li onClick={() => handleTabClick("Hotel Revenue")} style={{ marginTop: '10px', cursor:"pointer" }}>Hotel Revenue</li>
+                  <li onClick={() => handleTabClick("Flight Revenue")} style={{ marginTop: '10px', cursor:"pointer" }}>Flight Revenue</li>
+                </ul>
               )}
+            </div>
 
-            </Dropdown.Menu>
-          </Dropdown>
-        </>
+            {/* Settings Section without changing activeTab */}
+            <div onClick={toggleSettings} style={{ ...tabTextStyle, ...tabBorderStyle, cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+              <span>Settings</span>
+              <span style={{ marginLeft: 'auto' }}>
+                {settingsOpen ? '▼' : '▶'}
+              </span>
+            </div>
+            <div
+              style={{
+                maxHeight: settingsOpen ? '200px' : '0',
+                overflow: 'hidden',
+                transition: 'max-height 0.3s ease-in-out',
+                marginLeft: '20px',
+              }}
+            >
+              {settingsOpen && (
+                <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
+                  <li onClick={handleCommissionClick} style={{ marginTop: '10px', cursor:"pointer" }}>Commission</li>
+                  <li onClick={handleApiClick} style={{ marginTop: '10px', cursor:"pointer" }}>API</li>
+                </ul>
+              )}
+            </div>
+          </>
+
         
           ) : (
             <>
-            <img style={{width:"35px", height:"35px", marginTop:"-75px", marginLeft:"10px"}} src={logo} alt="" />
-              <div
-                onClick={() => handleTabClick("Analytics")}
-                style={activeTab === "Analytics" ? { ...activeTabTextStyle, ...activeTabBorderStyle } : { ...tabTextStyle, ...tabBorderStyle }}
-              >
-                <TfiStatsUp style={iconStyle1} />
-              </div>
-              <div
-                onClick={() => handleTabClick("ApplyVisa")}
-                style={{ ...tabBorderStyle }}
-              >
-                <GiAirplaneDeparture style={iconStyle1} />
-              </div>
-              <div
-                onClick={() => handleTabClick("ApplyInsurance")}
-                style={{ ...tabBorderStyle }}
-              >
-                <FaShieldAlt style={iconStyle1} />
-              </div>
-              <div
-                onClick={() => handleTabClick("ApplyHotel")}
-                style={{ ...tabBorderStyle }}
-              >
-                <FaHotel style={iconStyle1} />
-              </div>
-              <div
-                onClick={() => handleTabClick("ApplyFlight")}
-                style={{ ...tabBorderStyle }}
-              >
-                <MdOutlineFlight style={iconStyle1} />
-              </div>
+            
             </>
           )}
         </div>

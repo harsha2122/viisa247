@@ -95,6 +95,13 @@ const DashboardPage: FC<Props> = (data) => (
 
     {/* Status-based Counts */}
     <div className='row justify-content-between gx-8 gy-5 px-4 mb-12'>
+    <hr style={{
+        width:"100%",
+        border: 0,
+        height: "1px",
+        backgroundImage: "linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0))"
+      }} />
+      <h2 className='w-100 my-8'>Applications In-Process</h2>
       <div className='col-md-2'>
         <CardsWidget20
           className='my-custom-class'
@@ -122,7 +129,7 @@ const DashboardPage: FC<Props> = (data) => (
           color='rgb(255, 245, 235)'  // Pale Aqua
           icon={flight}
           textColor='black'
-          count={data.insurance_count}
+          count={data.flight_count}
         />
       </div>
       <div className='col-md-2'>
@@ -132,7 +139,7 @@ const DashboardPage: FC<Props> = (data) => (
           color='rgb(255, 250, 240)'  // Light Rose
           icon={packagess}
           textColor='black'
-          count={data.insurance_count}
+          count={0}
         />
       </div>
       <div className='col-md-2'>
@@ -142,7 +149,7 @@ const DashboardPage: FC<Props> = (data) => (
           color='rgb(245, 235, 255)'  // Soft Mint Green
           icon={hotel}
           textColor='black'
-          count={data.insurance_count}
+          count={data.hotel_count}
         />
       </div>
     </div>
@@ -184,10 +191,12 @@ const DashboardWrapper: FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [dashboardResponse, visaResponse, insuranceResponse] = await Promise.all([
+        const [dashboardResponse, visaResponse, insuranceResponse, flightResponse, hotelResponse] = await Promise.all([
           axiosInstance.get('/backend/super_admin_dashboard'),
           axiosInstance.get('/backend/super_admin/fetch_all_visa'),
           axiosInstance.get('/backend/super_admin/fetch_all_insurance'),
+          axiosInstance.get('/backend/super_admin/fetch_all_flight'),
+          axiosInstance.get('/backend/super_admin/fetch_all_hotel'),
         ]);
 
         const visaFilteredData = visaResponse.data.data.filter((item: any) => {
@@ -206,10 +215,22 @@ const DashboardWrapper: FC = () => {
         });
         const insuranceCount = insuranceFilteredData.length;
 
+        const filteredFlight = flightResponse.data.data.filter((entry: any) => {
+          const status = entry.applications[0]?.flight_status;
+          return status === 'Applied' || status === 'Not Issued';
+        });
+        const flightCount = filteredFlight.length
+
+        const hotelData = [...(hotelResponse.data.data || []), ...(hotelResponse.data.data1 || [])];
+        const filteredData = hotelData.filter(item => ['Applied', 'Not Issued'].includes(item.hotel_status));
+        const hotelCount = filteredData.length;
+
         setDashData({
           ...dashboardResponse.data.data,
           visa_count: visaCount,
           insurance_count: insuranceCount,
+          flight_count: flightCount,
+          hotel_count: hotelCount,
         });
         setLoading(false);
       } catch (error) {

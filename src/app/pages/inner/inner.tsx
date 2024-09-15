@@ -160,7 +160,7 @@ const Inner: React.FC<Props> = ({
                         </div>
                         <div className="stay-validity">
                             <p><span>✔</span> Stay Period: <strong>{entry.day || '--'} Days</strong></p>
-                            <p><span>✔</span> Validity: <strong>58 Days</strong></p>
+                            <p><span>✔</span> Process Time: <strong>{entry.processTime || '--'} Days</strong></p>
                         </div>
                     </div>
                     <div className="right-section">

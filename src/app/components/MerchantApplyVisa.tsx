@@ -363,6 +363,7 @@ const MerchantApplyVisa: React.FC<Props> = ({
           const dayMatch = description.match(/\d+/)
           const day = dayMatch ? parseInt(dayMatch[0]) : null
           const actualPrice = apiData.visa_actual_price
+          const processingTime = apiData.visa_processing_time
           const countryTypeMatch = description.match(/(.+?)\s+\d+\s+Days/)
           const country = countryTypeMatch ? countryTypeMatch[1] : null
           const entryTypeMatch = description.match(/Days\s+(\w+)/i)
@@ -377,6 +378,7 @@ const MerchantApplyVisa: React.FC<Props> = ({
             country: country,
             description: description,
             receipt: receipt,
+            processingTime: processingTime,
             value: apiData.value,
             country_code: values.toCountry,
             nationality_code: selectedFromCountry || values.fromCountry,
