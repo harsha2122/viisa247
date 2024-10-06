@@ -10,6 +10,7 @@ import InsuranceForm from './InsuranceForm'
 import Confetti from 'react-confetti';
 import { Modal, Button } from 'react-bootstrap';
 import OrderSuccess from '../../../components/OrderSuccess'
+import InsuranceForm1 from './InsuranceForm1'
 
 interface VerticalProps {
   selectedEntry: any
@@ -100,6 +101,10 @@ const Verticalii: React.FC<VerticalProps> = ({
       return ageInMonths - 1;
     }
     return ageInMonths;
+  };
+
+  const handleAddForm = () => {
+    setApplicantForms((prevForms) => [...prevForms, 'InsuranceForm1']);
   };
   
   const getMerchantInsuranceAmount = (ageInMonths: number, ageGroups: any[]) => {
@@ -243,8 +248,13 @@ const Verticalii: React.FC<VerticalProps> = ({
 
 
   const addTravelerForm = () => {
-    setTravelerForms((prevForms) => [...prevForms, {}])
-  }
+    setTravelerForms((prevForms) => [
+        ...prevForms, 
+        { passport_front: '', passport_back: '', photo: '', birthDetail: '', firstName: '', lastName: '' }
+    ]);
+};
+
+
 
   useEffect(() => {
     const newGroupId = generateGroupId()
@@ -293,7 +303,7 @@ const Verticalii: React.FC<VerticalProps> = ({
         setLoading(true);
         let allFieldsFilled = true;
   
-        for (const travelerForm of travelerForms) {
+        for (const [index, travelerForm] of travelerForms.entries()) { // Entries use kiya gaya hai index ke liye
           const missingFields: string[] = [];
   
           if (!travelerForm.firstName) missingFields.push('First Name');
@@ -315,6 +325,7 @@ const Verticalii: React.FC<VerticalProps> = ({
             allFieldsFilled = false;
             break;
           }
+  
           const ageInMonths = calculateAge(travelerForm.birthDetail);
           const { insurance_amount, insurance_original_amount, merchant_insurance_amount } = getInsuranceAmounts(ageInMonths, selectedEntry.age_groups);
   
@@ -337,6 +348,15 @@ const Verticalii: React.FC<VerticalProps> = ({
             insurance_amount: insurance_amount,
             insurance_original_amount: insurance_original_amount,
             merchant_insurance_amount: merchant_insurance_amount,
+            address: travelerForm.address,
+            nominee: {
+              title: travelerForm.nomineetitle,
+              first_name: travelerForm.nomineefirstName,
+              last_name: travelerForm.nomineelastName,
+              dob: travelerForm.nomineedob,
+              relation: travelerForm.nomineerelation,
+            },
+            ...(travelerForm.relation && { relation: travelerForm.relation }),
           };
   
           try {
@@ -368,6 +388,23 @@ const Verticalii: React.FC<VerticalProps> = ({
             setLoading(false);
             return;
           }
+  
+          if (index === travelerForms.length - 1) {
+            try {
+              const finalData = {
+                group_id: groupId,
+              };
+              await axiosInstance.post('/insurance_apply', finalData);
+              toast.success('Final insurance application submitted!', {
+                position: 'top-center',
+              });
+            } catch (finalError) {
+              console.error('Error while making final API call:', finalError);
+              toast.error('Error while submitting final application', {
+                position: 'top-center',
+              });
+            }
+          }
         }
   
         setLoading(false);
@@ -376,6 +413,7 @@ const Verticalii: React.FC<VerticalProps> = ({
       console.error('Error while making API calls:', error);
     }
   };
+  
   
   
   const handleDeleteForm = (index) => {
@@ -484,16 +522,26 @@ console.log("sadf", selectedEntry)
           ))}
         </div>
         <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
-          {travelerForms.map((_, index) => (
-            <div key={index}>
-              <InsuranceForm
-                ind={index}
-                onDataChange={(newData) => handleTravelerDataChange(newData, index)}
-                onFieldChange={handleTravelFieldChange}
-                onFileDelete={handleFileDelete}
-              />
-              {travelerForms.length > 1 && index !== 0 && (
-                <div className='d-flex justify-content-end w-100'>
+          {travelerForms.map((isInsuranceForm, index) => (
+          <div key={index}>
+            {index === 0 ? (
+                <InsuranceForm
+                    ind={index}
+                    onDataChange={(newData) => handleTravelerDataChange(newData, index)}
+                    onFieldChange={handleTravelFieldChange}
+                    onFileDelete={handleFileDelete}
+                />
+            ) : (
+                <InsuranceForm1
+                    ind={index}
+                    onDataChange={(newData) => handleTravelerDataChange(newData, index)}
+                    onFieldChange={handleTravelFieldChange}
+                    onFileDelete={handleFileDelete}
+                />
+            )}
+
+            {travelerForms.length > 1 && index !== 0 && (
+              <div className='d-flex justify-content-end w-100'>
                 <button
                   onClick={() => handleDeleteForm(index)}
                   style={{
@@ -506,15 +554,15 @@ console.log("sadf", selectedEntry)
                     marginLeft: '20px',
                     marginTop: '20px',
                     fontSize: '16px',
+                    cursor: 'pointer',
                   }}
                 >
                   Delete
                 </button>
-                </div>
-
-              )}
-            </div>
-          ))}
+              </div>
+            )}
+          </div>
+        ))}
           
           <div className='d-flex my-10' style={{justifyContent: 'flex-end', display: 'flex'}}>
             <div

@@ -10,7 +10,7 @@ import { DatePicker } from 'antd'
 import moment from 'moment';
 import * as Yup from 'yup';
 import 'react-datepicker/dist/react-datepicker.css'
-function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
+function InsuranceForm1({ onDataChange, ind, onFieldChange, onFileDelete }) {
   const [initValues] = useState<ICreateAccount>(inits)
   const passportFrontFileInputRef = useRef<HTMLInputElement | null>(null)
   const [passportFrontImageURL, setPassportFrontImageURL] = useState('')
@@ -40,6 +40,7 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
     passPortExpiryDate: '',
     passport_front: '',
     reciept_url: '',
+    relation: '',
     address: '',
     nomineefirstName: '',
     nomineelastName: '',
@@ -470,19 +471,40 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
                       </div>
                     </div>
                   </div>
-                  <div className='fv-row gap-8 w-100 mb-5'>
-                    <label className='d-flex align-items-center form-label'>
-                      <span className='required'>Address</span>
-                    </label>
-
-                    <Field
+                  <div className='d-flex gap-8'>
+                    <div className='fv-row gap-8 w-100'>
+                      <label className='form-label required'>Address</label>
+                      <Field
                       style={{...inputStyle}}
                       name='address'
                       className='form-control form-control-lg form-control-solid'
                       onChange={(e) => handleFieldChange('address', e.target.value)}
                     />
-                    <div className='text-danger mt-2'>
-                      <ErrorMessage name='address' />
+                      <div className='text-danger mt-2'>
+                        <ErrorMessage name='businessType' />
+                      </div>
+                    </div>
+                    <div className='fv-row gap-8 w-100'>
+                      <label className='form-label required'>Relation (With 1st Applicant)</label>
+
+                      <Field
+                        as='select'
+                        style={{...inputStyle, width: '100%', backgroundColor: 'white'}}
+                        name='relation'
+                        className='form-select form-select-lg form-select-solid'
+                        onChange={(e) => handleFieldChange('relation', e.target.value)}
+                      >
+                        <option></option>
+                        <option value='Spouse'>Spouse</option>
+                        <option value='Father'>Father</option>
+                        <option value='Mother'>Mother</option>
+                        <option value='Brother'>Brother</option>
+                        <option value='Sister'>Sister</option>
+                        <option value=''>Friend</option>
+                      </Field>
+                      <div className='text-danger mt-2'>
+                        <ErrorMessage name='businessType' />
+                      </div>
                     </div>
                   </div>
                   <hr className='my-12'
@@ -604,4 +626,4 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
   )
 }
 
-export default InsuranceForm
+export default InsuranceForm1

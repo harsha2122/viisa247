@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Field, Form, Formik, ErrorMessage } from 'formik';
 import toast, { Toaster } from 'react-hot-toast';
 import axiosInstance from '../../helpers/axiosInstance';
-import { useLocation } from 'react-router-dom';
 import Accordion from 'react-bootstrap/Accordion';
 import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 
+// Interface Definitions
 interface Country {
   name: string;
   code: string;
@@ -17,7 +17,6 @@ interface Country {
 interface Price {
   base_price: string;
   price_per_day: string;
-  actual_price: string;
 }
 
 interface AgeGroup {
@@ -32,8 +31,6 @@ interface AgeGroup {
 interface Plan {
   plan_name: string;
   age_groups: AgeGroup[];
-  base_price: string;
-  actual_price: string;
 }
 
 interface Plans {
@@ -51,11 +48,9 @@ const inputStyle1 = {
   boxSizing: 'border-box',
 };
 
-const AddInsurance = () => {
+const AddInc = () => {
   const [selectedCountry, setSelectedCountry] = useState<Country[]>([]);
   const [fromCountry, setFromCountry] = useState('IN');
-  const location = useLocation(); 
-  const { insuranceData }: any = location.state || {};
 
   const countries: Country[] = [
     { name: 'Afghanistan', code: 'AF' },
@@ -376,12 +371,12 @@ const AddInsurance = () => {
     try {
       const formData = {
         nationality_code: fromCountry,
-        api_id: insuranceData.id,
-        type: "api",
+        type: "manual",
         country_code: selectedCountry.map((country) => country.code),
-        insurance_description: insuranceData.name,
+        insurance_description: values.insurance_description,
         plans: values,
       };
+
       await axiosInstance.post('/backend/create_insurance', formData);
       toast.success('Insurance Created successfully!');
       setTimeout(() => {
@@ -446,8 +441,6 @@ const AddInsurance = () => {
                   name='insurance_description'
                   className='form-control form-control-lg form-control-solid'
                   style={inputStyle1}
-                  value={insuranceData.name}
-                  readyOnly
                   rows={3}
                 />
                 <div className='text-danger mt-2'>
@@ -1052,11 +1045,12 @@ const AddInsurance = () => {
               </Accordion>
             </div>
 
-            <div className='w-100 d-flex justify-content-end my-5'>
-              <button type='submit' className='btn btn-success'>
-                Submit
-              </button>
-            </div>
+            
+              <div className='w-100 d-flex justify-content-end my-5'>
+                <button type='submit' className='btn btn-success'>
+                  Submit
+                </button>
+              </div>
             </Form>
           )}
         </Formik>
@@ -1065,4 +1059,4 @@ const AddInsurance = () => {
   );
 };
 
-export default AddInsurance;
+export default AddInc;

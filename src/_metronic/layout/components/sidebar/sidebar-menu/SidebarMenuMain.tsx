@@ -167,7 +167,7 @@ const SidebarMenuMain = () => {
         title={'Create New VISA'}
         fontIcon='bi-app-indicator'
       /> */}
-      <SidebarMenuItemWithSub 
+      {/* <SidebarMenuItemWithSub 
         to="/your-path"
         title="Atlys"
         icon={<svg width="23" height="23" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" preserveAspectRatio="xMidYMid meet"><path d="M28.216 35.543h7.431l-3.666-11.418z" fill="rgb(119, 186, 123)"></path><path d="M32 2C15.432 2 2 15.431 2 32c0 16.569 13.432 30 30 30s30-13.432 30-30C62 15.431 48.568 2 32 2m7.167 44.508l-1.914-5.965H26.567L24.6 46.508h-6.342l10.358-29.016h6.859l10.266 29.016h-6.574" fill="rgb(119, 186, 123)"></path></svg>}
@@ -191,23 +191,23 @@ const SidebarMenuMain = () => {
         fontIcon='bi-app-indicator'
         hasBullet={true}
       />
-      </SidebarMenuItemWithSub>
+      </SidebarMenuItemWithSub> */}
 
       <SidebarMenuItemWithSub 
-        to="/your-path"
+        to="/superadmin/visa247/waiting-for-approval"
         title="Visa247"
         icon={<svg width="23" height="23" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" preserveAspectRatio="xMidYMid meet"><path d="M32 2C15.432 2 2 15.432 2 32s13.432 30 30 30s30-13.432 30-30S48.568 2 32 2m2.824 44.508h-5.728l-9.813-29.016h6.476l6.3 22.027l6.358-22.027h6.299l-9.892 29.016" fill="rgb(119, 186, 123)"></path></svg>}
         hasBullet={false}
       >
       <SidebarMenuItem
-        to='superadmin/visa247/processed'
-        title={'Issued'}
+        to='superadmin/visa247/waiting-for-approval'
+        title={'In Process'}
         fontIcon='bi-app-indicator'
         hasBullet={true}
       />
       <SidebarMenuItem
-        to='superadmin/visa247/waiting-for-approval'
-        title={'In Process'}
+        to='superadmin/visa247/processed'
+        title={'Issued'}
         fontIcon='bi-app-indicator'
         hasBullet={true}
       />
@@ -220,7 +220,7 @@ const SidebarMenuMain = () => {
       </SidebarMenuItemWithSub>
 
       <SidebarMenuItemWithSub 
-        to="/your-path"
+        to="superadmin/insurance/waiting"
         title="Insurance"
         icon={<svg width="23" height="23" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" className="iconify iconify--emojione-monotone" preserveAspectRatio="xMidYMid meet"><path d="M32 2C15.432 2 2 15.431 2 32c0 16.569 13.432 30 30 30s30-13.432 30-30C62 15.431 48.568 2 32 2m3.012 44.508h-6.023V17.492h6.023v29.016" fill="rgb(119, 186, 123)"></path></svg>}
         hasBullet={false}
@@ -320,7 +320,7 @@ const SidebarMenuMain = () => {
         </div>
       </div>
       <SidebarMenuItemWithSub 
-        to="/your-path"
+        to="/superadmin/revenue/visa"
         title="Revenue"
         icon={
           <svg

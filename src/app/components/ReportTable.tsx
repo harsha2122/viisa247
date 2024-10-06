@@ -198,13 +198,13 @@ const getMerchantId = () => {
 
   const handleAddBalance = async () => {
     try {
-      const amount = parseFloat(balanceAmount); // Convert string to number
+      const amount = parseFloat(balanceAmount);
       if (isNaN(amount) || amount <= 0) {
         toast.error('Amount should be greater than zero.');
         return;
       }
   
-      const merchantId = getMerchantId(); // Get merchant_id from the first row
+      const merchantId = getMerchantId();
   
       if (!merchantId) {
         toast.error('Merchant ID not found.');
@@ -212,19 +212,26 @@ const getMerchantId = () => {
       }
   
       const response = await axiosInstance.post('/backend/credit_wallet', {
-        amount: amount, // Use the converted number
+        amount: amount,
         merchant_id: merchantId,
       });
   
       if (response.status === 200) {
-        // Ensure prevBalance is a number and amount is a number
         setRemainingBalance(prevBalance => Number(prevBalance) + amount);
+        // **Update filteredData with Merchant ID**
+        const newTransaction = {
+          created_at: new Date(),
+          category: 'Admin Reconciliation',
+          status: 'Approved',
+          type: 'Credit',
+          wallet_balance: amount,
+          remaining_balance: Number(remainingBalance) + amount,
+          merchant_id: merchantId, // Add merchant_id in transaction row
+        };
+        setFilteredData(prevData => [newTransaction, ...prevData]); // Add new transaction with merchant_id
         toast.success('Balance added successfully!');
         setAddModalShow(false);
-        setBalanceAmount(''); // Clear input
-        setTimeout(() => {
-          window.location.reload();
-        }, 2500);
+        setBalanceAmount('');
       } else {
         toast.error('Error adding balance.');
       }
@@ -236,7 +243,7 @@ const getMerchantId = () => {
   
   const handleDeductBalance = async () => {
     try {
-      const amount = parseFloat(balanceAmount); // Convert string to number
+      const amount = parseFloat(balanceAmount);
       if (isNaN(amount) || amount <= 0) {
         toast.error('Amount should be greater than zero.');
         return;
@@ -247,7 +254,7 @@ const getMerchantId = () => {
         return;
       }
   
-      const merchantId = getMerchantId(); // Get merchant_id from the first row
+      const merchantId = getMerchantId();
   
       if (!merchantId) {
         toast.error('Merchant ID not found.');
@@ -255,19 +262,26 @@ const getMerchantId = () => {
       }
   
       const response = await axiosInstance.post('/backend/debit_wallet', {
-        amount: amount, // Use the converted number
+        amount: amount,
         merchant_id: merchantId,
       });
   
       if (response.status === 200) {
-        // Ensure prevBalance is a number and amount is a number
         setRemainingBalance(prevBalance => Number(prevBalance) - amount);
+        // **Update filteredData with Merchant ID**
+        const newTransaction = {
+          created_at: new Date(),
+          category: 'Admin Reconciliation',
+          status: 'Approved',
+          type: 'Debit',
+          wallet_balance: amount,
+          remaining_balance: Number(remainingBalance) - amount,
+          merchant_id: merchantId, // Add merchant_id in transaction row
+        };
+        setFilteredData(prevData => [newTransaction, ...prevData]); // Add new transaction with merchant_id
         toast.success('Balance deducted successfully!');
         setDeductModalShow(false);
-        setBalanceAmount(''); // Clear input
-        setTimeout(() => {
-          window.location.reload();
-        }, 2500);
+        setBalanceAmount('');
       } else {
         toast.error('Error deducting balance.');
       }
@@ -277,7 +291,6 @@ const getMerchantId = () => {
     }
   };
   
-
 
   return (
     <div style={{ boxShadow: 'none' }} className={`card ${className}`}>

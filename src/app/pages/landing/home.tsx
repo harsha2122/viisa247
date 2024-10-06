@@ -284,7 +284,7 @@ const Home: React.FC<Props> = ({
                     <h1>
                         Getting visa was <br /><span>never this easy</span>
                     </h1>
-                    <img src={hero} alt="" />
+                    <img className='hero-img' src={hero} alt="" />
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toAbsoluteUrl } from '../../_metronic/helpers';
 import axiosInstance from '../helpers/axiosInstance';
@@ -48,10 +48,11 @@ type Props = {
 };
 
 const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) => {
-  const [activeTab, setActiveTab] = useState<string>('platinum'); // Default active tab
+  const [activeTab, setActiveTab] = useState<string>('platinum'); 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState<string>(''); // State for search term
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [showAddModal, setShowAddModal] = useState<boolean>(false);
 
   const backgroundImages = [
     '/media/svg/shapes/abstract-1.svg',
@@ -62,6 +63,14 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
 
   const handleTabChange = (tabName: string) => {
     setActiveTab(tabName);
+  };
+
+  const handleAddInsurance = () => {
+    setShowAddModal(true); 
+  };
+
+  const closeAddModal = () => {
+    setShowAddModal(false);
   };
 
   const getRandomBackgroundImage = () => {
@@ -91,6 +100,24 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
       });
     }
   };
+
+  const fetchInsuranceData = async () => {
+    try {
+      const response = await axiosInstance.post('/backend/fetch_insurance_list'); // Use axiosInstance for API call
+      if (response.status === 200) {
+        console.log('Fetched Insurance Data:', response.data.data); // Log the data to console
+      } else {
+        console.error('Failed to fetch data from backend.');
+      }
+    } catch (error) {
+      console.error('API call error:', error); // Handle errors
+    }
+  };
+
+  // Fetch the data when component mounts
+  useEffect(() => {
+    fetchInsuranceData(); // Call fetch function when component mounts
+  }, []);
 
   const openModal = (id: string) => {
     setSelectedInsuranceId(id);
@@ -122,7 +149,9 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
         <div className="age-group-tabs">
           <h1>{title}</h1>
           <div className='w-75 d-flex justify-content-end gap-3'>
-            <Link to='/superadmin/addInsurance' className='boton'>+ Add New Insurance</Link>
+          <div>
+            <Button className='boton' onClick={handleAddInsurance}>+ Add New Insurance</Button>
+          </div>
             <input
               type="text"
               className="form-control w-50"
@@ -137,10 +166,6 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
             <div className="age-group-tabs">
               <h2>{insurance.insurance_description}</h2>
               <button onClick={() => openModal(insurance._id)} className='btn btn-danger'>Delete</button>
-            </div>
-            <div className="d-flex flex-column">
-              <h2>Insurance Base Price - ₹{insurance.insurance_base_price}</h2>
-              <h2>Insurance Price Per Day - ₹{insurance.insurance_per_day_price}</h2>
             </div>
             <div className='d-flex justify-content-center best-tab my-8 gap-4'>
               {Object.keys(insurance.plans).map((planType: string) => {
@@ -205,6 +230,8 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
           </div>
         ))}
       </div>
+
+
       <Modal show={showModal} onHide={closeModal}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Delete</Modal.Title>
@@ -216,6 +243,27 @@ const InsuranceTable: React.FC<Props> = ({ className, title, data, loading }) =>
           </Button>
           <Button variant="danger" onClick={confirmDelete}>
             Confirm
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showAddModal} onHide={closeAddModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Select Insurance Method</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className='d-flex justify-content-around'>
+            <Link to='/superadmin/addInsurance/manual' className='btn btn-primary'>
+              Manual
+            </Link>
+            <Link to='/superadmin/insurance/api' className='btn btn-secondary'>
+              API
+            </Link>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={closeAddModal}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>

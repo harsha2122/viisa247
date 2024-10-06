@@ -69,6 +69,8 @@ import UserWrapper from '../pages/users/UserWrapper';
 import Wallet from '../pages/merchants/profile/Wallet';
 import MerchantDirectInsurance from '../pages/merchants/apply-insurance/MerchantDirectInsurance';
 import CustomerDirectInsurance from '../pages/merchants/apply-insurance/CustomerDirectInsurance';
+import InsuranceWrap from '../pages/insurance/InsuranceWrap';
+import AddInc from '../pages/insurance/AddInc';
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'));
@@ -151,6 +153,10 @@ const PrivateRoutes = () => {
             <Route path='/superadmin/revenue/hotel' element={<RevenueHotel />} />
             <Route path='/superadmin/revenue/flight' element={<RevenueFlight />} />
             <Route path='/superadmin/insurance' element={<InsuranceWrapper />} />
+
+            <Route path='/superadmin/insurance/manual' element={<InsuranceWrapper />} />
+            <Route path='/superadmin/insurance/api' element={<InsuranceWrap />} />
+
             <Route path='/superadmin/testing' element={<TestingWrapper />} />
             <Route path='/builder' element={<BuilderPageWrapper />} />
             <Route path='/menu-test' element={<MenuTestPage />} />
@@ -158,7 +164,10 @@ const PrivateRoutes = () => {
             <Route path='/superadmin/all-visas' element={<AllVisasWrapper />} />
             <Route path='/superadmin/apiSetting' element={<ApiSettingWrapper />} />
             <Route path='/superadmin/add-country' element={<AddCountryWrapper />} />
+
             <Route path='/superadmin/addInsurance' element={<AddInsurance />} />
+            <Route path='/superadmin/addInsurance/manual' element={<AddInc />} />
+            
             <Route path='/superadmin/apiPayment' element={<ApiPaymentWrapper />} />
             <Route path='/superadmin/apiMerchants' element={<ApiMerchantWrapper />} />
             <Route path='/superadmin/add-package' element={<AddPackageWrapper />} />

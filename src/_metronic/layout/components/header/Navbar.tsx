@@ -80,37 +80,33 @@ const Navbar = () => {
   }, [isRefreshing]);
 
   useEffect(() => {
-    refreshWalletBalance();
-  }, []);
-
-  useEffect(() => {
     const walletBalance = Cookies.get('walletBalance');
     if (walletBalance) {
       setCurrentWallet(parseFloat(walletBalance));
     }
   }, []);
 
-  const refreshWalletBalance = async () => {
-    try {
-      setIsRefreshing(true);
-      const response = await axiosInstance.post('/backend/atlys_wallet_balance');
-      const updatedBalance = response.data.data;
-      Cookies.set('walletBalance', updatedBalance);
+  // const refreshWalletBalance = async () => {
+  //   try {
+  //     setIsRefreshing(true);
+  //     const response = await axiosInstance.post('/backend/atlys_wallet_balance');
+  //     const updatedBalance = response.data.data;
+  //     Cookies.set('walletBalance', updatedBalance);
 
-      setCurrentWallet(parseFloat(updatedBalance));
+  //     setCurrentWallet(parseFloat(updatedBalance));
 
-      toast.success('Wallet balance refreshed successfully', {
-        position: 'top-center'
-      });
-    } catch (error) {
-      console.error('Error refreshing wallet balance:', error);
-      toast.error('Error refreshing wallet balance', {
-        position: 'top-center'
-      });
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
+  //     toast.success('Wallet balance refreshed successfully', {
+  //       position: 'top-center'
+  //     });
+  //   } catch (error) {
+  //     console.error('Error refreshing wallet balance:', error);
+  //     toast.error('Error refreshing wallet balance', {
+  //       position: 'top-center'
+  //     });
+  //   } finally {
+  //     setIsRefreshing(false);
+  //   }
+  // };
 
   const user_type = Cookies.get('user_type');
 
@@ -223,36 +219,7 @@ const Navbar = () => {
           </div>
         </div>
       ) : user_type === 'super_admin' ? (
-        <h1 style={{ position: 'relative', top: '15px', right: '8%', fontSize: '18px' }}>
-          Atlys wallet -
-          <button
-            className='btn btn-success'
-            style={{
-              backgroundColor: '#fff',
-              color: '#000',
-              padding: '5px 10px',
-              marginTop: '-4px',
-              marginLeft: '5px',
-              border: '1px solid #327113'
-            }}
-            onClick={refreshWalletBalance}
-          >
-            ₹ {new Intl.NumberFormat('en-IN').format(currentWallet)} /-
-          </button>
-          <MdRefresh
-            onClick={refreshWalletBalance}
-            title='Refresh'
-            style={{
-              color: '#327113',
-              marginLeft: '12px',
-              fontSize: '20px',
-              cursor: "pointer",
-              marginTop: '-4px',
-              transform: isRefreshing ? 'rotate(360deg)' : 'rotate(0deg)',
-              transition: 'transform 0.5s ease-in-out'
-            }}
-          />
-        </h1>
+        <></>
       ) : null}
 
 

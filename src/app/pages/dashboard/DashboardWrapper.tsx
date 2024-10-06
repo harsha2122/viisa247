@@ -44,7 +44,7 @@ const DashboardPage: FC<Props> = (data) => (
     {/* begin::Row */}
     <div className='row gx-8 gy-5'>
       {/* Revenue */}
-      <div className='col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
+      {/* <div className='col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
         <HomeMainCard
           className='mb-5 mx-auto mb-xl-10'
           description='Revenue generated'
@@ -54,12 +54,12 @@ const DashboardPage: FC<Props> = (data) => (
           textColor='#071437'
           count={data.revenue}
         />
-      </div>
+      </div> */}
       {/* Partners */}
-      <div className='col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
+      <div className='col-md-6 col-lg-4 col-xl-4 col-xxl-4'>
         <HomeMainCard
           className='mb-6 mx-auto mb-xl-10'
-          description='Total Partners'
+          description='Partners'
           color='#fff'
           too='/superadmin/issueApi'
           icon={customers}
@@ -68,10 +68,10 @@ const DashboardPage: FC<Props> = (data) => (
         />
       </div>
       {/* Retailers */}
-      <div className='col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
+      <div className='col-md-6 col-lg-4 col-xl-4 col-xxl-4'>
         <HomeMainCard
           className='mb-6 mx-auto mb-xl-10'
-          description='Total Retailers'
+          description='Retailers'
           color='#fff'
           too='/superadmin/merchants'
           icon={relations}
@@ -80,15 +80,66 @@ const DashboardPage: FC<Props> = (data) => (
         />
       </div>
       {/* Customers */}
-      <div className='col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
+      <div className='col-md-6 col-lg-4 col-xl-4 col-xxl-4'>
         <HomeMainCard
           className='mb-6 mx-auto mb-xl-10'
-          description='Individual Customers'
+          description='Customers'
           color='#fff'
           too='/superadmin/partners'
           icon={icustomer}
           textColor='#071437'
           count={data.customer_user}
+        />
+      </div>
+    </div>
+
+    <div className='row mt-0 gx-8 gy-5'>
+      {/* Revenue */}
+      {/* <div className='col-md-6 col-lg-4 col-xl-3 col-xxl-3'>
+        <HomeMainCard
+          className='mb-5 mx-auto mb-xl-10'
+          description='Revenue generated'
+          color='#fff'
+          too='/superadmin/revenue'
+          icon={revenue}
+          textColor='#071437'
+          count={data.revenue}
+        />
+      </div> */}
+      {/* Partners */}
+      <div className='col-md-6 col-lg-4 col-xl-4 col-xxl-4'>
+        <HomeMainCard
+          className='mb-6 mx-auto mb-xl-10'
+          description='Revenue'
+          color='#fff'
+          too='/superadmin/issueApi'
+          icon={customers}
+          textColor='#071437'
+          count={data.revenue}
+        />
+      </div>
+      {/* Retailers */}
+      <div className='col-md-6 col-lg-4 col-xl-4 col-xxl-4'>
+        <HomeMainCard
+          className='mb-6 mx-auto mb-xl-10'
+          description="Today's total transactions" 
+          color='#fff'
+          too='/superadmin/merchants'
+          icon={relations}
+          textColor='#071437'
+          count={data.today_total_transactions}
+        />
+      </div>
+      {/* Customers */}
+      <div className='col-md-6 col-lg-4 col-xl-4 col-xxl-4'>
+        <HomeMainCard
+          className='mb-6 mx-auto mb-xl-10'
+          description='Visa Processed Today'
+          color='#fff'
+          too='/superadmin/partners'
+          icon={icustomer}
+          textColor='#071437'
+          count={data.visa_processed_today}
         />
       </div>
     </div>
@@ -224,7 +275,7 @@ const DashboardWrapper: FC = () => {
         const hotelData = [...(hotelResponse.data.data || []), ...(hotelResponse.data.data1 || [])];
         const filteredData = hotelData.filter(item => ['Applied', 'Not Issued'].includes(item.hotel_status));
         const hotelCount = filteredData.length;
-
+        console.log("----->", dashboardResponse.data.data)
         setDashData({
           ...dashboardResponse.data.data,
           visa_count: visaCount,

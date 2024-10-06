@@ -389,7 +389,7 @@ const HomeApply: React.FC<Props> = ({
                   as='select'
                   name='toCountry'
                   defaultValue={selectedToCountry}
-                  style={{"color":"#000","background":"transparent","width":"380px","border":"none",padding:"14px", marginTop:"10px", fontSize:"15px"}}
+                  style={{"color":"#000","background":"transparent","width":"22vw","border":"none",padding:"14px", marginTop:"10px", fontSize:"15px"}}
                 >
                     <option value="">Select a Country...</option>
                       {toCountryCodes.map((code) => (

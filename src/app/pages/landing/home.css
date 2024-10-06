@@ -273,7 +273,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .page1h .search-bar {
-  width: 40%;
+  width: 41%;
   height: 65px;
   margin: 0 auto;
   background: #fff;
@@ -2916,4 +2916,8 @@ img.flag {
   border-right: 0.3em solid transparent;
   border-bottom: 0;
   border-left: 0.3em solid transparent;
+}
+
+.hero-img{
+  width: 36vw;
 }
