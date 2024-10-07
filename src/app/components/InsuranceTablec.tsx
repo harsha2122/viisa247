@@ -210,6 +210,8 @@ const InsuranceTablec: React.FC<Props> = ({
     return Math.round(price * (1 + markupPercentage / 100));
   };
 
+  console.log("sdf", apiData)
+
   return (
     <div className="pb-8">
     <div className="container">

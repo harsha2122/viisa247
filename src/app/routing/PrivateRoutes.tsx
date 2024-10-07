@@ -71,6 +71,8 @@ import MerchantDirectInsurance from '../pages/merchants/apply-insurance/Merchant
 import CustomerDirectInsurance from '../pages/merchants/apply-insurance/CustomerDirectInsurance';
 import InsuranceWrap from '../pages/insurance/InsuranceWrap';
 import AddInc from '../pages/insurance/AddInc';
+import OverallRevenue from '../pages/revenue/OverallRevenue';
+import OverallTransactions from '../pages/revenue/OverallTransactions';
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'));
@@ -148,6 +150,10 @@ const PrivateRoutes = () => {
 
             <Route path='/superadmin/wallet' element={<WalletWrapper />} />
             <Route path='/superadmin/report' element={<ReportWrapper />} />
+
+            <Route path='/superadmin/total/revenue' element={<OverallRevenue />} />
+            <Route path='/superadmin/transactions' element={<OverallTransactions />} />
+
             <Route path='/superadmin/revenue/visa' element={<RevenueWrapper />} />
             <Route path='/superadmin/revenue/insurance' element={<RevenueInsurance />} />
             <Route path='/superadmin/revenue/hotel' element={<RevenueHotel />} />

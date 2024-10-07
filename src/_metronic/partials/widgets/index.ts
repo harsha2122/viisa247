@@ -1,36 +1,3 @@
-// charts
-export * from './feeds/FeedsWidget2'
-export * from './feeds/FeedsWidget3'
-export * from './feeds/FeedsWidget4'
-export * from './feeds/FeedsWidget5'
-export * from './feeds/FeedsWidget6'
-
-// mixed
-export * from './mixed/MixedWidget1'
-export * from './mixed/MixedWidget2'
-export * from './mixed/MixedWidget3'
-export * from './mixed/MixedWidget4'
-export * from './mixed/MixedWidget5'
-export * from './mixed/MixedWidget6'
-export * from './mixed/MixedWidget7'
-export * from './mixed/MixedWidget8'
-export * from './mixed/MixedWidget9'
-export * from './mixed/MixedWidget10'
-export * from './mixed/MixedWidget11'
-export * from './mixed/MixedWidget13'
-export * from './mixed/MixedWidget14'
-export * from './mixed/MixedWidget15'
-
-// lists
-export * from './lists/ListsWidget1'
-export * from './lists/ListsWidget2'
-export * from './lists/ListsWidget3'
-export * from './lists/ListsWidget4'
-export * from './lists/ListsWidget5'
-export * from './lists/ListsWidget6'
-export * from './lists/ListsWidget7'
-export * from './lists/ListsWidget8'
-export * from './lists/ListsWidget9'
 
 // statistics
 export * from './statistics/StatisticsWidget1'
@@ -65,15 +32,6 @@ export * from './tables/TablesWidget11'
 export * from './tables/TablesWidget12'
 export * from './tables/TablesWidget13'
 
-// engage
-export * from './engage/EngageWidget1'
-export * from './engage/EngageWidget2'
-export * from './engage/EngageWidget3'
-
-// feeds
-export * from './feeds/FeedsWidget2'
-export * from './feeds/FeedsWidget3'
-export * from './feeds/FeedsWidget4'
 
 // tiles
 export * from './tiles/TilesWidget1'

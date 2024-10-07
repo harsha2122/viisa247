@@ -115,7 +115,7 @@ const Verticalii: React.FC<VerticalProps> = ({
         if (ageRangeParts[1] === 'mths') {
           return parseInt(ageRangeParts[0], 10);
         } else {
-          return parseInt(ageRangeParts[0], 10) * 12; // Convert years to months
+          return parseInt(ageRangeParts[0], 10) * 12;
         }
       });
       return ageInMonths >= minAge && ageInMonths <= maxAge;
@@ -335,11 +335,11 @@ const Verticalii: React.FC<VerticalProps> = ({
             first_name: travelerForm.firstName,
             last_name: travelerForm.lastName,
             birth_place: travelerForm.birthPlace,
-            birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
+            birthday_date: travelerForm.birthDetail,
             nationality: selectedEntry.nationality_code,
             passport_number: travelerForm.passportNumber,
-            passport_issue_date: formatDateWithTimezoneToYMD(travelerForm.passportIssueDate),
-            passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
+            passport_issue_date: travelerForm.passportIssueDate,
+            passport_expiry_date: travelerForm.passPortExpiryDate,
             gender: travelerForm.gender,
             group_id: groupId,
             marital_status: travelerForm.maritalStatus,
@@ -394,7 +394,7 @@ const Verticalii: React.FC<VerticalProps> = ({
               const finalData = {
                 group_id: groupId,
               };
-              await axiosInstance.post('/insurance_apply', finalData);
+              await axiosInstance.post('/backend/insurance_apply', finalData);
               toast.success('Final insurance application submitted!', {
                 position: 'top-center',
               });
@@ -463,7 +463,7 @@ const Verticalii: React.FC<VerticalProps> = ({
     fontSize: 16,
     fontWeight: 'bold',
   }
-console.log("sadf", selectedEntry)
+
   return (
     <div style={{backgroundColor: '#fff'}} className='w-full'>
       {confetti && <Confetti />}

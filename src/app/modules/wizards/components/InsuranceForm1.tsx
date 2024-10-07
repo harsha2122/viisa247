@@ -365,7 +365,7 @@ function InsuranceForm1({ onDataChange, ind, onFieldChange, onFileDelete }) {
                         disabledDate={disabledDate}
                         onChange={(value) => {
                           if (value) {
-                            handleFieldChange('birthDetail', value.format('YYYY-MM-DD'))
+                            handleFieldChange('birthDetail', value.format('MMM D, YYYY'))
                           }
                         }}
                       />
@@ -393,7 +393,7 @@ function InsuranceForm1({ onDataChange, ind, onFieldChange, onFileDelete }) {
                         disabledDate={disabledDate}
                         onChange={(value) => {
                           if (value) {
-                            handleFieldChange('passportIssueDate', value.format('YYYY-MM-DD'))
+                            handleFieldChange('passportIssueDate', value.format('MMM D, YYYY'))
                           }
                         }}
                       />
@@ -419,7 +419,7 @@ function InsuranceForm1({ onDataChange, ind, onFieldChange, onFileDelete }) {
                         disabledDate={disabledDates}
                         onChange={(value) => {
                           if (value) {
-                            handleFieldChange('passPortExpiryDate', value.format('YYYY-MM-DD'))
+                            handleFieldChange('passPortExpiryDate', value.format('MMM D, YYYY'))
                           }
                         }}
                       />
@@ -559,8 +559,8 @@ function InsuranceForm1({ onDataChange, ind, onFieldChange, onFileDelete }) {
                         onChange={(e) => handleFieldChange('nomineetitle', e.target.value)}
                       >
                         <option></option>
-                        <option value='Mr'>Mr</option>
-                        <option value='Mrs'>Mrs</option>
+                        <option value='Mr.'>Mr</option>
+                        <option value='Ms.'>Ms</option>
                       </Field>
                       <div className='text-danger mt-2'>
                         <ErrorMessage name='businessName' />
@@ -582,7 +582,7 @@ function InsuranceForm1({ onDataChange, ind, onFieldChange, onFileDelete }) {
                         disabledDate={disabledDate}
                         onChange={(value) => {
                           if (value) {
-                            handleFieldChange('nomineedob', value.format('YYYY-MM-DD'))
+                            handleFieldChange('nomineedob', value.format('MMM D, YYYY'))
                           }
                         }}
                       />

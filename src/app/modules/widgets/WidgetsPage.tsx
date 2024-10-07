@@ -1,11 +1,6 @@
 import {Navigate, Route, Routes, Outlet} from 'react-router-dom'
 import {PageLink, PageTitle} from '../../../_metronic/layout/core'
-import {Charts} from './components/Charts'
-import {Feeds} from './components/Feeds'
-import {Lists} from './components/Lists'
-import {Tables} from './components/Tables'
-import {Mixed} from './components/Mixed'
-import {Statistics} from './components/Statistics'
+
 
 const widgetsBreadCrumbs: Array<PageLink> = [
   {
@@ -31,7 +26,6 @@ const WidgetsPage = () => {
           element={
             <>
               <PageTitle breadcrumbs={widgetsBreadCrumbs}>Charts</PageTitle>
-              <Charts />
             </>
           }
         />
@@ -40,7 +34,7 @@ const WidgetsPage = () => {
           element={
             <>
               <PageTitle breadcrumbs={widgetsBreadCrumbs}>Feeds</PageTitle>
-              <Feeds />
+
             </>
           }
         />
@@ -49,7 +43,7 @@ const WidgetsPage = () => {
           element={
             <>
               <PageTitle breadcrumbs={widgetsBreadCrumbs}>Lists</PageTitle>
-              <Lists />
+
             </>
           }
         />
@@ -58,7 +52,7 @@ const WidgetsPage = () => {
           element={
             <>
               <PageTitle breadcrumbs={widgetsBreadCrumbs}>Mixed</PageTitle>
-              <Mixed />
+
             </>
           }
         />
@@ -67,7 +61,7 @@ const WidgetsPage = () => {
           element={
             <>
               <PageTitle breadcrumbs={widgetsBreadCrumbs}>Tables</PageTitle>
-              <Tables />
+
             </>
           }
         />
@@ -76,7 +70,7 @@ const WidgetsPage = () => {
           element={
             <>
               <PageTitle breadcrumbs={widgetsBreadCrumbs}>Statiscics</PageTitle>
-              <Statistics />
+
             </>
           }
         />

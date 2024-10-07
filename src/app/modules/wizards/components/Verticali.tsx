@@ -8,6 +8,7 @@ import {CheckCircleOutline, CircleOutlined} from '@mui/icons-material'
 import Loader from '../../../components/Loader'
 import {Box, Step, StepLabel, Stepper, Theme, Typography} from '@mui/material'
 import InsuranceForm from './InsuranceForm'
+import InsuranceForm1 from './InsuranceForm1'
 import Confetti from 'react-confetti';
 import ClearIcon from '@mui/icons-material/Delete';
 import { ICreateAccount, inits } from './CreateAccountWizardHelper'
@@ -108,7 +109,7 @@ const Verticali: React.FC<VerticalProps> = ({
       ageInMonths--;
     }
   
-    // Convert age in months into years and remaining months
+
     const ageInYears = Math.floor(ageInMonths / 12);
     const remainingMonths = ageInMonths % 12;
   
@@ -153,8 +154,8 @@ const Verticali: React.FC<VerticalProps> = ({
     setTravelerForms(prevForms => {
       const updatedForms = [...prevForms];
       if (newData.birthDetail) {
-        const age = calculateAge(newData.birthDetail);
-        updatedForms[index] = { ...updatedForms[index], ...newData, age };
+        const ageInMonths = calculateAge(newData.birthDetail);
+        updatedForms[index] = { ...updatedForms[index], ...newData, age: ageInMonths };
       } else {
         updatedForms[index] = { ...updatedForms[index], ...newData };
       }
@@ -316,94 +317,120 @@ const Verticali: React.FC<VerticalProps> = ({
     return null
   }
 
-  console.log("asd", selectedEntry)
-
   const handleReviewAndSave = async () => {
     try {
-      setLoading(true);
-      let allFieldsFilled = true;
-  
-      for (const travelerForm of travelerForms) {
-        const missingFields: string[] = [];
-  
-        if (!travelerForm.firstName) missingFields.push('First Name');
-        if (!travelerForm.lastName) missingFields.push('Last Name');
-        if (!travelerForm.birthPlace) missingFields.push('Birth Place');
-        if (!travelerForm.birthDetail) missingFields.push('Birth Detail');
-        if (!travelerForm.passportNumber) missingFields.push('Passport Number');
-        if (!travelerForm.passportIssueDate) missingFields.push('Passport Issue Date');
-        if (!travelerForm.passPortExpiryDate) missingFields.push('Passport Expiry Date');
-        if (!travelerForm.gender) missingFields.push('Gender');
-        if (!travelerForm.maritalStatus) missingFields.push('Marital Status');
-        if (!travelerForm.passport_front) missingFields.push('Passport Front');
-        if (!recieptUrl) missingFields.push('Receipt');
-  
-        if (missingFields.length > 0) {
-          toast.error(`Missing fields: ${missingFields.join(', ')}`, {
-            position: 'top-center',
-          });
-          setLoading(false);
-          allFieldsFilled = false;
-          break;
+        setLoading(true);
+        let allFieldsFilled = true;
+
+        for (const [index, travelerForm] of travelerForms.entries()) { 
+            const missingFields: string[] = [];
+
+            if (!travelerForm.firstName) missingFields.push('First Name');
+            if (!travelerForm.lastName) missingFields.push('Last Name');
+            if (!travelerForm.birthPlace) missingFields.push('Birth Place');
+            if (!travelerForm.birthDetail) missingFields.push('Birth Detail');
+            if (!travelerForm.passportNumber) missingFields.push('Passport Number');
+            if (!travelerForm.passportIssueDate) missingFields.push('Passport Issue Date');
+            if (!travelerForm.passPortExpiryDate) missingFields.push('Passport Expiry Date');
+            if (!travelerForm.gender) missingFields.push('Gender');
+            if (!travelerForm.maritalStatus) missingFields.push('Marital Status');
+            if (!travelerForm.passport_front) missingFields.push('Passport Front');
+
+            if (missingFields.length > 0) {
+                toast.error(`Missing fields: ${missingFields.join(', ')}`, {
+                    position: 'top-center',
+                });
+                setLoading(false);
+                allFieldsFilled = false;
+                break;
+            }
+
+            const ageInMonths = calculateAge(travelerForm.birthDetail);
+            const { insurance_amount, insurance_original_amount, merchant_insurance_amount } = getInsuranceAmounts(ageInMonths, selectedEntry.age_groups);
+
+            const postData = {
+                country_code: selectedEntry.country_code,
+                nationality_code: selectedEntry.nationality_code,
+                first_name: travelerForm.firstName,
+                last_name: travelerForm.lastName,
+                birth_place: travelerForm.birthPlace,
+                birthday_date: travelerForm.birthDetail,
+                nationality: selectedEntry.nationality_code,
+                passport_number: travelerForm.passportNumber,
+                passport_issue_date: travelerForm.passportIssueDate,
+                passport_expiry_date: travelerForm.passPortExpiryDate,
+                gender: travelerForm.gender,
+                group_id: groupId,
+                marital_status: travelerForm.maritalStatus,
+                passport_front: travelerForm.passport_front,
+                insurance_id: selectedEntry.id,
+                insurance_amount: insurance_amount,
+                insurance_original_amount: insurance_original_amount,
+                merchant_insurance_amount: merchant_insurance_amount,
+                address: travelerForm.address,
+                nominee: {
+                    title: travelerForm.nomineetitle,
+                    first_name: travelerForm.nomineefirstName,
+                    last_name: travelerForm.nomineelastName,
+                    dob: travelerForm.nomineedob,
+                    relation: travelerForm.nomineerelation,
+                },
+                ...(travelerForm.relation && { relation: travelerForm.relation }),
+            };
+
+            try {
+                const createApplicationResponse = await axiosInstance.post('/backend/create_insurance_application', postData);
+                setInsuranceResponse(createApplicationResponse.data.data);
+
+                const user_id = Cookies.get('user_id');
+                const data = {
+                    merchant_id: user_id,
+                    insurance_application_id: createApplicationResponse.data.data._id,
+                };
+
+                const addApplicantResponse = await axiosInstance.post('/backend/add_insurance_applicant', data);
+
+                if (addApplicantResponse.status === 200) {
+                    setIsReviewModal(false);
+                    setConfetti(true);
+                    setModalShow(true);
+                } else {
+                    toast.error(addApplicantResponse.data.msg, {
+                        position: 'top-center',
+                    });
+                }
+            } catch (error) {
+                console.error('Error while processing form:', error);
+                toast.error('Error while processing form', {
+                    position: 'top-center',
+                });
+                setLoading(false);
+                return;
+            }
+
+            if (index === travelerForms.length - 1) {
+                try {
+                    const finalData = {
+                        group_id: groupId,
+                    };
+                    await axiosInstance.post('/backend/insurance_apply', finalData);
+                    toast.success('Final insurance application submitted!', {
+                        position: 'top-center',
+                    });
+                } catch (finalError) {
+                    console.error('Error while making final API call:', finalError);
+                    toast.error('Error while submitting final application', {
+                        position: 'top-center',
+                    });
+                }
+            }
         }
-          const ageInMonths = calculateAge(travelerForm.birthDetail);
-          const { insurance_amount, insurance_original_amount, merchant_insurance_amount } = getInsuranceAmounts(ageInMonths, selectedEntry.age_groups);
-  
-          const postData = {
-            country_code: selectedEntry.country_code,
-            nationality_code: selectedEntry.nationality_code,
-            first_name: travelerForm.firstName,
-            last_name: travelerForm.lastName,
-            birth_place: travelerForm.birthPlace,
-            birthday_date: formatDateWithTimezoneToYMD(travelerForm.birthDetail),
-            nationality: selectedEntry.nationality_code,
-            passport_number: travelerForm.passportNumber,
-            passport_issue_date: formatDateWithTimezoneToYMD(travelerForm.passportIssueDate),
-            passport_expiry_date: formatDateWithTimezoneToYMD(travelerForm.passPortExpiryDate),
-            gender: travelerForm.gender,
-            group_id: groupId,
-            marital_status: travelerForm.maritalStatus,
-            passport_front: travelerForm.passport_front,
-            insurance_id: selectedEntry.id,
-            insurance_amount: insurance_amount,
-            insurance_original_amount: insurance_original_amount,
-            merchant_insurance_amount: merchant_insurance_amount,
-            reciept: recieptUrl
-          };
-  
-        try {
-          const response = await axiosInstance.post('/backend/create_insurance_application', postData);
-          setInsuranceResponse(response.data.data);
-          const user_id = Cookies.get('user_id');
-          const data = {
-            user_id: user_id,
-            insurance_application_id: response.data.data._id,
-          };
-          const userInsuranceResponse = await axiosInstance.post('/backend/add_user_insurance_applicant', data);
-  
-          if (userInsuranceResponse.status === 200) {
-            setIsReviewModal(false);
-            setConfetti(true);
-            setModalShow(true);
-          } else {
-            toast.error(userInsuranceResponse.data.msg, {
-              position: 'top-center',
-            });
-          }
+
           setLoading(false);
-        } catch (error) {
-          console.error('Error applying for visa:', error);
-          setLoading(false);
-          toast.error('Error applying for visa', {
-            position: 'top-center',
-          });
-        }
+      } catch (error) {
+          console.error('Error while making API calls:', error);
       }
-    } catch (error) {
-      console.error('Error while making API calls:', error);
-    }
   };
-  
 
 
   const handleDeleteForm = (index) => {
@@ -514,12 +541,21 @@ const Verticali: React.FC<VerticalProps> = ({
         <div style={{width: '80%', paddingBottom: '5%', marginLeft: isFixed ? '20%' : '0%'}}>
           {travelerForms.map((_, index) => (
             <div key={index}>
-              <InsuranceForm
-                ind={index}
-                onDataChange={(newData) => handleTravelerDataChange(newData, index)}
-                onFieldChange={handleTravelFieldChange}
-                onFileDelete={handleFileDelete}
-              />
+              {index === 0 ? (
+                <InsuranceForm
+                    ind={index}
+                    onDataChange={(newData) => handleTravelerDataChange(newData, index)}
+                    onFieldChange={handleTravelFieldChange}
+                    onFileDelete={handleFileDelete}
+                />
+            ) : (
+                <InsuranceForm1
+                    ind={index}
+                    onDataChange={(newData) => handleTravelerDataChange(newData, index)}
+                    onFieldChange={handleTravelFieldChange}
+                    onFileDelete={handleFileDelete}
+                />
+            )}
               {travelerForms.length > 1 && index !== 0 && (
                 <div className='d-flex justify-content-end w-100'>
                 <button
