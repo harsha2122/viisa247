@@ -36,7 +36,6 @@ import AddCountryWrapper from '../pages/add-country/AddCountryWrapper';
 import PasswordPage from '../../app/pages/Forgot_password/PasswordResetWrapper';
 import AllVisasWrapper from '../pages/all-visas/AllVisasWrapper';
 import Chats from '../components/Chat';
-import Chat from '../pages/chat/Chat';
 import { Error404 } from '../modules/errors/components/Error404';
 import Waiting from '../pages/visa247/waiting-for-approval/Waiting';
 import AddPackageWrapper from '../pages/add-packages/AddPackage';
@@ -99,7 +98,6 @@ const PrivateRoutes = () => {
             <Route path='/merchant/dashboard' element={<MerchantDashboard />} />
             <Route path='/merchant/profile' element={<MerchantProfile />} />
             <Route path='/merchant/wallet' element={<Wallet />} />
-            <Route path='/merchant/chat' element={<Chat />} />
           </>
         )}
 
@@ -179,7 +177,6 @@ const PrivateRoutes = () => {
             <Route path='/superadmin/add-package' element={<AddPackageWrapper />} />
             <Route path='/superadmin/package-application' element={<PackageApplicationWrapper />} />
             <Route path='/superadmin/forgotPassword' element={<PasswordPage />} />
-            <Route path='/superadmin/chat' element={<Chat />} />
             {/* Lazy Modules */}
             <Route
               path='/crafted/pages/profile/*'

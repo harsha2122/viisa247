@@ -9,7 +9,6 @@ import toast, { Toaster } from 'react-hot-toast';
 import axiosInstance from '../../../../app/helpers/axiosInstance';
 import { MdRefresh } from 'react-icons/md';
 import Drawer from '@mui/material/Drawer';
-import Chat from '../../../../app/pages/chat/Chat';
 import { FaWhatsapp } from "react-icons/fa";
 import lgout from '../../../assets/card/logout.svg'
 
@@ -270,7 +269,7 @@ const Navbar = () => {
         </div>
       )}
 
-      <Drawer
+      {/* <Drawer
         anchor='right'
         open={isDrawerOpen}
         onClose={handleDrawerClose}
@@ -282,7 +281,7 @@ const Navbar = () => {
           <hr style={{ position: "absolute", top: "35px" }} />
           <Chat />
         </div>
-      </Drawer>
+      </Drawer> */}
     </div>
   );
 };
