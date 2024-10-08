@@ -350,6 +350,8 @@ const WalletTable: React.FC<Props> = ({ className, title, data, loading }) => {
     setActivePage(1);
     setFilteredDataa(filteredData.slice(0, ITEMS_PER_PAGE));
   };
+
+  console.log("dsf", data)
   return (
     <div style={{ boxShadow: "none" }} className={`card ${className}`}>
       <Toaster />

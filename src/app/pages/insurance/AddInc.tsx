@@ -480,7 +480,7 @@ const AddInc = () => {
                         </div>
                       </div>
                       <div className='w-50'>
-                        <label className='form-label fs-5 required'>Insurance Actual Price</label>
+                        <label className='form-label fs-5 required'>Insurance Cost</label>
                         <Field
                           type='text'
                           name='platinum.actual_price'
@@ -679,7 +679,7 @@ const AddInc = () => {
                         </div>
                       </div>
                       <div className='w-50'>
-                        <label className='form-label fs-5 required'>Insurance Actual Price</label>
+                        <label className='form-label fs-5 required'>Insurance Cost</label>
                         <Field
                           type='text'
                           name='gold.actual_price'
@@ -878,7 +878,7 @@ const AddInc = () => {
                         </div>
                       </div>
                       <div className='w-50'>
-                        <label className='form-label fs-5 required'>Insurance Actual Price</label>
+                        <label className='form-label fs-5 required'>Insurance Cost</label>
                         <Field
                           type='text'
                           name='silver.actual_price'

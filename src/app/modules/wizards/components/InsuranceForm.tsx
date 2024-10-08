@@ -62,12 +62,12 @@ function InsuranceForm({ onDataChange, ind, onFieldChange, onFileDelete }) {
 
       const formData = new FormData();
       formData.append('file', file);
-      const response = await axiosInstance.post('/backend/upload_image/upload', formData, {
+      const response = await axiosInstance.post('/backend/upload_file', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      const fileUrl = response.data.data;
+      const fileUrl = response.data.url;
 
       setLoading(false);
 

@@ -299,7 +299,7 @@ const IprocessedTable: React.FC<Props> = ({ className, title, data,loading }) =>
                               <Table
                                 bordered
                                 size='sm'
-                                style={{ marginBottom: 0, tableLayout: 'fixed', width: '90%' }}
+                                style={{ marginBottom: 0, tableLayout: 'fixed', width: '95%' }}
                               >
                                 <thead>
                                   <tr>

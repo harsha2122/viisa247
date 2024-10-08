@@ -372,7 +372,7 @@ const HomeApply: React.FC<Props> = ({
   };
 
   return (
-    <div>
+    <div className='w-100'>
       
       <Formik validationSchema={null} initialValues={initValues} onSubmit={onSubmit}>
         {({ handleSubmit }) => (
@@ -389,7 +389,7 @@ const HomeApply: React.FC<Props> = ({
                   as='select'
                   name='toCountry'
                   defaultValue={selectedToCountry}
-                  style={{"color":"#000","background":"transparent","width":"22vw","border":"none",padding:"14px", marginTop:"10px", fontSize:"15px"}}
+                  className="transparent-input"
                 >
                     <option value="">Select a Country...</option>
                       {toCountryCodes.map((code) => (
@@ -406,22 +406,7 @@ const HomeApply: React.FC<Props> = ({
               <div className='d-flex youto'>
                 <button
                   type='submit'
-                  style={{
-                    width:"120px",
-                    backgroundColor:"#327113",
-                    color:"#fff",
-                    fontSize:"16px",
-                    border:"none",
-                    cursor:"pointer",
-                    fontWeight:"500",
-                    borderRadius:"20px",
-                    display:"flex",
-                    alignItems:"center",
-                    justifyContent:"center",
-                    marginRight:"-25px",
-                    height:"42px",
-                    marginTop:"14px",
-                  }}
+                  className='home-btn'
                 ><IoMdSearch style={{fontSize:"20px", marginRight:"5px"}} />
                   Search
                 </button>

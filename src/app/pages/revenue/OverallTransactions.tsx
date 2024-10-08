@@ -12,7 +12,6 @@ function OverallTransactions() {
       try {
         axiosInstance.get('/backend/transaction_history')
           .then((response) => {
-            console.log("sdf", response.data.data)
             const sortedData = response.data.data.sort((a, b) => new Date(b.transaction_time).getTime() - new Date(a.transaction_time).getTime());
             setRevenueData(sortedData);
             setLoading(false);

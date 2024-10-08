@@ -37,6 +37,7 @@ type Props = {
   package_count: number
   hotel_count: number
   flight_count: number
+  gtv: string | number
 }
 
 const DashboardPage: FC<Props> = (data) => (
@@ -134,12 +135,12 @@ const DashboardPage: FC<Props> = (data) => (
       <div className='col-md-6 col-lg-4 col-xl-4 col-xxl-4'>
         <HomeMainCard
           className='mb-6 mx-auto mb-xl-10'
-          description='Visa Processed Today'
+          description='GTV'
           color='#fff'
           too='/superadmin/partners'
           icon={icustomer}
           textColor='#071437'
-          count={data.visa_processed_today}
+          count={data.gtv}
         />
       </div>
     </div>
@@ -226,6 +227,7 @@ const DashboardWrapper: FC = () => {
     not_applied: '',
     visa_rejected: '',
     api: '',
+    gtv: '',
     processed: '',
     waiting: '',
     today_total_transactions: '',

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../helpers/axiosInstance';
 import { RevenueTable } from '../../components/RevenueTable';
+import { RevenueTa } from '../../components/RevenueTa';
 
 function OverallRevenue() {
   const [revenueData, setRevenueData] = useState([]);
@@ -10,8 +11,9 @@ function OverallRevenue() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        axiosInstance.get('/backend/super_admin/revenue')
+        axiosInstance.get('/backend/super_admin/total_revenue')
           .then((response) => {
+            console.log("sdf", response.data.data)
             const sortedData = response.data.data.sort((a, b) => new Date(b.transaction_time).getTime() - new Date(a.transaction_time).getTime());
             setRevenueData(sortedData);
             setLoading(false);
@@ -30,7 +32,7 @@ function OverallRevenue() {
 
   return (
     <div style={{ marginTop: "-50px" }}>
-      <RevenueTable className='' title={'Revenue'} data={revenueData} loading={loading} />
+      <RevenueTa className='' title={'Revenue'} data={revenueData} loading={loading} />
     </div>
   );
 }

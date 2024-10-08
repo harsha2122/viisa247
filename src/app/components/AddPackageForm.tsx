@@ -82,7 +82,7 @@ const AddPackageForm = ({ inputStyle }) => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      const fileUrl = response.data.data;
+      const fileUrl = response.data.url;
       setLoading(false);
       return fileUrl;
     } catch (error) {

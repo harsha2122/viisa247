@@ -1000,14 +1000,14 @@ function Wallet() {
         formData.append('file', file)
 
         // Make a POST request to your server to upload the file
-        const response = await axiosInstance.post('/backend/upload_image/upload', formData, {
+        const response = await axiosInstance.post('/backend/upload_file', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         })
 
         // Assuming your server responds with the file URL
-        const fileUrl = response.data.data
+        const fileUrl = response.data.url
 
         // Reset loader after getting the URL
         setLoading(false);
@@ -1190,7 +1190,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
                   <label className='form-label required'>Transaction ID</label>
                   <Field
                     name='upi_ref_id'
-                    style={{ ...inputStyle, width: '450px' }}
+                    style={{ ...inputStyle, width: '350px' }}
                     className='form-control form-control-lg form-control-solid'
                     onChange={(e) => handleFieldChange('upi_ref_id', e.target.value)}
                   />
@@ -1204,7 +1204,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
                     <span className='required'>Amount</span>
                   </label>
                   <Field
-                    style={{ ...inputStyle, width: '450px' }}
+                    style={{ ...inputStyle, width: '350px' }}
                     name='amount'
                     className='form-control form-control-lg form-control-solid'
                     onChange={(e) => {
@@ -1463,7 +1463,7 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
               style={{
                 padding: '20px 30px',
                 marginTop: 20,
-                width:"330px",
+                width:"300px",
                 display: 'flex',
                 borderRadius:"20px",
                 boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',
@@ -1476,13 +1476,13 @@ const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
               onClick={() => handleWalletTabClick(tab.label)}
             >
               <div style={{ marginRight: 15 }}>{tab.icon}</div>
-              <h3
+              <h6
                 style={{
                   color: activeWalletTab === tab.label ? '#327113' : '#333',
                 }}
               >
                 {tab.label}
-              </h3>
+              </h6>
             </div>
           ))}
         </div>

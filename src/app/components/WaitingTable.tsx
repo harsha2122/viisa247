@@ -116,12 +116,12 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
       setLoading(true)
       const formData = new FormData()
       formData.append('file', file)
-      const response = await axiosInstance.post('/backend/upload_image/upload', formData, {
+      const response = await axiosInstance.post('/backend/upload_file', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-      const fileUrl = response.data.data
+      const fileUrl = response.data.url
       setLoading(false)
       return fileUrl
     } catch (error) {
@@ -497,7 +497,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
                               <Table
                                 bordered
                                 size='sm'
-                                style={{ marginBottom: 0, tableLayout: 'fixed', width: '90%' }}
+                                style={{ marginBottom: 0, tableLayout: 'fixed', width: '95%' }}
                               >
                                 <thead>
                                   <tr>
@@ -506,8 +506,8 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
                                     <th style={{ width: '15%' }}>Submitted At</th>
                                     <th style={{ width: '20%' }}>Email</th>
                                     <th style={{ width: '10%' }}>Applicants</th>
-                                    <th style={{ width: '15%' }}>Status</th>
-                                    <th style={{ width: '20%' }}>Download Documents</th>
+                                    <th style={{ width: '20%' }}>Status</th>
+                                    <th style={{ width: '15%' }}>Documents</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -761,7 +761,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
               className='form-control'
               id='visa_pdf'
               name='visa_pdf'
-              accept='.zip'
+              accept='.pdf'
               onChange={handleFileSelect}
             />
             <div style={{marginTop: '10px'}}>

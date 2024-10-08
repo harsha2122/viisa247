@@ -1000,14 +1000,14 @@ function MerchantProfile() {
         formData.append('file', file)
 
         // Make a POST request to your server to upload the file
-        const response = await axiosInstance.post('/backend/upload_image/upload', formData, {
+        const response = await axiosInstance.post('/backend/upload_file', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         })
 
         // Assuming your server responds with the file URL
-        const fileUrl = response.data.data
+        const fileUrl = response.data.url
 
         // Reset loader after getting the URL
         setLoading(false);

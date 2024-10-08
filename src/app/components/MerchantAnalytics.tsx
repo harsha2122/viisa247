@@ -199,7 +199,7 @@ export function MerchantAnaltytics({dashboardData}) {
         <div className=' col-md-6 col-lg-6 col-xl-6 col-xxl-3 '>
           <HomeMainCard
             className='mb-5 mb-xl-10'
-            description='Revenue generated'
+            description='Revenue'
             color='#fff'
             too='/merchant/dashboard'
             icon={revenue}

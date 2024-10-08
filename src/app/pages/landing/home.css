@@ -105,6 +105,35 @@ body::-webkit-scrollbar-thumb {
     transition: 0.2s all;
 }
 
+.home-btn {
+  width: 120px !important;
+  background-color: #327113 !important;
+  color: #fff !important;
+  font-size: 16px !important;
+  border: none !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  border-radius: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-right: -25px !important;
+  height: 42px !important;
+  margin-top: 14px !important;
+}
+
+.transparent-input {
+  color: #000 !important;
+  background: transparent !important;
+  width: 22vw !important;
+  border: none !important;
+  padding: 14px !important;
+  margin-top: 10px !important;
+  font-size: 15px !important;
+}
+
+
+
 .modal-container1, .sign-up-modal-container1 {
   display: flex;
   justify-content: center;
@@ -191,14 +220,16 @@ body::-webkit-scrollbar-thumb {
     transform: translateY(0);
   }
 
-  #nav{
+  #nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff;
+    background: #32711300;
     height: 80px;
-    padding: 15px;
-  }
+    padding: 15px 35px;
+    position: relative;
+    top: 35px;
+}
 
   #nav .logo{
     width: 130px;
@@ -1577,10 +1608,100 @@ footer{
 @media (max-width: 768px) {
   .page1h .bgimg {
     background-size: contain;
-    height: 167px;
+    height: 80vh;
     width: 90%;
-    top: 100px;
+    /* top: 100px; */
     position: relative;
+}
+
+.page4h .testimonial-front {
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+}
+.testimonial {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 600px;
+  width: 100%;
+  padding: 50px 0px;
+  overflow: hidden;
+}
+.rowse {
+  width: 100% !important;
+}
+  .chips {
+    display: none;
+  }
+
+  .home-btn {
+    width: 135px !important;
+    background-color: #327113 !important;
+    color: #fff !important;
+    font-size: 16px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-weight: 500 !important;
+    border-radius: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-left: -25px !important;
+    height: 42px !important;
+    margin-top: 14px !important;
+}
+  
+  .transparent-input {
+    color: #000 !important;
+    background: transparent !important;
+    width: 100% !important;
+    border: none !important;
+    padding: 14px !important;
+    margin-top: 10px !important;
+    font-size: 15px !important;
+  }
+
+  .search-conti {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    gap: 10px;
+    padding: 10px;
+    width: 100vw;
+  }
+
+  .hero {
+    display: flex;
+    position: relative;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 15%;
+    margin-top: -25%;
+    flex-direction: column-reverse;
+}
+
+.hero-img {
+  width: 65vw !important;
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 93%;
+  top: 0%;
+  left: 3.5%;
+  height: 100%;
 }
 
 .youto{
@@ -1667,9 +1788,8 @@ footer{
 
 .page1h {
   width: 100vw;
-  height: 120vh;
+  height: 100vh;
   position: relative;
-  top: -110px;
   display: flex;
   background: #fff;
   justify-content: center;
@@ -1700,9 +1820,9 @@ footer{
     z-index: 102;
   }
   .page1h .search-bar {
-    flex-direction: column;
-    top: 395px;
-  }
+    flex-direction: row;
+    top: 285px;
+}
 
   .hola{
     display: flex;
@@ -1710,10 +1830,11 @@ footer{
     justify-content: space-between;
     gap: 15px;
     margin-top: -32px;
+    align-items: center;
   }
 
   .page1h .search-bar {
-    width: 90vw;
+    width: 75vw;
     height: 22vh;
   }
 
@@ -1754,7 +1875,6 @@ footer{
 
   .page2h {
     padding-left: 25px;
-    top: 600px;
   }
 
   .page2h .head {
@@ -1777,7 +1897,6 @@ footer{
   .page3h{
     display: flex;
     flex-direction: column;
-    top: 600px;
   }
 
   .page3h .img-service {
@@ -1821,7 +1940,7 @@ footer{
 
   .page4h{
     height: 100px;
-    top: 750px;
+    top: 180px;
   }
 
   .page4h .testimonial-front {
@@ -2857,6 +2976,7 @@ img.flag {
 .social-icons-btn {
   display: flex;
   justify-content: space-between;
+  gap: 7px;
 }
 .iconss {
   width: 40px;

@@ -122,12 +122,12 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
       setLoading(true)
       const formData = new FormData()
       formData.append('file', file)
-      const response = await axiosInstance.post('/backend/upload_image/upload', formData, {
+      const response = await axiosInstance.post('/backend/upload_file', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-      const fileUrl = response.data.data
+      const fileUrl = response.data.url
       setLoading(false)
       return fileUrl
     } catch (error) {
@@ -491,7 +491,7 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
                             <Table
                               bordered
                               size='sm'
-                              style={{ marginBottom: 0, tableLayout: 'fixed', width: '90%' }}
+                              style={{ marginBottom: 0, tableLayout: 'fixed', width: '95%' }}
                             >
                               <thead>
                                 <tr>
@@ -755,7 +755,7 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
               className='form-control'
               id='insurance_pdf'
               name='insurance_pdf'
-              accept='.zip'
+              accept='.pdf'
               onChange={handleFileSelect}
             />
             <div style={{marginTop: '10px'}}>

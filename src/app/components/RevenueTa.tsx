@@ -17,7 +17,7 @@ function convertToCSV(data: any) {
   return csv;
 }
 
-const TransactionTable: React.FC<Props> = ({ className, title, data, loading }) => {
+const RevenueTa: React.FC<Props> = ({ className, title, data, loading }) => {
   const [itemModalVisibility, setItemModalVisibility] = useState<Array<boolean>>(Array(data.length).fill(false));
   const formatDate1 = (dateString: string) => {
     const date = new Date(dateString);
@@ -130,6 +130,21 @@ const TransactionTable: React.FC<Props> = ({ className, title, data, loading }) 
           >
             Download CSV
           </button>
+
+          <input
+            type='text'
+            placeholder='Search...'
+            onChange={handleSearch}
+            value={searchTerm}
+            style={{
+              border: '1px solid #d3d3d3',
+              borderRadius: '10px',
+              padding: '10px',
+              paddingLeft: '20px',
+              width: '70%',
+              boxSizing: 'border-box',
+            }}
+          />
         </div>
       </div>
       {/* end::Header */}
@@ -155,69 +170,63 @@ const TransactionTable: React.FC<Props> = ({ className, title, data, loading }) 
             </div>
           ) : (
             <>
-            <section style={{boxShadow:"none"}} className='w-100 card my-5 '>
+            <section style={{border:"1px solid #adc6a0"}} className='w-100 card my-5 '>
             <div className='card-body py-3'>
               <div className='table-responsive'>
-              <table className='table align-middle gs-10 mt-5'>
-                <thead>
-                  <tr style={{ background: '#f2f2f2', color: '#000', border: '1px solid #000' }} className='fw-bold'>
-                    <th className='min-w-100px'>Date/Time</th>
-                    <th className='min-w-100px'>Particular</th>
-                    <th className='min-w-100px'>Name</th>
-                    <th className='min-w-100px'>Email</th>
-                    <th className='min-w-100px'>Status</th>
-                    <th className='min-w-100px'>Credit</th>
-                    <th className='min-w-100px'>Debit</th>
-                    <th className='min-w-100px'>Wallet</th>
-                  </tr>
-                </thead>
-                <tbody style={{ border: '1px solid #cccccc' }}>
-                  {currentItems.map((item, index) => (
-                    <tr key={index} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                      <td className='text-start'>
-                        <a href='#' className='text-dark fw-bold text-hover-primary mb-1 fs-6'>
-                          {item && moment(item.created_at).format('DD MMM YYYY hh:mm a')}
+                <table className='table table-row-bordered table-row-gray-300 align-middle gs-0 gy-3'>
+                  <thead>
+                    <tr className='fw-bold '>
+                      <th className='fs-5 min-w-160px'>Date</th>
+                      <th className='fs-5 min-w-100px'>Name</th>
+                      <th className='fs-5 min-w-40px'>Channel</th>
+                      <th className='fs-5 text-center min-w-40px'>Provider</th>
+                      <th className='fs-5 text-center min-w-70px'>Cost Price</th>
+                      <th className='fs-5 text-center min-w-70px'>Selling Price</th>
+                      <th className='fs-5 text-center min-w-70px'>Revenue</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {currentItems.map((row, index) => (
+                    <tr key={index}>
+                      <td>
+                        <a href='#' className='text-gray-600 fw-bold text-hover-primary fs-7'>
+                          {`${formatDate1(row.transaction_time)}`}
                         </a>
                       </td>
-                      <td className='text-start'>
-                        <span className='text-dark d-block fs-6'>
-                          {item && item.category}
-                        </span>
+                      <td>
+                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
+                          {row.name}
+                        </a>
                       </td>
-                      <td className='text-start'>
-                        <span className='text-dark d-block fs-6'>
-                          {item && item.merchant_name || item.customer_name}
-                        </span>
+                      <td>
+                        <a href='#' className='text-muted text-hover-primary d-block mb-1 fs-7'>
+                          {row.customer_type}
+                        </a>
                       </td>
-                      <td className='text-start'>
-                        <span className='text-dark d-block fs-6'>
-                          {item && item.merchant_email_id || item.customer_email_id}
-                        </span>
+                      <td>
+                        <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
+                          Visa247
+                        </a>
                       </td>
-                      <td className='text-start'>
-                        <span className='text-dark fw-semibold d-block fs-6'>
-                          {item && item.status}
-                        </span>
+                      <td>
+                        <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
+                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.paid))}
+                        </a>
                       </td>
-                      <td className='text-start'>
-                        {item && item.type === 'Credit' ? (
-                          <span className='text-dark d-block fs-6'>₹ {new Intl.NumberFormat('en-IN').format(Number(item.wallet_balance))}/-</span>
-                        ) : "-"}
+                      <td>
+                        <a href='#' className='text-center text-muted text-hover-primary d-block mb-1 fs-7'>
+                         ₹ {new Intl.NumberFormat('en-IN').format(Number(row.receive))}
+                        </a>
                       </td>
-                      <td className='text-start'>
-                        {item && item.type === 'Debit' ? (
-                          <span className='text-dark d-block fs-6'>₹ {new Intl.NumberFormat('en-IN').format(Number(item.wallet_balance))}/-</span>
-                        ) : "-"}
-                      </td>
-                      <td className='text-start'>
-                        <span className='text-dark d-block fs-6'>
-                          {item && new Intl.NumberFormat('en-IN').format(Number(item.remaining_balance))}
-                        </span>
+                      <td>
+                        <a href='#' className='text-muted text-center text-hover-primary d-block mb-1 fs-7'>
+                          ₹ {new Intl.NumberFormat('en-IN').format(Number(row.revenue))}
+                        </a>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </section>
@@ -235,4 +244,4 @@ const TransactionTable: React.FC<Props> = ({ className, title, data, loading }) 
   );
 };
 
-export { TransactionTable };
+export { RevenueTa };

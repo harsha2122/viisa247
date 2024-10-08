@@ -101,6 +101,7 @@ const InsuranceApi: React.FC<Props> = ({ className, title, data, loading }) => {
                     <Card.Subtitle className="mb-2 text-muted">
                       {insurance.source.name}
                     </Card.Subtitle>
+                    <Card.Text>{insurance.name}</Card.Text>
                     <Card.Text>Base Price: ₹{insurance.startingFromPrice}</Card.Text>
                     <Card.Text>Category: {insurance.category}</Card.Text>
 
