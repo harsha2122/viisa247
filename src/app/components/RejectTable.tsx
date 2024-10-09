@@ -130,7 +130,6 @@ const RejectTable: React.FC<Props> = ({ className, title, data,loading }) => {
         });
 
         window.location.reload();
-        // Handle any additional actions after a successful API call
       } else {
         toast.error(response.data.msg, {
           position: 'top-center',

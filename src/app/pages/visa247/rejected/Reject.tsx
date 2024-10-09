@@ -32,7 +32,7 @@ function Reject() {
           }
         });
 
-        setVisaStatsData(visaStatsData);
+        setVisaStatsData(visaData as any);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {

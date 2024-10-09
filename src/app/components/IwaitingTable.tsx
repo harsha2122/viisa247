@@ -221,19 +221,25 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
 
   const handleIssueSubmit = async () => {
     try {
+      // Check if insurance_pdf (file) is present
+      if (!file) {
+        toast.error('Please upload the insurance PDF before issuing');
+        return; // Stop form submission if file is not present
+      }
+  
       const allIds = selectedRows.map((row) => row._id);
       const payload = {
         ids: allIds,
         insurance_status: 'Issued',
         insurance_pdf: file,
       };
-
+  
       const response = await axiosInstance.post('/backend/upload_insurance_file', payload);
       if (response.data.success === 1) {
         toast.success('Applications issued successfully');
         handleCloseIssueModal();
         setTimeout(() => {
-          window.location.reload()
+          window.location.reload();
         }, 2500);
       } else {
         toast.error('Error issuing applications');
@@ -243,6 +249,7 @@ const IwaitingTable: React.FC<Props> = ({ className, title, data}) => {
       toast.error('Error submitting insurance');
     }
   };
+  
   
 
   const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {

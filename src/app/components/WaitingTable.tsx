@@ -231,6 +231,12 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
 
   const handleIssueSubmit = async () => {
     try {
+      // Check if visa_pdf (file) is present
+      if (!file) {
+        toast.error('Please upload the visa PDF before issuing');
+        return; // Stop form submission if file is not present
+      }
+  
       const allIds = selectedRows.map((row) => row._id);
   
       const payload = {
@@ -255,6 +261,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
       toast.error('Error submitting visa');
     }
   };
+  
   
 
   const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
