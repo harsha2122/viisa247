@@ -78,6 +78,8 @@ const UnderProcessTable: React.FC<Props> = ({ className, title, data,loading, on
     
   })
 
+  console.log("sd", data)
+
   const startIndex = (activePage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, data.length);
 

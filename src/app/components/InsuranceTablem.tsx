@@ -203,6 +203,7 @@ const InsuranceTablem: React.FC<Props> = ({
     }
   };
 
+  console.log("asd", apiData)
 
   return (
     <div className="pb-8">

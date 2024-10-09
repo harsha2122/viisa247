@@ -13,7 +13,6 @@ function UnderProcess() {
       setLoading(true);
       try {
         const response = await axiosInstance.get('/backend/super_admin/fetch_all_visa');
-        
         // Filter data to exclude entries with null group_id
         const filteredData = response.data.data.filter((item: any) => item.group_id !== null);
 
@@ -24,7 +23,6 @@ function UnderProcess() {
           const filteredApplications = group.applications.filter((application: any) => 
             application.visa_status === 'Processed' || application.visa_status === 'Issued'
           );
-
           if (filteredApplications.length > 0) {
             // Add filtered group with relevant applications
             visaData.push({
@@ -41,7 +39,7 @@ function UnderProcess() {
           return dateB - dateA;  // Descending order (most recent first)
         });
 
-        setVisaStatsData(visaStatsData);
+        setVisaStatsData(visaData as any);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {

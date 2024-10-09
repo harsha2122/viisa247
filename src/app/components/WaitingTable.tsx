@@ -239,7 +239,7 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
         visa_pdf: file,
       };
   
-      const response = await axiosInstance.post('/backend/upload_visa_file', payload);
+      const response = await axiosInstance.post('/backend/update_application_status', payload);
   
       if (response.data.success === 1) {
         toast.success('Applications issued successfully');
@@ -258,68 +258,80 @@ const WaitingTable: React.FC<Props> = ({ className, title, data }) => {
   
 
   const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
 
     if (file) {
-        const validFileTypes = ['application/zip', 'application/x-zip-compressed'];
+        const validFileTypes = ['application/pdf']; // Only PDF allowed
         if (!validFileTypes.includes(file.type)) {
-            toast.error('Only .zip files are allowed.', {position: 'top-center'});
+            toast.error('Only .pdf files are allowed.', { position: 'top-center' });
             return;
         }
 
         if (file.size > maxSize) {
-            toast.error('File size exceeds 300KB limit.', {position: 'top-center'});
+            toast.error('File size exceeds 300KB limit.', { position: 'top-center' });
             return;
         }
 
         try {
             const imageLink = await handleFileUpload(file);
             setFile(imageLink);
-            toast.success('File uploaded successfully', {position: 'top-center'});
+            toast.success('File uploaded successfully', { position: 'top-center' });
         } catch (error) {
-            console.error('Error uploading image:', error);
-            toast.error('Error uploading image. Please try again.', {position: 'top-center'});
+            console.error('Error uploading file:', error);
+            toast.error('Error uploading file. Please try again.', { position: 'top-center' });
         }
+    }
+}
+
+
+const handleSelectApplication = (application) => {
+  setSelectedApplications((prevSelected) => {
+    if (prevSelected.includes(application)) {
+      return prevSelected.filter((app) => app.application_id !== application.application_id);
+    } else {
+      return [...prevSelected, application];
+    }
+  });
+};
+
+const handleDownloadSelected = async () => {
+  const zip = new JSZip();
+
+  for (const app of selectedApplications) {
+    const fileFields = ['letter', 'pan_card', 'itr', 'passport_front', 'passport_back'];
+
+    for (const field of fileFields) {
+      if (app[field]) {
+        try {
+          // Fetch the file data and convert it to base64
+          const response = await fetch(app[field]);
+          const data = await response.arrayBuffer();
+          const base64Data = btoa(String.fromCharCode(...new Uint8Array(data)));
+
+          // Create a Blob from base64
+          const blob = new Blob([data], { type: 'image/jpeg' });
+          const fileName = `${app.application_id}_${field}.jpeg`;
+          zip.file(fileName, blob);
+
+        } catch (error) {
+          console.error(`Error downloading ${field} from application ID: ${app.application_id}`, error);
+        }
+      } else {
+        console.log(`${field} is not available for application ID: ${app.application_id}`);
+      }
     }
   }
 
-  const handleSelectApplication = (app: Application) => {
-    setSelectedApplications((prevSelected) => {
-      if (prevSelected.includes(app)) {
-        return prevSelected.filter((selectedApp) => selectedApp !== app);
-      } else {
-        return [...prevSelected, app];
-      }
-    });
-  };
+  zip.generateAsync({ type: 'blob' }).then((blob) => {
+    saveAs(blob, 'documents.zip');
+    console.log('ZIP file has been generated and download started.');
+  });
+};
 
-  const handleDownloadSelected = async () => {
-    const zip = new JSZip();
 
-    for (const app of selectedApplications) {
-      const fileFields = ['letter', 'pan_card', 'itr', 'passport_front', 'passport_back'];
 
-      for (const field of fileFields) {
-        if (app[field as keyof Application]) {
-          try {
-            const response = await fetch(app[field as keyof Application] as string);
-            const blob = await response.blob();
-            const fileName = `${app.application_id}_${field}.jpeg`;
-            zip.file(fileName, blob);
-          } catch (error) {
-            console.error(`Error downloading ${field} from application ID: ${app.application_id}`, error);
-          }
-        } else {
-          console.log(`${field} is not available for application ID: ${app.application_id}`);
-        }
-      }
-    }
 
-    zip.generateAsync({ type: 'blob' }).then((blob) => {
-      saveAs(blob, 'documents.zip');
-      console.log('ZIP file has been generated and download started.');
-    });
-  };
+  console.log("----", data)
 
   const handleDownloadDocuments = async (applications) => {
     const zip = new JSZip();

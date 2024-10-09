@@ -102,45 +102,43 @@ const Verticali: React.FC<VerticalProps> = ({
     const today = new Date();
     const birth = new Date(birthDate);
     
-    // Calculate age in months
-    let ageInMonths = (today.getFullYear() - birth.getFullYear()) * 12 + (today.getMonth() - birth.getMonth());
+    const ageInMonths = (today.getFullYear() - birth.getFullYear()) * 12 + (today.getMonth() - birth.getMonth());
     const dayDiff = today.getDate() - birth.getDate();
     if (dayDiff < 0) {
-      ageInMonths--;
+      return ageInMonths - 1;
     }
-  
+    return ageInMonths;
+  };
 
-    const ageInYears = Math.floor(ageInMonths / 12);
-    const remainingMonths = ageInMonths % 12;
-  
-    return { ageInYears, remainingMonths, ageInMonths };
+  const handleAddForm = () => {
+    setApplicantForms((prevForms) => [...prevForms, 'InsuranceForm1']);
   };
   
-  const getMerchantInsuranceAmount = ({ ageInMonths }, ageGroups: any[]) => {
+  const getMerchantInsuranceAmount = (ageInMonths: number, ageGroups: any[]) => {
     const ageGroup = ageGroups.find(group => {
       const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
         const ageRangeParts = ageRange.split(' ');
-  
+        
         if (ageRangeParts[1] === 'mths') {
           return parseInt(ageRangeParts[0], 10);
         } else {
-          return parseInt(ageRangeParts[0], 10) * 12; // Convert years to months
+          return parseInt(ageRangeParts[0], 10) * 12;
         }
       });
-  
       return ageInMonths >= minAge && ageInMonths <= maxAge;
     });
   
     return ageGroup ? ageGroup.merchant_insurance_amount : 0;
   };
   
+  
   useEffect(() => {
     const calculateTotalAmount = () => {
       let totalAmount = 0;
       travelerForms.forEach(form => {
         if (form.birthDetail) {
-          const age = calculateAge(form.birthDetail);
-          const amount = getMerchantInsuranceAmount(age, selectedEntry.age_groups);
+          const ageInMonths = calculateAge(form.birthDetail);
+          const amount = getMerchantInsuranceAmount(ageInMonths, selectedEntry.age_groups);
           totalAmount += amount;
         }
       });
@@ -163,7 +161,7 @@ const Verticali: React.FC<VerticalProps> = ({
     });
   };
   
-  const getInsuranceAmountForAge = ({ ageInMonths }, ageGroups: any[]) => {
+  const getInsuranceAmountForAge = (ageInMonths: number, ageGroups: any[]) => {
     const ageGroup = ageGroups.find(group => {
       const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
         const ageRangeParts = ageRange.split(' ');
@@ -174,21 +172,26 @@ const Verticali: React.FC<VerticalProps> = ({
           return parseInt(ageRangeParts[0], 10) * 12; // Convert years to months
         }
       });
-  
       return ageInMonths >= minAge && ageInMonths <= maxAge;
     });
   
     return ageGroup ? ageGroup.merchant_insurance_amount : 0;
   };
   
-  const getInsuranceAmounts = (age, ageGroups) => {
+  const getInsuranceAmounts = (ageInMonths: number, ageGroups: any[]) => {
     const ageGroup = ageGroups.find(group => {
       const [minAge, maxAge] = group.age_group.split('–').map(ageRange => {
         const ageRangeParts = ageRange.split(' ');
-        return ageRangeParts[0] === 'mths' ? 0 : parseInt(ageRangeParts[0], 10);
+  
+        if (ageRangeParts[1] === 'mths') {
+          return parseInt(ageRangeParts[0], 10);
+        } else {
+          return parseInt(ageRangeParts[0], 10) * 12; // Convert years to months
+        }
       });
-      return age >= minAge && age <= maxAge;
+      return ageInMonths >= minAge && ageInMonths <= maxAge;
     });
+  
     if (ageGroup) {
       return {
         insurance_amount: ageGroup.insurance_amount,
@@ -196,6 +199,7 @@ const Verticali: React.FC<VerticalProps> = ({
         merchant_insurance_amount: ageGroup.merchant_insurance_amount,
       };
     }
+  
     return {
       insurance_amount: 0,
       insurance_original_amount: 0,
@@ -384,11 +388,11 @@ const Verticali: React.FC<VerticalProps> = ({
 
                 const user_id = Cookies.get('user_id');
                 const data = {
-                    merchant_id: user_id,
+                    user_id: user_id,
                     insurance_application_id: createApplicationResponse.data.data._id,
                 };
 
-                const addApplicantResponse = await axiosInstance.post('/backend/add_insurance_applicant', data);
+                const addApplicantResponse = await axiosInstance.post('/backend/add_user_insurance_applicant', data);
 
                 if (addApplicantResponse.status === 200) {
                     setIsReviewModal(false);
@@ -431,6 +435,8 @@ const Verticali: React.FC<VerticalProps> = ({
           console.error('Error while making API calls:', error);
       }
   };
+
+  console.log("asd", selectedEntry)
 
 
   const handleDeleteForm = (index) => {

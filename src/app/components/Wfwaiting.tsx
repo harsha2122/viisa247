@@ -308,30 +308,31 @@ const Wfwaiting: React.FC<Props> = ({className, title, data}) => {
   };
 
   const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
 
     if (file) {
-        const validFileTypes = ['application/zip', 'application/x-zip-compressed'];
+        const validFileTypes = ['application/pdf']; // Only PDF allowed
         if (!validFileTypes.includes(file.type)) {
-            toast.error('Only .zip files are allowed.', {position: 'top-center'});
+            toast.error('Only .pdf files are allowed.', { position: 'top-center' });
             return;
         }
 
         if (file.size > maxSize) {
-            toast.error('File size exceeds 300KB limit.', {position: 'top-center'});
+            toast.error('File size exceeds 300KB limit.', { position: 'top-center' });
             return;
         }
 
         try {
             const imageLink = await handleFileUpload(file);
             setFile(imageLink);
-            toast.success('File uploaded successfully', {position: 'top-center'});
+            toast.success('File uploaded successfully', { position: 'top-center' });
         } catch (error) {
-            console.error('Error uploading image:', error);
-            toast.error('Error uploading image. Please try again.', {position: 'top-center'});
+            console.error('Error uploading file:', error);
+            toast.error('Error uploading file. Please try again.', { position: 'top-center' });
         }
     }
-  }
+}
+
 
 
   const handleClickOpen = (item) => {

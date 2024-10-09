@@ -16,15 +16,28 @@ type Plan = {
 
 type InsuranceData = {
   plans: {
-    platinum: { plan_name: string, age_groups: Plan[] },
-    gold: { plan_name: string, age_groups: Plan[] },
-    silver: { plan_name: string, age_groups: Plan[] }
+    platinum: { 
+      plan_name: string; 
+      age_groups: Plan[];
+      base_price: string;  // Is property ko yahan add karein
+      actual_price: string; // Is property ko yahan add karein
+    },
+    gold: { 
+      plan_name: string; 
+      age_groups: Plan[];
+      base_price: string;  // Is property ko yahan add karein
+      actual_price: string; // Is property ko yahan add karein
+    },
+    silver: { 
+      plan_name: string; 
+      age_groups: Plan[];
+      base_price: string;  // Is property ko yahan add karein
+      actual_price: string; // Is property ko yahan add karein
+    }
   },
   _id: string;
   country_code: string[];
   nationality_code: string;
-  insurance_base_price: string;
-  insurance_per_day_price: string;
 };
 
 type OnSelectClickData = {
@@ -109,10 +122,10 @@ const InsuranceTablee: React.FC<Props> = ({
       const selectedPlanData = selectedInsurance.plans[activeTab as keyof typeof selectedInsurance.plans].age_groups.map(plan => {
         const basePrice = parseFloat(plan.customer.base_price);
         const pricePerDay = parseFloat(plan.customer.price_per_day);
+        const basePrices = parseFloat(selectedInsurance.plans[activeTab as keyof typeof selectedInsurance.plans].base_price); // Use selectedInsurance instead of selectedPlan
+        const actualPrice = parseFloat(selectedInsurance.plans[activeTab as keyof typeof selectedInsurance.plans].actual_price); // Use selectedInsurance instead of selectedPlan
         const { totalPrice } = calculatePrice(basePrice, pricePerDay, apiData.issue_date, apiData.expiry_date);
-        const insuranceBasePrice = parseFloat(selectedInsurance.insurance_base_price);
-        const insurancePerDayPrice = parseFloat(selectedInsurance.insurance_per_day_price);
-        const { totalPrice1: insuranceOriginalAmount } = calculatePrice1(insuranceBasePrice, insurancePerDayPrice, apiData.issue_date, apiData.expiry_date);
+        const { totalPrice1: insuranceOriginalAmount } = calculatePrice1(basePrices, actualPrice, apiData.issue_date, apiData.expiry_date);
         const merchantOriginalAmount = totalPrice;
   
         return {

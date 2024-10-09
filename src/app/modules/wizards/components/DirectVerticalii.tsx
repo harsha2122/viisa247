@@ -286,19 +286,23 @@ const DirectVerticalii: React.FC<VerticalProps> = ({
   };
   const handleReviewAndSave = async () => {
     try {
+      // Pehle wallet balance check karein
       const totalPrice = parseFloat(totalAmount.toFixed(0));
       const walletBalance = parseFloat(currentWallet);
+  
       if (totalPrice > walletBalance) {
         toast.error('Insufficient Balance!', {
           position: 'top-center',
         });
       } else {
-        setLoading(true);
+        setLoading(true); // Loading state ko true set karo
         let allFieldsFilled = true;
   
-        for (const application of combinedData.applications) {
+        // Traveler applications ke liye loop chalayein
+        for (const [index, application] of combinedData.applications.entries()) {
           const missingFields: string[] = [];
   
+          // Field validation
           if (!application.first_name) missingFields.push('First Name');
           if (!application.last_name) missingFields.push('Last Name');
           if (!application.birth_place) missingFields.push('Birth Place');
@@ -310,6 +314,7 @@ const DirectVerticalii: React.FC<VerticalProps> = ({
           if (!application.marital_status) missingFields.push('Marital Status');
           if (!application.passport_front) missingFields.push('Passport Front');
   
+          // Agar koi field missing hai toh error throw karo
           if (missingFields.length > 0) {
             toast.error(`Missing fields: ${missingFields.join(', ')}`, {
               position: 'top-center',
@@ -319,9 +324,11 @@ const DirectVerticalii: React.FC<VerticalProps> = ({
             break;
           }
   
+          // Traveler ki age ke basis pe insurance amount calculate karte hain
           const age = calculateAge(application.birthday_date);
           const { insurance_amount, insurance_original_amount, merchant_insurance_amount } = getInsuranceAmounts(age, selectedEntry.age_groups);
   
+          // PostData prepare karte hain for API call
           const postData = {
             country_code: selectedEntry.country_code,
             nationality_code: selectedEntry.nationality_code,
@@ -347,6 +354,7 @@ const DirectVerticalii: React.FC<VerticalProps> = ({
           };
   
           try {
+            // Insurance application banane ke liye API call
             const createApplicationResponse = await axiosInstance.post('/backend/create_insurance_application', postData);
             setInsuranceResponse(createApplicationResponse.data.data);
   
@@ -356,6 +364,7 @@ const DirectVerticalii: React.FC<VerticalProps> = ({
               insurance_application_id: createApplicationResponse.data.data._id,
             };
   
+            // Applicant ko add karne ke liye API call
             const addApplicantResponse = await axiosInstance.post('/backend/add_insurance_applicant', data);
   
             if (addApplicantResponse.status === 200) {
@@ -375,14 +384,34 @@ const DirectVerticalii: React.FC<VerticalProps> = ({
             setLoading(false);
             return;
           }
+  
+          // Jab last traveler form process ho raha ho, tab final API call karo
+          if (index === combinedData.applications.length - 1) {
+            try {
+              const finalData = {
+                group_id: groupId,
+              };
+              await axiosInstance.post('/backend/insurance_apply', finalData);
+              toast.success('Final insurance application submitted!', {
+                position: 'top-center',
+              });
+            } catch (finalError) {
+              console.error('Error while making final API call:', finalError);
+              toast.error('Error while submitting final application', {
+                position: 'top-center',
+              });
+            }
+          }
         }
   
-        setLoading(false);
+        setLoading(false); // Jab sab API calls complete ho jayein toh loading false karo
       }
     } catch (error) {
       console.error('Error while making API calls:', error);
+      setLoading(false); // Agar error aaye toh loading false karo
     }
   };
+  
   
   console.log("df", combinedData)
 

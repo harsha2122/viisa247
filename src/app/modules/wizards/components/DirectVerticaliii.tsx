@@ -320,95 +320,122 @@ const DirectVerticaliii: React.FC<VerticalProps> = ({
 
   const handleReviewAndSave = async () => {
     try {
-        setLoading(true);
-        let allFieldsFilled = true;
+        setLoading(true); // Loading ko true set karo jab API calls start ho
+        let allFieldsFilled = true; // Isse track karne ke liye ke sare fields filled hain ya nahi
   
-        for (const application of combinedData.applications) {
-          const missingFields: string[] = [];
+        // Travelers ke data ke liye loop
+        for (const [index, application] of combinedData.applications.entries()) {
+            const missingFields: string[] = [];
+            
+            // Field validation
+            if (!application.first_name) missingFields.push('First Name');
+            if (!application.last_name) missingFields.push('Last Name');
+            if (!application.birth_place) missingFields.push('Birth Place');
+            if (!application.birthday_date) missingFields.push('Birth Detail');
+            if (!application.passport_number) missingFields.push('Passport Number');
+            if (!application.passport_issue_date) missingFields.push('Passport Issue Date');
+            if (!application.passport_expiry_date) missingFields.push('Passport Expiry Date');
+            if (!application.gender) missingFields.push('Gender');
+            if (!application.marital_status) missingFields.push('Marital Status');
+            if (!application.passport_front) missingFields.push('Passport Front');
   
-          if (!application.first_name) missingFields.push('First Name');
-          if (!application.last_name) missingFields.push('Last Name');
-          if (!application.birth_place) missingFields.push('Birth Place');
-          if (!application.birthday_date) missingFields.push('Birth Detail');
-          if (!application.passport_number) missingFields.push('Passport Number');
-          if (!application.passport_issue_date) missingFields.push('Passport Issue Date');
-          if (!application.passport_expiry_date) missingFields.push('Passport Expiry Date');
-          if (!application.gender) missingFields.push('Gender');
-          if (!application.marital_status) missingFields.push('Marital Status');
-          if (!application.passport_front) missingFields.push('Passport Front');
+            if (missingFields.length > 0) {
+                toast.error(`Missing fields: ${missingFields.join(', ')}`, {
+                    position: 'top-center',
+                });
+                setLoading(false);
+                allFieldsFilled = false;
+                break;
+            }
   
-          if (missingFields.length > 0) {
-            toast.error(`Missing fields: ${missingFields.join(', ')}`, {
-              position: 'top-center',
-            });
-            setLoading(false);
-            allFieldsFilled = false;
-            break;
-          }
+            // Age calculate kar rahe hain traveler ka
+            const age = calculateAge(application.birthday_date);
+            const { insurance_amount, insurance_original_amount, merchant_insurance_amount } = getInsuranceAmounts(age, selectedEntry.age_groups);
   
-          const age = calculateAge(application.birthday_date);
-          const { insurance_amount, insurance_original_amount, merchant_insurance_amount } = getInsuranceAmounts(age, selectedEntry.age_groups);
-  
-          const postData = {
-            country_code: selectedEntry.country_code,
-            nationality_code: selectedEntry.nationality_code,
-            first_name: application.first_name,
-            last_name: application.last_name,
-            birth_place: application.birth_place,
-            birthday_date: formatDateWithTimezoneToYMD(application.birthday_date),
-            nationality: selectedEntry.nationality_code,
-            passport_number: application.passport_number,
-            passport_issue_date: formatDateWithTimezoneToYMD(application.passport_issue_date),
-            passport_expiry_date: formatDateWithTimezoneToYMD(application.passport_expiry_date),
-            gender: application.gender,
-            group_id: groupId,
-            marital_status: application.marital_status,
-            passport_front: application.passport_front,
-            insurance_id: selectedEntry.id,
-            insurance_amount: insurance_amount,
-            insurance_original_amount: insurance_original_amount,
-            insurance_benefit: selectedEntry.benefits,
-            insurance_plan_type: selectedEntry.description,
-            insurance_age_group: selectedEntry.age_group,
-            merchant_insurance_amount: merchant_insurance_amount,
-            receipt_url: recieptUrl
-          };
-  
-          try {
-            const createApplicationResponse = await axiosInstance.post('/backend/create_insurance_application', postData);
-            setInsuranceResponse(createApplicationResponse.data.data);
-  
-            const user_id = Cookies.get('user_id');
-            const data = {
-              user_id: user_id,
-              insurance_application_id: createApplicationResponse.data.data._id,
+            // API call ke liye postData prepare karna
+            const postData = {
+                country_code: selectedEntry.country_code,
+                nationality_code: selectedEntry.nationality_code,
+                first_name: application.first_name,
+                last_name: application.last_name,
+                birth_place: application.birth_place,
+                birthday_date: formatDateWithTimezoneToYMD(application.birthday_date),
+                nationality: selectedEntry.nationality_code,
+                passport_number: application.passport_number,
+                passport_issue_date: formatDateWithTimezoneToYMD(application.passport_issue_date),
+                passport_expiry_date: formatDateWithTimezoneToYMD(application.passport_expiry_date),
+                gender: application.gender,
+                group_id: groupId,
+                marital_status: application.marital_status,
+                passport_front: application.passport_front,
+                insurance_id: selectedEntry.id,
+                insurance_amount: insurance_amount,
+                insurance_original_amount: insurance_original_amount,
+                insurance_benefit: selectedEntry.benefits,
+                insurance_plan_type: selectedEntry.description,
+                insurance_age_group: selectedEntry.age_group,
+                merchant_insurance_amount: merchant_insurance_amount,
+                receipt_url: recieptUrl,
             };
   
-            const addApplicantResponse = await axiosInstance.post('/backend/add_user_insurance_applicant', data);
+            try {
+                // Insurance application create karna
+                const createApplicationResponse = await axiosInstance.post('/backend/create_insurance_application', postData);
+                setInsuranceResponse(createApplicationResponse.data.data);
   
-            if (addApplicantResponse.status === 200) {
-              setIsReviewModal(false);
-              setConfetti(true);
-              setModalShow(true);
-            } else {
-              toast.error(addApplicantResponse.data.msg, {
-                position: 'top-center',
-              });
+                const user_id = Cookies.get('user_id');
+                const data = {
+                    user_id: user_id,
+                    insurance_application_id: createApplicationResponse.data.data._id,
+                };
+  
+                // Insurance applicant add karna
+                const addApplicantResponse = await axiosInstance.post('/backend/add_user_insurance_applicant', data);
+  
+                if (addApplicantResponse.status === 200) {
+                    setIsReviewModal(false);
+                    setConfetti(true);
+                    setModalShow(true);
+                } else {
+                    toast.error(addApplicantResponse.data.msg, {
+                        position: 'top-center',
+                    });
+                }
+            } catch (error) {
+                console.error('Error while processing form:', error);
+                toast.error('Error while processing form', {
+                    position: 'top-center',
+                });
+                setLoading(false);
+                return;
             }
-          } catch (error) {
-            console.error('Error while processing form:', error);
-            toast.error('Error while processing form', {
-              position: 'top-center',
-            });
-            setLoading(false);
-            return;
-          }  
-        setLoading(false);
-      }
+
+            // Agar last traveler form process ho raha hai, toh final API call karein
+            if (index === combinedData.applications.length - 1) {
+                try {
+                    const finalData = {
+                        group_id: groupId,
+                    };
+                    await axiosInstance.post('/backend/insurance_apply', finalData);
+                    toast.success('Final insurance application submitted!', {
+                        position: 'top-center',
+                    });
+                } catch (finalError) {
+                    console.error('Error while making final API call:', finalError);
+                    toast.error('Error while submitting final application', {
+                        position: 'top-center',
+                    });
+                }
+            }
+        }
+
+        setLoading(false); // Sab kaam ho jaye toh loading false
     } catch (error) {
-      console.error('Error while making API calls:', error);
+        console.error('Error while making API calls:', error);
+        setLoading(false);
     }
-  };
+};
+
   
 
   const formatDate = (dateString) => {

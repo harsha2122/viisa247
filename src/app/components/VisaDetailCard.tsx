@@ -894,6 +894,8 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
     }
   }
 
+  console.log("ds", visaData)
+
   return (
     <div>
       <Toaster />
@@ -1008,7 +1010,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                     id='kt_sign_in_submit'
                     className='btn btn-success'
                     onClick={() => generateAndDownloadPDF(entry)}
-                    style={{backgroundColor: '#327113', marginTop: 20}}
+                    style={{backgroundColor: '#327113', marginTop: 10}}
                   >
                     Download Invoice
                   </button>
@@ -1018,7 +1020,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                       id='kt_sign_in_submit'
                       className='btn btn-success'
                       onClick={() => handleVisibilityClick(entry)}
-                      style={{backgroundColor: '#327113', marginTop: 20}}
+                      style={{backgroundColor: '#327113', marginTop: 10}}
                     >
                       Re - Submit Form
                     </button>
@@ -1031,7 +1033,7 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
                       onClick={() => downloadVisa(entry.applications[0])}
                       style={{
                         backgroundColor: '#327113',
-                        marginTop: 20,
+                        marginTop: 10,
                       }}
                     >
                       Download Visa

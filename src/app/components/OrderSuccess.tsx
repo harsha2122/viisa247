@@ -23,9 +23,14 @@ const OrderSuccess: React.FC<OrderSuccessModalProps> = ({
   amount 
 }) => {
   const handleDashboardRedirect = () => {
-    window.location.href = '/merchant/dashboard';
+    const user_type = Cookies.get('user_type'); // User type ko fetch karna
+
+    if (user_type === 'customer') {
+      window.location.href = '/customer/dashboard'; // Customer dashboard pe redirect
+    } else {
+      window.location.href = '/merchant/dashboard'; // Merchant dashboard pe redirect
+    }
   };
-  const user_type = Cookies.get('user_type');
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Body className="text-center px-8 py-16">
