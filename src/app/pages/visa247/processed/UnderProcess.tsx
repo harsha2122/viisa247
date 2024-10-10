@@ -55,7 +55,7 @@ function UnderProcess() {
   };
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <UnderProcessTable onDataChange={handleDataChange} className='' title={'Visa247 Issued'} data={visaStatsData} loading={loading} />
     </div>
   );

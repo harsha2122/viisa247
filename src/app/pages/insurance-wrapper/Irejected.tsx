@@ -44,7 +44,7 @@ function Ireject() {
   }, []);
 
   return (
-    <div style={{ marginTop: '-50px' }}>
+    <div>
       <IrejectTable className='' title='Insurance Rejected' data={insuranceData} loading={loading} />
     </div>
   );

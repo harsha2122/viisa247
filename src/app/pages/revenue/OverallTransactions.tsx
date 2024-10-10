@@ -29,7 +29,7 @@ function OverallTransactions() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div>
       <TransactionTable className='' title={'Transaction'} data={revenueData} loading={loading} />
     </div>
   );

@@ -27,7 +27,7 @@ function Hprocessed() {
   }, []);
 
   return (
-    <div style={{ marginTop: '-50px' }}>
+    <div>
       <Whprocessed className='' title='Hotel Issued' data={insuranceData} loading={loading} />
     </div>
   );

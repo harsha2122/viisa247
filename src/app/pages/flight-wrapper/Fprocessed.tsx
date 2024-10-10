@@ -37,7 +37,7 @@ function Fprocessed() {
   }, []);
 
   return (
-    <div style={{ marginTop: '-50px' }}>
+    <div>
       <Wfprocessed className='' title='Flight Issued' data={insuranceData} loading={loading} />
     </div>
   );

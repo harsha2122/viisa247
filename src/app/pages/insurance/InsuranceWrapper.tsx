@@ -28,7 +28,7 @@ function InsuranceWrapper() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <InsuranceTable className='border py-8 px-4' title={'Insurance'} data={insuranceData} loading={loading} />
     </div>
   );

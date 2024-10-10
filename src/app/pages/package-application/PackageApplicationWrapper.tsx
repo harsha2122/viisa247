@@ -30,7 +30,7 @@ function PackageApplicationWrapper() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <PackageApplicationTable data={papplyData}/>
     </div>
   );

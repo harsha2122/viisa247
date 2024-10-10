@@ -29,7 +29,7 @@ function InsuranceWrap() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <InsuranceApi className='border py-8 px-4' title={'Available Insurance'} data={insuranceData} loading={loading} />
     </div>
   );

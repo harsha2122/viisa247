@@ -44,7 +44,7 @@ function Iprocessed() {
   }, []);
 
   return (
-    <div style={{ marginTop: '-50px' }}>
+    <div>
       <IprocessedTable className='' title='Insurance Issued' data={insuranceData} loading={loading} />
     </div>
   );

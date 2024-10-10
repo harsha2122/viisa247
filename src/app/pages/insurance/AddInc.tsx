@@ -421,6 +421,7 @@ const AddInc = () => {
                 options={countries}
                 onChange={(e: MultiSelectChangeEvent) => setSelectedCountry(e.value)}
                 optionLabel="name"
+                filter
                 placeholder="Select a Country..."
                 itemTemplate={countryTemplate}
                 panelFooterTemplate={panelFooterTemplate}

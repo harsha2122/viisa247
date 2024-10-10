@@ -521,21 +521,21 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
     setViewApplication(null)
   }
 
-  console.log("visa", visaData)
-  console.log("hotel", insuranceData)
-  console.log("insurance", hotelData)
-  console.log("flight", flightData)
+  // console.log("visa", visaData)
+  // console.log("hotel", insuranceData)
+  // console.log("insurance", hotelData)
+  // console.log("flight", flightData)
 
-  if (visaData === null || visaData.length === 0) {
-    return (
-      <div className='  d-flex align-items-center justify-content-center'>
-        <div className='d-flex flex-column align-items-center justify-content-center'>
-          <img className='fade-in-out' style={{width: '300px', height: '300px'}} src={image} />
-          <h1>No Visa Data Available</h1>
-        </div>
-      </div>
-    )
-  }
+  // if (visaData === null || visaData.length === 0) {
+  //   return (
+  //     <div className='  d-flex align-items-center justify-content-center'>
+  //       <div className='d-flex flex-column align-items-center justify-content-center'>
+  //         <img className='fade-in-out' style={{width: '300px', height: '300px'}} src={image} />
+  //         <h1>No Visa Data Available</h1>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   const checkVisaStatus = async (selectedVisa) => {
     try {

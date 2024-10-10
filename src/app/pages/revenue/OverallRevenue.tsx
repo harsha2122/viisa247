@@ -31,7 +31,7 @@ function OverallRevenue() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <RevenueTa className='' title={'Revenue'} data={revenueData} loading={loading} />
     </div>
   );

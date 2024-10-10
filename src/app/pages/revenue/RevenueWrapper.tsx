@@ -29,7 +29,7 @@ function RevenueWrapper() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <RevenueTable className='' title={'Revenue'} data={revenueData} loading={loading} />
     </div>
   );

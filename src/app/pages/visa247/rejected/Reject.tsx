@@ -44,7 +44,7 @@ function Reject() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <RejectTable className='' title={'Visa247 Rejected'} data={visaStatsData} loading={loading} />
     </div>
   );

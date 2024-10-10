@@ -77,7 +77,7 @@ export const DefaultConfig: ILayout = {
       componentName: 'toolbar',
       display: true,
       layout: 'classic',
-      class: 'py-3 py-lg-6',
+      class: 'py-3 ',
       container: 'fluid',
       containerClass: 'd-flex flex-stack',
       fixed: {

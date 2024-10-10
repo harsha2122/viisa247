@@ -29,7 +29,7 @@ function RevenueInsurance() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <RevenueInsuranceTable className='' title={'Revenue'} data={revenueiData} loading={loading} />
     </div>
   );

@@ -37,7 +37,7 @@ function WalletWrapper() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <WalletTable className='' title={'Wallet'} data={walletData} loading={loading} />
     </div>
   );

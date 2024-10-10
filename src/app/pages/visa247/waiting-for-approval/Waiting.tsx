@@ -51,7 +51,7 @@ function Waiting() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <WaitingTable className='' title={'Visa247 In-Process'} data={visasStatsData} loading={loading} />
     </div>
   );

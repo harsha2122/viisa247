@@ -43,7 +43,7 @@ const TransactionTable: React.FC<Props> = ({ className, title, data, loading }) 
       const startDate = value[0]?.isValid() ? value[0].format('YYYY-MM-DD') : '';
       const endDate = value[1]?.isValid() ? value[1].format('YYYY-MM-DD') : '';
       const filtered = (data as any[]).filter((item) => {
-        const transactionDate = item.transaction_time.split(' ')[0];
+        const transactionDate = item.created_at.split(' ')[0];
         return transactionDate >= startDate && transactionDate <= endDate;
       });
       setIssueDate(startDate);
@@ -64,11 +64,10 @@ const TransactionTable: React.FC<Props> = ({ className, title, data, loading }) 
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
 
-    const filtered = (data as any[]).filter((item) =>
-      Object.entries(item).some(
-        ([key, value]) =>
-          value && (value as any).toString().toLowerCase().includes(term)
-      )
+    const filtered = (data as any[]).filter(
+      (item) =>
+        item.merchant_email_id?.toLowerCase().includes(term) ||
+        item.customer_email_id?.toLowerCase().includes(term)
     );
     setFilteredData(filtered);
   };
@@ -114,6 +113,19 @@ const TransactionTable: React.FC<Props> = ({ className, title, data, loading }) 
           />
         </div>
         <div className=' d-flex gap-4 flex-row p-4 dropdown mx-5'>
+          <input
+            type='text'
+            placeholder='Search by email'
+            value={searchTerm}
+            onChange={handleSearch}
+            style={{
+              padding: '8px',
+              marginLeft: '10px',
+              border: '1px solid #808080',
+              borderRadius: '8px',
+              width: '250px',
+            }}
+          />
           <button
             style={{
               fontWeight: '600',

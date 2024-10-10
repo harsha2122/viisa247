@@ -26,7 +26,7 @@ function Hwaiting() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <Whwaiting className='' title='Hotel Waiting for Approval' data={insuranceData} loading={loading} />
     </div>
   );

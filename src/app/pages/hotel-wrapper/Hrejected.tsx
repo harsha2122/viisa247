@@ -27,7 +27,7 @@ function Hreject() {
   }, []);
 
   return (
-    <div style={{ marginTop: '-50px' }}>
+    <div>
       <Whreject className='' title='Hotel Rejected' data={insuranceData} loading={loading} />
     </div>
   );

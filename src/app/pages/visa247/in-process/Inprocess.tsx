@@ -30,7 +30,7 @@ function Inprocess() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <VisaInprocess className='' title={'Visa247 In-Process'} data={visaStatsData} loading={loading} />
     </div>
   );

@@ -44,7 +44,7 @@ function Iwaiting() {
   }, []);
 
   return (
-    <div style={{ marginTop: "-50px" }}>
+    <div >
       <IwaitingTable className='' title='Insurance Waiting for Approval' data={insuranceData} loading={loading} />
     </div>
   );
