@@ -84,29 +84,6 @@ const Navbar = () => {
       setCurrentWallet(parseFloat(walletBalance));
     }
   }, []);
-
-  // const refreshWalletBalance = async () => {
-  //   try {
-  //     setIsRefreshing(true);
-  //     const response = await axiosInstance.post('/backend/atlys_wallet_balance');
-  //     const updatedBalance = response.data.data;
-  //     Cookies.set('walletBalance', updatedBalance);
-
-  //     setCurrentWallet(parseFloat(updatedBalance));
-
-  //     toast.success('Wallet balance refreshed successfully', {
-  //       position: 'top-center'
-  //     });
-  //   } catch (error) {
-  //     console.error('Error refreshing wallet balance:', error);
-  //     toast.error('Error refreshing wallet balance', {
-  //       position: 'top-center'
-  //     });
-  //   } finally {
-  //     setIsRefreshing(false);
-  //   }
-  // };
-
   const user_type = Cookies.get('user_type');
 
   useEffect(() => {
@@ -214,7 +191,7 @@ const Navbar = () => {
 
           <div className='d-flex align-items-center flex-grow-1 flex-lg-grow-0' style={{ backgroundColor: '#f5f5f5', padding: 10, borderRadius: 10, marginRight: 30 }}>
             <KTIcon iconName='wallet' className={btnIconClass} />
-            <span className='menu-title' style={{ fontWeight: 'bold', marginLeft: 5 }}>{currentWallet} /-</span>
+            <span className='menu-title' style={{ fontWeight: 'bold', marginLeft: 5 }}>{new Intl.NumberFormat('en-IN').format(Number(currentWallet))} /-</span>
           </div>
         </div>
       ) : user_type === 'super_admin' ? (

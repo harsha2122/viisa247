@@ -531,7 +531,7 @@ const AddInsurance = () => {
                                 <ErrorMessage name={`platinum.age_groups[${index}].partner.base_price`} />
                               </div>
                             </div>
-                            <div className='mb-3'>
+                            {/* <div className='mb-3'>
                               <label className='form-label required'>Partner Price Per Day</label>
                               <Field
                                 type='text'
@@ -542,9 +542,9 @@ const AddInsurance = () => {
                               <div className='text-danger'>
                                 <ErrorMessage name={`platinum.age_groups[${index}].partner.price_per_day`} />
                               </div>
-                            </div>
+                            </div> */}
                             <div className='mb-3'>
-                              <label className='form-label required'>Partner Actual Price</label>
+                              <label className='form-label required'>Partner Price Per Day</label>
                               <Field
                                 type='text'
                                 name={`platinum.age_groups[${index}].partner.actual_price`}
@@ -568,7 +568,7 @@ const AddInsurance = () => {
                                 <ErrorMessage name={`platinum.age_groups[${index}].retailer.base_price`} />
                               </div>
                             </div>
-                            <div className='mb-3'>
+                            {/* <div className='mb-3'>
                               <label className='form-label required'>Retailer Price Per Day</label>
                               <Field
                                 type='text'
@@ -579,9 +579,9 @@ const AddInsurance = () => {
                               <div className='text-danger'>
                                 <ErrorMessage name={`platinum.age_groups[${index}].retailer.price_per_day`} />
                               </div>
-                            </div>
+                            </div> */}
                             <div className='mb-3'>
-                              <label className='form-label required'>Retailer Actual Price</label>
+                              <label className='form-label required'>Retailer Price Per Day</label>
                               <Field
                                 type='text'
                                 name={`platinum.age_groups[${index}].retailer.actual_price`}
@@ -605,7 +605,7 @@ const AddInsurance = () => {
                                 <ErrorMessage name={`platinum.age_groups[${index}].customer.base_price`} />
                               </div>
                             </div>
-                            <div className='mb-3'>
+                            {/* <div className='mb-3'>
                               <label className='form-label required'>Customer Price Per Day</label>
                               <Field
                                 type='text'
@@ -616,9 +616,9 @@ const AddInsurance = () => {
                               <div className='text-danger'>
                                 <ErrorMessage name={`platinum.age_groups[${index}].customer.price_per_day`} />
                               </div>
-                            </div>
+                            </div> */}
                             <div className='mb-3'>
-                              <label className='form-label required'>Customer Actual Price</label>
+                              <label className='form-label required'>Customer Price Per Day</label>
                               <Field
                                 type='text'
                                 name={`platinum.age_groups[${index}].customer.actual_price`}
@@ -730,7 +730,7 @@ const AddInsurance = () => {
                                 <ErrorMessage name={`gold.age_groups[${index}].partner.base_price`} />
                               </div>
                             </div>
-                            <div className='mb-3'>
+                            {/* <div className='mb-3'>
                               <label className='form-label required'>Partner Price Per Day</label>
                               <Field
                                 type='text'
@@ -741,9 +741,9 @@ const AddInsurance = () => {
                               <div className='text-danger'>
                                 <ErrorMessage name={`gold.age_groups[${index}].partner.price_per_day`} />
                               </div>
-                            </div>
+                            </div> */}
                             <div className='mb-3'>
-                              <label className='form-label required'>Partner Actual Price</label>
+                              <label className='form-label required'>Partner Price Per Day</label>
                               <Field
                                 type='text'
                                 name={`gold.age_groups[${index}].partner.actual_price`}
@@ -767,7 +767,7 @@ const AddInsurance = () => {
                                 <ErrorMessage name={`gold.age_groups[${index}].retailer.base_price`} />
                               </div>
                             </div>
-                            <div className='mb-3'>
+                            {/* <div className='mb-3'>
                               <label className='form-label required'>Retailer Price Per Day</label>
                               <Field
                                 type='text'
@@ -778,9 +778,9 @@ const AddInsurance = () => {
                               <div className='text-danger'>
                                 <ErrorMessage name={`gold.age_groups[${index}].retailer.price_per_day`} />
                               </div>
-                            </div>
+                            </div> */}
                             <div className='mb-3'>
-                              <label className='form-label required'>Retailer Actual Price</label>
+                              <label className='form-label required'>Retailer Price Per Day</label>
                               <Field
                                 type='text'
                                 name={`gold.age_groups[${index}].retailer.actual_price`}
@@ -804,7 +804,7 @@ const AddInsurance = () => {
                                 <ErrorMessage name={`gold.age_groups[${index}].customer.base_price`} />
                               </div>
                             </div>
-                            <div className='mb-3'>
+                            {/* <div className='mb-3'>
                               <label className='form-label required'>Customer Price Per Day</label>
                               <Field
                                 type='text'
@@ -815,9 +815,9 @@ const AddInsurance = () => {
                               <div className='text-danger'>
                                 <ErrorMessage name={`gold.age_groups[${index}].customer.price_per_day`} />
                               </div>
-                            </div>
+                            </div> */}
                             <div className='mb-3'>
-                              <label className='form-label required'>Customer Actual Price</label>
+                              <label className='form-label required'>Customer Price Per Day</label>
                               <Field
                                 type='text'
                                 name={`gold.age_groups[${index}].customer.actual_price`}
@@ -929,7 +929,7 @@ const AddInsurance = () => {
                                 <ErrorMessage name={`silver.age_groups[${index}].partner.base_price`} />
                               </div>
                             </div>
-                            <div className='mb-3'>
+                            {/* <div className='mb-3'>
                               <label className='form-label required'>Partner Price Per Day</label>
                               <Field
                                 type='text'
@@ -940,9 +940,9 @@ const AddInsurance = () => {
                               <div className='text-danger'>
                                 <ErrorMessage name={`silver.age_groups[${index}].partner.price_per_day`} />
                               </div>
-                            </div>
+                            </div> */}
                             <div className='mb-3'>
-                              <label className='form-label required'>Partner Actual Price</label>
+                              <label className='form-label required'>Partner Price Per Day</label>
                               <Field
                                 type='text'
                                 name={`silver.age_groups[${index}].partner.actual_price`}
@@ -966,7 +966,7 @@ const AddInsurance = () => {
                                 <ErrorMessage name={`silver.age_groups[${index}].retailer.base_price`} />
                               </div>
                             </div>
-                            <div className='mb-3'>
+                            {/* <div className='mb-3'>
                               <label className='form-label required'>Retailer Price Per Day</label>
                               <Field
                                 type='text'
@@ -977,9 +977,9 @@ const AddInsurance = () => {
                               <div className='text-danger'>
                                 <ErrorMessage name={`silver.age_groups[${index}].retailer.price_per_day`} />
                               </div>
-                            </div>
+                            </div> */}
                             <div className='mb-3'>
-                              <label className='form-label required'>Retailer Actual Price</label>
+                              <label className='form-label required'>Retailer Price Per Day</label>
                               <Field
                                 type='text'
                                 name={`silver.age_groups[${index}].retailer.actual_price`}
@@ -1003,7 +1003,7 @@ const AddInsurance = () => {
                                 <ErrorMessage name={`silver.age_groups[${index}].customer.base_price`} />
                               </div>
                             </div>
-                            <div className='mb-3'>
+                            {/* <div className='mb-3'>
                               <label className='form-label required'>Customer Price Per Day</label>
                               <Field
                                 type='text'
@@ -1014,9 +1014,9 @@ const AddInsurance = () => {
                               <div className='text-danger'>
                                 <ErrorMessage name={`silver.age_groups[${index}].customer.price_per_day`} />
                               </div>
-                            </div>
+                            </div> */}
                             <div className='mb-3'>
-                              <label className='form-label required'>Customer Actual Price</label>
+                              <label className='form-label required'>Customer Price Per Day</label>
                               <Field
                                 type='text'
                                 name={`silver.age_groups[${index}].customer.actual_price`}

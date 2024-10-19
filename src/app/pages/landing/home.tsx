@@ -9,7 +9,6 @@ import { BsArrowUpRight } from "react-icons/bs";
 import Loader from '../../components/Loader';
 import not from '../../../_metronic/assets/card/3dnot.webp'
 import toast, { Toaster } from 'react-hot-toast';
-import Cookies from 'js-cookie';
 import { FaFacebook } from "react-icons/fa";
 import { AiOutlineTwitter } from "react-icons/ai";
 import { AiFillInstagram } from "react-icons/ai";
@@ -558,9 +557,9 @@ const Home: React.FC<Props> = ({
                             </ul>  
                         </div>
                         <div className="card-price">
-                            <del className="del">₹700</del>
+                            <del className="del">₹8,000</del>
                             <div className="amount">
-                                ₹300 <span className="per">/ Per Person</span>
+                                ₹7500 <span className="per">/ Per Person</span>
                             </div>
                         </div>
                     </div>
@@ -586,9 +585,9 @@ const Home: React.FC<Props> = ({
                         </ul>  
                     </div>
                     <div className="card-price">
-                        <del className="del">₹4,500</del>
+                        <del className="del">₹8,500</del>
                         <div className="amount">
-                            ₹3,999 <span className="per">/ Per Person</span>
+                            ₹7,700 <span className="per">/ Per Person</span>
                         </div>
                     </div>
                     </div>
@@ -614,9 +613,9 @@ const Home: React.FC<Props> = ({
                         </ul>  
                     </div>
                     <div className="card-price">
-                        <del className="del">₹700</del>
+                        <del className="del">₹7,000</del>
                         <div className="amount">
-                            ₹500<span className="per">/ Per Person</span>
+                            ₹6,000<span className="per">/ Per Person</span>
                         </div>
                     </div>
                     </div>
@@ -642,9 +641,9 @@ const Home: React.FC<Props> = ({
                         </ul>  
                     </div>
                     <div className="card-price">
-                        <del className="del">₹4,100</del>
+                        <del className="del">₹6,100</del>
                         <div className="amount">
-                            ₹3,500 <span className="per">/ Per Person</span>
+                            ₹5,500 <span className="per">/ Per Person</span>
                         </div>
                     </div>
                     </div>

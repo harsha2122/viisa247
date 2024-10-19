@@ -894,8 +894,6 @@ const VisaDetailCard = ({visaData, insuranceData, hotelData, flightData}: Props)
     }
   }
 
-  console.log("ds", visaData)
-
   return (
     <div>
       <Toaster />
